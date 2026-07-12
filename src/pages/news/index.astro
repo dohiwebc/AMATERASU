@@ -1,0 +1,136 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Button from '@/components/Button.astro';
+import NewsList from '@/components/NewsList.astro';
+import NewsModal from '@/components/NewsModal.astro';
+import CTASection from '@/components/CTASection.astro';
+import { getContactSettings, getNews, getSiteSettings } from '@/lib/microcms';
+
+const [settings, contact, news] = await Promise.all([
+  getSiteSettings(),
+  getContactSettings(),
+  getNews(),
+]);
+---
+
+<Layout
+  title="お知らせ"
+  description="AMATERASU Web Studioからのお知らせ一覧です。"
+  settings={settings}
+>
+  <div class="page-header">
+    <div class="container">
+      <div class="page-header__inner">
+        <p class="page-header__label label-en">News</p>
+        <h1 class="page-header__title">お知らせ</h1>
+        <p class="page-header__desc">
+          スタジオからのお知らせや更新情報を掲載しています。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <section class="section section--after-header section--white">
+    <div class="container">
+      <div class="news-layout">
+        <div class="news-layout__main">
+          <NewsList items={news} compact />
+        </div>
+
+        <aside class="news-layout__aside">
+          <div class="news-studio-note">
+            <p class="news-studio-note__label label-en">Status</p>
+            <h2 class="news-studio-note__title">受付状況</h2>
+            <p class="news-studio-note__lead">{contact.studioNoteLead}</p>
+            <p class="news-studio-note__reply">
+              <span class="news-studio-note__term">返信目安</span>
+              <span class="news-studio-note__desc">{contact.replyTime}</span>
+            </p>
+            <Button href="/contact/" variant="text" size="sm" class="news-studio-note__link">
+              お問い合わせはこちら
+            </Button>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <NewsModal items={news} />
+
+  <CTASection settings={settings} />
+</Layout>
+
+<style>
+  .news-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+    align-items: start;
+  }
+
+  @media (min-width: 900px) {
+    .news-layout {
+      grid-template-columns: minmax(0, 1fr) 20rem;
+      gap: clamp(2rem, 4vw, 3rem);
+    }
+
+    .news-layout__aside {
+      position: sticky;
+      top: calc(var(--header-height) + 1.5rem);
+      padding-left: clamp(1.5rem, 3vw, 2rem);
+      border-left: 1px solid var(--color-border-light);
+    }
+  }
+
+  .news-studio-note {
+    padding: var(--space-md) var(--space-lg);
+    background-color: var(--color-bg-accent);
+    border: 1px solid var(--color-accent-light);
+  }
+
+  .news-studio-note__label {
+    margin-bottom: var(--space-sm);
+  }
+
+  .news-studio-note__title {
+    font-family: var(--font-serif);
+    font-size: var(--text-body-lg);
+    font-weight: 500;
+    line-height: var(--leading-tight);
+    color: var(--color-text);
+    margin-bottom: var(--space-sm);
+  }
+
+  .news-studio-note__lead {
+    font-size: var(--text-body);
+    font-weight: 500;
+    color: var(--color-text);
+    line-height: var(--leading-snug);
+    white-space: pre-line;
+    margin-bottom: var(--space-md);
+  }
+
+  .news-studio-note__reply {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-bottom: var(--space-md);
+  }
+
+  .news-studio-note__term {
+    font-size: var(--text-caption);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--color-text-light);
+  }
+
+  .news-studio-note__desc {
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+  }
+
+  .news-studio-note__link {
+    margin-top: 0.25rem;
+  }
+</style>

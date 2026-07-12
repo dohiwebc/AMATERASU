@@ -1,0 +1,236 @@
+---
+import WorkVisual from '@/components/WorkVisual.astro';
+import { getSiteTypeLabel, getWorkTypeLabel } from '@/types/cms';
+import type { Work } from '@/types/cms';
+import type { WorkRelatedPlan } from '@/lib/works';
+
+interface Props {
+  work: Work;
+  variant?: 'default' | 'featured' | 'gallery';
+  index?: number;
+  relatedPlans?: WorkRelatedPlan[];
+}
+
+const { work, variant = 'gallery', relatedPlans = [] } = Astro.props;
+const typeLabel = getWorkTypeLabel(work.workType);
+const siteTypeLabel = getSiteTypeLabel(work.siteType);
+const detailHref = `/works/${work.slug}/`;
+const planSlugs = relatedPlans.map((plan) => plan.slug);
+---
+
+<article
+  class:list={['work-card', `work-card--${variant}`]}
+  data-plan-slugs={planSlugs.join(' ')}
+>
+  <a class="work-card__inner" href={detailHref}>
+    <div class="work-card__visual">
+      <WorkVisual work={work} />
+    </div>
+
+    <div class="work-card__info">
+      <h3 class="work-card__title">{work.title}</h3>
+      <div class="work-card__meta">
+        <p class="work-card__meta-line">
+          <span class="work-card__type">{typeLabel}</span>
+          {siteTypeLabel && <span class="work-card__site-type">{siteTypeLabel}</span>}
+          {relatedPlans.map((plan) => (
+            <span class="work-card__plan">{plan.title}</span>
+          ))}
+        </p>
+        <p class="work-card__meta-line">
+          <span class="work-card__category">{work.category}</span>
+          {work.year && (
+            <>
+              <span class="work-card__year-label">制作</span>
+              <time class="work-card__year" datetime={work.year}>{work.year}</time>
+            </>
+          )}
+        </p>
+      </div>
+      <p class="work-card__desc">{work.description}</p>
+      <span class="work-card__link-label">
+        詳しく見る
+        <span class="work-card__link-arrow" aria-hidden="true">→</span>
+      </span>
+    </div>
+  </a>
+</article>
+
+<style>
+  .work-card__inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    color: inherit;
+  }
+
+  .work-card__visual {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 3 / 2;
+    transition: border-color var(--transition);
+  }
+
+  .work-card--featured .work-card__visual {
+    aspect-ratio: 16 / 9;
+  }
+
+  .work-card__inner:hover :global(.work-visual) {
+    border-color: var(--color-border);
+  }
+
+  .work-card__info {
+    padding-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex-grow: 1;
+  }
+
+  .work-card--featured .work-card__info {
+    padding-top: 0;
+    gap: 0.625rem;
+  }
+
+  .work-card--gallery .work-card__info {
+    padding-top: 0.875rem;
+  }
+
+  .work-card__title {
+    font-size: var(--text-body-lg);
+    font-weight: 500;
+    line-height: var(--leading-tight);
+    transition: color var(--transition);
+  }
+
+  .work-card__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    margin-top: 0.5rem;
+  }
+
+  .work-card__meta-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.375rem 0.5rem;
+    font-size: var(--text-small);
+    line-height: 1.4;
+  }
+
+  .work-card__type {
+    flex-shrink: 0;
+    padding: 0.2rem 0.55rem;
+    font-size: var(--text-caption);
+    letter-spacing: 0.1em;
+    color: var(--color-gold);
+    border: 1px solid var(--color-gold-line-soft);
+    line-height: 1.3;
+  }
+
+  .work-card__site-type {
+    flex-shrink: 0;
+    padding: 0.2rem 0.55rem;
+    font-size: var(--text-caption);
+    letter-spacing: 0.06em;
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    line-height: 1.3;
+  }
+
+  .work-card__plan {
+    flex-shrink: 0;
+    padding: 0.2rem 0.55rem;
+    font-size: var(--text-caption);
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border-light);
+    line-height: 1.3;
+  }
+
+  .work-card__category {
+    color: var(--color-text);
+    letter-spacing: 0.02em;
+  }
+
+  .work-card__year-label {
+    font-size: var(--text-caption);
+    color: var(--color-text-light);
+    letter-spacing: 0.1em;
+  }
+
+  .work-card__year {
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.04em;
+  }
+
+  .work-card__inner:hover .work-card__title {
+    color: var(--color-text);
+  }
+
+  .work-card--featured .work-card__title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.375rem, 3vw, 1.75rem);
+    font-weight: 500;
+  }
+
+  .work-card--featured .work-card__meta-line {
+    font-size: var(--text-body);
+  }
+
+  .work-card__desc {
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    line-height: 1.75;
+    margin-top: 0.125rem;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+  }
+
+  .work-card--featured .work-card__desc {
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+    -webkit-line-clamp: 4;
+  }
+
+  .work-card__link-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin-top: auto;
+    padding-top: var(--space-sm);
+    font-size: var(--text-small);
+    font-weight: 500;
+    color: var(--color-accent-dark);
+    transition: gap var(--transition);
+  }
+
+  .work-card__inner:hover .work-card__link-label {
+    gap: 0.625rem;
+  }
+
+  .work-card__link-arrow {
+    transition: transform var(--transition);
+  }
+
+  .work-card__inner:hover .work-card__link-arrow {
+    transform: translateX(3px);
+  }
+
+  @media (min-width: 768px) {
+    .work-card--featured .work-card__inner {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: var(--space-xl);
+      align-items: center;
+    }
+
+    .work-card--featured .work-card__info {
+      padding-top: 0;
+    }
+  }
+</style>

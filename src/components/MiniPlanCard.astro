@@ -1,0 +1,162 @@
+---
+import type { Plan } from '@/types/cms';
+import Button from '@/components/Button.astro';
+import { MINI_PLAN_META } from '@/lib/plans';
+import { resolvePlanSlug } from '@/lib/plan-slugs';
+
+interface Props {
+  plan: Plan;
+}
+
+const { plan } = Astro.props;
+
+const meta = MINI_PLAN_META[resolvePlanSlug(plan.slug)] ?? { label: 'ミニ制作', icon: 'link' };
+---
+
+<article class="mini-plan-card">
+  <div class="mini-plan-card__icon" aria-hidden="true">
+    {meta.icon === 'link' && (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <path d="M10 14a5 5 0 007.07 0l1.41-1.41a5 5 0 00-7.07-7.07L10 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M14 10a5 5 0 00-7.07 0L5.52 11.41a5 5 0 007.07 7.07L14 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    )}
+    {meta.icon === 'card' && (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <rect x="4" y="6" width="16" height="12" rx="1" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M8 10h8M8 14h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    )}
+    {meta.icon === 'menu' && (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <path d="M6 8h12M6 12h12M6 16h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    )}
+    {meta.icon === 'team' && (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="17" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M3 19c0-3 2.5-5 6-5s6 2 6 5" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+    )}
+    {meta.icon === 'event' && (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <rect x="4" y="5" width="16" height="15" rx="1" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M8 3v4M16 3v4M4 10h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    )}
+  </div>
+
+  <span class="mini-plan-card__label">{meta.label}</span>
+  <h3 class="mini-plan-card__title">{plan.title}</h3>
+  <p class="mini-plan-card__desc">{plan.shortDescription}</p>
+
+  {plan.recommendedFor[0] && (
+    <p class="mini-plan-card__for">
+      <span class="mini-plan-card__for-label">こんな方に</span>
+      {plan.recommendedFor[0]}
+    </p>
+  )}
+
+  <div class="mini-plan-card__meta">
+    <div>
+      <p class="mini-plan-card__price">{plan.price}</p>
+      <p class="mini-plan-card__period">{plan.productionPeriod}</p>
+    </div>
+  </div>
+
+  <Button href={`/mini-plans/${plan.slug}/`} variant="outline" size="md" class="btn--block">
+    詳しく見る
+  </Button>
+</article>
+
+<style>
+  .mini-plan-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: var(--space-lg);
+    background-color: var(--color-bg-white);
+    border: 1px solid var(--color-border-light);
+    transition: border-color var(--transition);
+  }
+
+  .mini-plan-card:hover {
+    border-color: var(--color-border);
+  }
+
+  .mini-plan-card__icon {
+    display: flex;
+    align-items: center;
+    color: var(--color-text-light);
+    margin-bottom: var(--space-sm);
+  }
+
+  .mini-plan-card__label {
+    display: block;
+    align-self: flex-start;
+    font-size: var(--text-caption);
+    font-weight: 500;
+    color: var(--color-text-light);
+    background: none;
+    letter-spacing: 0.12em;
+    margin-bottom: var(--space-xs);
+  }
+
+  .mini-plan-card__title {
+    font-family: var(--font-serif);
+    font-size: var(--text-body-lg);
+    font-weight: 500;
+    line-height: var(--leading-tight);
+    margin-bottom: var(--space-sm);
+  }
+
+  .mini-plan-card__desc {
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+    margin-bottom: var(--space-md);
+    flex-grow: 1;
+  }
+
+  .mini-plan-card__for {
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    line-height: var(--leading-snug);
+    margin-bottom: var(--space-md);
+    padding: var(--space-sm) 0;
+    border-top: 1px solid var(--color-border-light);
+    border-bottom: 1px solid var(--color-border-light);
+    background: none;
+    border-left: none;
+  }
+
+  .mini-plan-card__for-label {
+    display: block;
+    font-size: var(--text-caption);
+    font-weight: 500;
+    color: var(--color-text-light);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.25rem;
+  }
+
+  .mini-plan-card__meta {
+    padding: var(--space-sm) 0;
+    margin-bottom: var(--space-md);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .mini-plan-card__price {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--color-text);
+    line-height: 1.2;
+  }
+
+  .mini-plan-card__period {
+    margin-top: 0.375rem;
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+  }
+</style>

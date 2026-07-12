@@ -1,0 +1,241 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { getSiteSettings } from '@/lib/microcms';
+
+const settings = await getSiteSettings();
+---
+
+<Layout
+  title="プライバシーポリシー"
+  description="AMATERASU Web Studioのプライバシーポリシー。お問い合わせフォーム等における個人情報の取り扱いについて定めています。"
+  settings={settings}
+>
+  <div class="page-header">
+    <div class="container">
+      <div class="page-header__inner">
+        <p class="page-header__label label-en">Privacy</p>
+        <h1 class="page-header__title">プライバシーポリシー</h1>
+        <p class="page-header__desc">
+          当スタジオにおける個人情報の取り扱いについてご説明します。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <section class="section section--after-header">
+    <div class="container container--narrow">
+      <div class="privacy-content">
+        <p class="privacy-content__updated">最終更新日：2026年7月11日</p>
+
+        <section>
+          <h2>1. はじめに</h2>
+          <p>
+            {settings.brandDisplay}（以下「当スタジオ」）は、お客様の個人情報の保護を重要な責務と認識し、
+            個人情報保護法および関連法令を遵守して、個人情報を適切に取り扱います。
+          </p>
+          <p>
+            本ポリシーは、当スタジオが運営するウェブサイト（以下「本サイト」）および
+            お問い合わせフォーム等を通じて取得する個人情報の取り扱いについて定めるものです。
+          </p>
+        </section>
+
+        <section>
+          <h2>2. 事業者情報</h2>
+          <dl class="privacy-content__dl">
+            <div>
+              <dt>事業者名</dt>
+              <dd>{settings.brandDisplay}</dd>
+            </div>
+            <div>
+              <dt>所在地</dt>
+              <dd>{settings.location}</dd>
+            </div>
+            <div>
+              <dt>お問い合わせ先</dt>
+              <dd>
+                <a href={`mailto:${settings.email}`}>{settings.email}</a>
+              </dd>
+            </div>
+          </dl>
+        </section>
+
+        <section>
+          <h2>3. 収集する情報</h2>
+          <p>当スタジオは、お問い合わせやサービス提供にあたり、以下の情報を取得する場合があります。</p>
+          <ul>
+            <li>お名前</li>
+            <li>会社名・屋号（任意）</li>
+            <li>メールアドレス</li>
+            <li>ご相談内容カテゴリ、希望プラン、ご予算（任意）</li>
+            <li>参考サイトURL（任意）</li>
+            <li>お問い合わせ内容</li>
+          </ul>
+          <p>
+            また、本サイトの閲覧時に、アクセス日時、IPアドレス、ブラウザの種類、参照元URLなどの
+            情報がサーバーやアクセス解析の仕組みにより自動的に記録される場合があります。
+          </p>
+        </section>
+
+        <section>
+          <h2>4. 利用目的</h2>
+          <p>取得した個人情報は、以下の目的の範囲内で利用します。</p>
+          <ul>
+            <li>お問い合わせへの回答・返信</li>
+            <li>サービスのご案内、お見積り・ご提案の作成</li>
+            <li>制作に関する連絡・打ち合わせ</li>
+            <li>契約の履行およびアフターサポート</li>
+            <li>本サイトの運営・改善、不正利用の防止</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>5. 第三者提供・委託</h2>
+          <p>
+            当スタジオは、法令に基づく場合を除き、お客様の同意なく個人情報を第三者に提供することはありません。
+          </p>
+          <p>
+            ただし、お問い合わせフォームの送信処理のため、以下の外部サービスを利用しています。
+            これらのサービスにおいても、各事業者のプライバシーポリシーに基づき適切に管理されます。
+          </p>
+          <ul>
+            <li>Formspree（フォーム送信の受付・転送）</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>6. 保管期間</h2>
+          <p>
+            取得した個人情報は、利用目的の達成に必要な期間保管し、不要となった場合は
+            合理的な期間内に削除または匿名化します。
+          </p>
+          <p>
+            お問い合わせ内容については、ご対応完了後おおむね2年を目安に保管したのち、適宜削除します。
+            ただし、法令上の保存義務がある場合は、この限りではありません。
+          </p>
+        </section>
+
+        <section>
+          <h2>7. 安全管理措置</h2>
+          <p>
+            当スタジオは、個人情報の漏洩・滅失・毀損を防止するため、
+            アクセス権限の管理、パスワードの適切な取り扱い、不要な情報の削除など、
+            合理的な安全管理措置を講じます。
+          </p>
+        </section>
+
+        <section>
+          <h2>8. 開示・訂正・削除等のご請求</h2>
+          <p>
+            ご本人から、保有する個人情報の開示、訂正、利用停止、削除等のご請求があった場合は、
+            本人確認のうえ、法令に従い適切に対応します。
+          </p>
+          <p>
+            ご請求は
+            <a href={`mailto:${settings.email}`}>{settings.email}</a>
+            までご連絡ください。
+          </p>
+        </section>
+
+        <section>
+          <h2>9. Cookie・外部サービスについて</h2>
+          <p>
+            本サイトでは、表示の最適化のため Google Fonts を利用しています。
+            フォントの読み込みに伴い、Google 社のサーバーへ接続が行われる場合があります。
+          </p>
+          <p>
+            現時点で、当スタジオが独自に Cookie を用いた広告配信や行動追跡を行う仕組みは設けていません。
+            今後導入する場合は、本ポリシーを改定してお知らせします。
+          </p>
+        </section>
+
+        <section>
+          <h2>10. 本ポリシーの変更</h2>
+          <p>
+            当スタジオは、法令の改正やサービス内容の変更等に応じて、本ポリシーを改定することがあります。
+            重要な変更を行う場合は、本サイト上でお知らせします。
+          </p>
+        </section>
+
+        <section>
+          <h2>11. お問い合わせ</h2>
+          <p>
+            個人情報の取り扱いに関するご質問・ご相談は、
+            <a href="/contact/">お問い合わせページ</a>
+            または
+            <a href={`mailto:${settings.email}`}>{settings.email}</a>
+            までご連絡ください。
+          </p>
+        </section>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .privacy-content {
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+  }
+
+  .privacy-content__updated {
+    font-size: var(--text-small);
+    color: var(--color-text-light);
+    margin-bottom: var(--space-xl);
+  }
+
+  .privacy-content section {
+    margin-bottom: var(--space-xl);
+  }
+
+  .privacy-content h2 {
+    font-family: var(--font-serif);
+    font-size: var(--text-body-lg);
+    font-weight: 500;
+    color: var(--color-text);
+    margin-bottom: var(--space-sm);
+    letter-spacing: 0.04em;
+  }
+
+  .privacy-content p {
+    margin-bottom: var(--space-sm);
+  }
+
+  .privacy-content ul {
+    padding-left: 1.25rem;
+    list-style: disc;
+    margin-bottom: var(--space-sm);
+  }
+
+  .privacy-content li {
+    margin-bottom: 0.25rem;
+  }
+
+  .privacy-content a {
+    color: var(--color-accent-dark);
+    text-decoration: underline;
+    transition: color var(--transition);
+  }
+
+  .privacy-content a:hover {
+    color: var(--color-text);
+  }
+
+  .privacy-content__dl {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .privacy-content__dl dt {
+    font-size: var(--text-small);
+    font-weight: 500;
+    color: var(--color-text-light);
+    letter-spacing: 0.06em;
+    margin-bottom: 0.125rem;
+  }
+
+  .privacy-content__dl dd {
+    color: var(--color-text-muted);
+  }
+</style>

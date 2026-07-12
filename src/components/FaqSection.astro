@@ -1,0 +1,98 @@
+---
+import SectionTitle from '@/components/SectionTitle.astro';
+import FaqAccordion from '@/components/FaqAccordion.astro';
+import Button from '@/components/Button.astro';
+import { staticFaqs } from '@/data/faqs';
+import { filterFaqs, groupFaqsByCategory } from '@/lib/faqs';
+import { FAQ_CATEGORY_LABELS } from '@/types/cms';
+import type { Faq, FaqCategory } from '@/types/cms';
+
+interface Props {
+  faqs?: Faq[];
+  en?: string;
+  ja?: string;
+  description?: string;
+  categories?: FaqCategory[];
+  groupByCategory?: boolean;
+  featuredOnly?: boolean;
+  limit?: number;
+  showViewAll?: boolean;
+  viewAllHref?: string;
+  sectionClass?: string;
+}
+
+const {
+  faqs = staticFaqs,
+  en = 'FAQ',
+  ja = 'よくあるご質問',
+  description,
+  categories,
+  groupByCategory = false,
+  featuredOnly = false,
+  limit,
+  showViewAll = false,
+  viewAllHref = '/faq/',
+  sectionClass = '',
+} = Astro.props;
+
+const filteredFaqs = filterFaqs(faqs, { categories, featuredOnly, limit });
+const groupedFaqs =
+  groupByCategory && categories?.length
+    ? groupFaqsByCategory(faqs, categories)
+    : [];
+const hasContent = groupByCategory ? groupedFaqs.length > 0 : filteredFaqs.length > 0;
+---
+
+{hasContent && (
+  <section class:list={['section', 'faq-section', sectionClass]}>
+    <div class="container">
+      <SectionTitle en={en} ja={ja} description={description} variant="editorial" />
+
+      <div class="faq-section__content">
+        {groupByCategory ? (
+          <div class="faq-section__groups">
+            {groupedFaqs.map((group) => (
+              <div class="faq-section__group">
+                <h3 class="faq-section__category">{FAQ_CATEGORY_LABELS[group.category]}</h3>
+                <FaqAccordion faqs={group.items} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <FaqAccordion faqs={filteredFaqs} />
+        )}
+      </div>
+
+      {showViewAll && (
+        <div class="faq-section__action section-action section-action--center">
+          <Button href={viewAllHref} variant="outline">すべてのFAQを見る</Button>
+        </div>
+      )}
+    </div>
+  </section>
+)}
+
+<style>
+  .faq-section__content {
+    width: 100%;
+  }
+
+  .faq-section__groups {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xl);
+  }
+
+  .faq-section__category {
+    font-family: var(--font-serif);
+    font-size: var(--text-body-lg);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--color-text);
+    margin-bottom: var(--space-sm);
+  }
+
+  .faq-section__action {
+    margin-top: var(--space-xl);
+  }
+</style>

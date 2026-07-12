@@ -1,0 +1,267 @@
+---
+import Button from '@/components/Button.astro';
+import { getContactSettings } from '@/lib/microcms';
+import { getInstagramHandle, getXHandle } from '@/lib/text';
+import type { SiteSettings } from '@/types/cms';
+
+interface Props {
+  settings: SiteSettings;
+  title?: string;
+  description?: string;
+}
+
+const DEFAULT_CTA_TITLE = 'まずはお気軽にご相談ください';
+const DEFAULT_CTA_DESCRIPTION =
+  'ホームページのこと、費用のこと、何でも大丈夫です。お店の想いをじっくりお聞かせください。';
+
+const contact = await getContactSettings();
+
+const {
+  settings,
+  title = contact.ctaTitle?.trim() || DEFAULT_CTA_TITLE,
+  description = contact.ctaDescription?.trim() || DEFAULT_CTA_DESCRIPTION,
+} = Astro.props;
+
+const instagramHandle = getInstagramHandle(settings.instagramUrl);
+const xHandle = getXHandle(settings.xUrl);
+const xNote = contact.xDescription?.trim();
+---
+
+<section class="cta-section">
+  <div class="cta-section__glow" aria-hidden="true"></div>
+  <div class="cta-section__line" aria-hidden="true"></div>
+
+  <div class="cta-section__inner container">
+    <div class="cta-section__main">
+      <p class="cta-section__label label-en">Contact</p>
+      <h2 class="cta-section__title">{title}</h2>
+      <p class="cta-section__desc">{description}</p>
+
+      <div class="cta-section__contact">
+        <Button href="/contact/" variant="primary" size="lg" class="cta-section__cta">
+          お問い合わせはこちら
+        </Button>
+
+        {(settings.email || settings.instagramUrl || settings.xUrl) && (
+          <ul class="cta-section__channels">
+            {settings.email && (
+              <li class="cta-section__channel">
+                <span class="cta-section__channel-label label-en">Mail</span>
+                <a href={`mailto:${settings.email}`} class="cta-section__channel-value">
+                  {settings.email}
+                </a>
+              </li>
+            )}
+            {settings.instagramUrl && instagramHandle && (
+              <li class="cta-section__channel">
+                <span class="cta-section__channel-label label-en">Instagram</span>
+                <a
+                  href={settings.instagramUrl}
+                  class="cta-section__channel-value"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {instagramHandle}
+                </a>
+              </li>
+            )}
+            {settings.xUrl && xHandle && (
+              <li class="cta-section__channel">
+                <span class="cta-section__channel-label">X（旧Twitter）</span>
+                <div class="cta-section__channel-body">
+                  <a
+                    href={settings.xUrl}
+                    class="cta-section__channel-value"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {xHandle}
+                  </a>
+                  {xNote && <p class="cta-section__channel-note">{xNote}</p>}
+                </div>
+              </li>
+            )}
+          </ul>
+        )}
+      </div>
+    </div>
+
+    <aside class="cta-section__aside">
+      <p class="cta-section__location">{settings.location}を拠点に活動</p>
+      <p class="cta-section__brand">{settings.logoText}</p>
+      <p class="cta-section__studio label-en">Web Studio</p>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .cta-section {
+    position: relative;
+    background-color: var(--color-bg-cta);
+    padding-block: clamp(3.5rem, 8vw, 5.5rem);
+    overflow: hidden;
+  }
+
+  .cta-section__glow {
+    position: absolute;
+    z-index: 0;
+    top: -40%;
+    right: -15%;
+    width: 50%;
+    height: 100%;
+    pointer-events: none;
+    background: radial-gradient(circle, rgba(232, 220, 200, 0.5) 0%, transparent 65%);
+  }
+
+  .cta-section__line {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: clamp(1.25rem, 4vw, 2.5rem);
+    width: 64px;
+    height: 1px;
+    pointer-events: none;
+    background-color: var(--color-accent);
+  }
+
+  .cta-section__inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: var(--space-xl);
+    align-items: end;
+  }
+
+  .cta-section__main {
+    width: 100%;
+    max-width: 44rem;
+  }
+
+  .cta-section__label {
+    color: var(--color-accent-dark);
+    margin-bottom: var(--space-md);
+  }
+
+  .cta-section__title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.875rem, 5vw, 2.75rem);
+    font-weight: 500;
+    line-height: var(--leading-tight);
+    margin-bottom: var(--space-md);
+    max-width: none;
+    color: var(--color-on-dark);
+    white-space: pre-line;
+  }
+
+  .cta-section__desc {
+    font-size: clamp(1.0625rem, 2.2vw, 1.25rem);
+    color: var(--color-on-dark-muted);
+    line-height: var(--leading-body);
+    margin-bottom: var(--space-lg);
+    max-width: none;
+    white-space: pre-line;
+  }
+
+  .cta-section__contact {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 24rem;
+  }
+
+  .cta-section__cta {
+    width: 100%;
+  }
+
+  .cta-section__channels {
+    width: 100%;
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid rgba(201, 168, 110, 0.22);
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+  }
+
+  .cta-section__channel {
+    display: grid;
+    grid-template-columns: minmax(5.25rem, 7.5rem) 1fr;
+    column-gap: var(--space-sm);
+    align-items: start;
+  }
+
+  .cta-section__channel-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .cta-section__channel-note {
+    font-size: 0.6875rem;
+    color: rgba(240, 236, 228, 0.4);
+    line-height: var(--leading-snug);
+    letter-spacing: 0.02em;
+  }
+
+  .cta-section__channel-label {
+    color: rgba(201, 168, 110, 0.7);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+  }
+
+  .cta-section__channel-value {
+    font-size: var(--text-small);
+    color: var(--color-on-dark);
+    letter-spacing: 0.03em;
+    line-height: 1.6;
+    transition: color var(--transition);
+    word-break: break-all;
+  }
+
+  .cta-section__channel-value:hover {
+    color: var(--color-gold-bright);
+  }
+
+  .cta-section__aside {
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-accent-light);
+  }
+
+  .cta-section__location {
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-sm);
+  }
+
+  .cta-section__brand {
+    font-family: var(--font-serif);
+    font-size: 1.375rem;
+    letter-spacing: 0.08em;
+    color: var(--color-text);
+  }
+
+  .cta-section__studio {
+    margin-top: 0.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .cta-section__inner {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: var(--space-2xl);
+      align-items: end;
+    }
+
+    .cta-section__main {
+      max-width: 52rem;
+    }
+
+    .cta-section__aside {
+      border-top: none;
+      border-left: 1px solid var(--color-accent-light);
+      padding-top: 0;
+      padding-left: var(--space-xl);
+      text-align: right;
+    }
+  }
+</style>

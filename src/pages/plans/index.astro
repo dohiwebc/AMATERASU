@@ -1,0 +1,54 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import PlanCard from '@/components/PlanCard.astro';
+import PlanSharedNote from '@/components/PlanSharedNote.astro';
+import CTASection from '@/components/CTASection.astro';
+import FaqSection from '@/components/FaqSection.astro';
+import { SITE_TYPE } from '@/types/cms';
+import { getSiteSettings, getPlans } from '@/lib/microcms';
+
+const [settings, plans] = await Promise.all([
+  getSiteSettings(),
+  getPlans(SITE_TYPE.NORMAL),
+]);
+---
+
+<Layout
+  title="本格制作プラン"
+  description="ライト・スタンダード・プレミアムの3つの本格制作プラン。個人店・小規模事業者向けのホームページ制作。"
+  settings={settings}
+>
+  <div class="page-header">
+    <div class="container">
+      <div class="page-header__inner">
+        <p class="page-header__label label-en">Plans</p>
+        <h1 class="page-header__title">本格制作プラン</h1>
+        <p class="page-header__desc">
+          お店や事業の規模・目的に合わせて選べる、本格的なホームページ制作プランです。
+          初めての方にはスタンダードプランがおすすめです。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <section class="section section--after-header">
+    <div class="container container--plans">
+      <div class="plans-showcase">
+        {plans.map((plan, i) => (
+          <PlanCard plan={plan} variant={plan.isFeatured ? 'featured' : 'default'} index={i} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <PlanSharedNote settings={settings} />
+
+  <FaqSection
+    description="本格制作プランに関するよくあるご質問です。"
+    categories={['normal', 'price', 'delivery']}
+    groupByCategory
+    sectionClass="section--white"
+  />
+
+  <CTASection settings={settings} />
+</Layout>

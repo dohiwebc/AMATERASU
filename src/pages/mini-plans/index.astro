@@ -1,0 +1,54 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import MiniPlanCard from '@/components/MiniPlanCard.astro';
+import PlanSharedNote from '@/components/PlanSharedNote.astro';
+import CTASection from '@/components/CTASection.astro';
+import FaqSection from '@/components/FaqSection.astro';
+import { SITE_TYPE } from '@/types/cms';
+import { getSiteSettings, getPlans } from '@/lib/microcms';
+
+const [settings, plans] = await Promise.all([
+  getSiteSettings(),
+  getPlans(SITE_TYPE.MINI),
+]);
+---
+
+<Layout
+  title="ミニ制作プラン"
+  description="プロフィールリンク、Web名刺、メニューWeb化など。小さく始められるミニ制作プラン。"
+  settings={settings}
+>
+  <div class="page-header">
+    <div class="container">
+      <div class="page-header__inner">
+        <p class="page-header__label label-en">Mini Plans</p>
+        <h1 class="page-header__title">ミニ制作プラン</h1>
+        <p class="page-header__desc">
+          小さく始めたい方のための、コンパクトなWeb制作プランです。
+          目的に合わせて選べます。公開作業・サーバー・ドメイン設定は含まれません。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <section class="section section--after-header">
+    <div class="container container--plans">
+      <div class="mini-plans-grid">
+        {plans.map((plan) => (
+          <MiniPlanCard plan={plan} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <PlanSharedNote settings={settings} variant="mini" />
+
+  <FaqSection
+    description="ミニプランに関するよくあるご質問です。"
+    categories={['mini', 'delivery', 'price']}
+    groupByCategory
+    sectionClass="section--white"
+  />
+
+  <CTASection settings={settings} />
+</Layout>

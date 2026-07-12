@@ -1,0 +1,231 @@
+---
+import type { SiteSettings } from '@/types/cms';
+
+interface Props {
+  settings: SiteSettings;
+  currentPath: string;
+}
+
+const { settings, currentPath } = Astro.props;
+
+const navItems = [
+  { href: '/news/', label: 'お知らせ' },
+  { href: '/plans/', label: '本格制作プラン' },
+  { href: '/mini-plans/', label: 'ミニ制作' },
+  { href: '/works/', label: '実績' },
+  { href: '/contact/', label: 'お問い合わせ' },
+];
+
+function isNavActive(pathname: string, href: string): boolean {
+  const normalized = pathname.endsWith('/') ? pathname : `${pathname}/`;
+  return normalized === href || normalized.startsWith(href);
+}
+---
+
+<header class="header">
+  <div class="header__inner container">
+    <a href="/" class="header__logo">
+      <span class="header__logo-text">{settings.logoText}</span>
+      <span class="header__logo-sub label-en">Web Studio</span>
+    </a>
+
+    <button class="header__toggle" aria-label="メニューを開く" aria-expanded="false" data-nav-toggle>
+      <span class="header__toggle-bar"></span>
+      <span class="header__toggle-bar"></span>
+    </button>
+
+    <nav class="header__nav" data-nav>
+      <ul class="header__nav-list">
+        {navItems.map((item) => {
+          const isActive = isNavActive(currentPath, item.href);
+          return (
+            <li>
+              <a
+                href={item.href}
+                class:list={['header__nav-link', isActive && 'header__nav-link--active']}
+                aria-current={isActive ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+      <a href="/contact/" class="header__cta btn btn--primary btn--sm">相談する</a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.querySelector('[data-nav-toggle]');
+  const nav = document.querySelector('[data-nav]');
+
+  toggle?.addEventListener('click', () => {
+    const isOpen = nav?.classList.toggle('is-open');
+    toggle.setAttribute('aria-expanded', String(isOpen));
+    document.body.classList.toggle('is-nav-open', !!isOpen);
+  });
+
+  nav?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      nav.classList.remove('is-open');
+      toggle?.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('is-nav-open');
+    });
+  });
+</script>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: rgba(244, 240, 232, 0.85);
+    backdrop-filter: saturate(120%) blur(10px);
+    -webkit-backdrop-filter: saturate(120%) blur(10px);
+    border-bottom: 1px solid var(--color-border-light);
+    height: var(--header-height);
+  }
+
+  .header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    max-width: var(--container-wide);
+    padding-inline: clamp(1.5rem, 5vw, 3rem);
+  }
+
+  .header__logo {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+    gap: 0.125rem;
+  }
+
+  .header__logo-text {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    color: var(--color-text);
+  }
+
+  .header__logo-sub {
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+  }
+
+  .header__toggle {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px;
+    z-index: 101;
+  }
+
+  .header__toggle-bar {
+    display: block;
+    width: 20px;
+    height: 1px;
+    background-color: var(--color-text);
+  }
+
+  .header__nav {
+    display: none;
+  }
+
+  .header__nav.is-open {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    inset: 0;
+    top: var(--header-height);
+    background-color: var(--color-bg);
+    padding: var(--space-xl) clamp(1.25rem, 4vw, 2.5rem);
+    gap: var(--space-xl);
+  }
+
+  .header__nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .header__nav-link {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 0.25rem;
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+    transition: color var(--transition);
+  }
+
+  .header__nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background-color: var(--color-gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--transition);
+  }
+
+  .header__nav-link:hover {
+    color: var(--color-text);
+  }
+
+  .header__nav-link--active {
+    color: var(--color-text);
+  }
+
+  .header__nav-link--active::after {
+    transform: scaleX(1);
+  }
+
+  .header__cta {
+    align-self: flex-start;
+  }
+
+  @media (min-width: 768px) {
+    .header__toggle {
+      display: none;
+    }
+
+    .header__nav {
+      display: flex;
+      align-items: center;
+      gap: 2.25rem;
+      position: static;
+      background: none;
+      padding: 0;
+      flex-direction: row;
+    }
+
+    .header__nav-list {
+      flex-direction: row;
+      gap: 2.25rem;
+    }
+
+    .header__nav-link {
+      font-size: var(--text-small);
+      letter-spacing: 0.04em;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .header__nav {
+      gap: 2.75rem;
+    }
+
+    .header__nav-list {
+      gap: 2.75rem;
+    }
+  }
+</style>

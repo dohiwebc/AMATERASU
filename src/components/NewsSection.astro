@@ -1,0 +1,52 @@
+---
+import SectionTitle from '@/components/SectionTitle.astro';
+import NewsList from '@/components/NewsList.astro';
+import NewsModal from '@/components/NewsModal.astro';
+import Button from '@/components/Button.astro';
+import { filterNews } from '@/lib/news';
+import type { NewsItem } from '@/types/cms';
+
+interface Props {
+  news: NewsItem[];
+  featuredOnly?: boolean;
+  limit?: number;
+  description?: string;
+  showViewAll?: boolean;
+  viewAllHref?: string;
+  sectionClass?: string;
+}
+
+const {
+  news,
+  featuredOnly = false,
+  limit = 3,
+  description = 'スタジオからのお知らせや更新情報です。',
+  showViewAll = true,
+  viewAllHref = '/news/',
+  sectionClass = 'section--white',
+} = Astro.props;
+
+const items = filterNews(news, { featuredOnly, limit });
+---
+
+{items.length > 0 && (
+  <>
+    <section class:list={['section', 'news-section', sectionClass]} id="news">
+      <div class="container">
+        <SectionTitle
+          en="News"
+          ja="お知らせ"
+          description={description}
+          variant="editorial"
+        />
+        <NewsList items={items} compact />
+        {showViewAll && (
+          <div class="section-action section-action--center">
+            <Button href={viewAllHref} variant="outline">お知らせをすべて見る</Button>
+          </div>
+        )}
+      </div>
+    </section>
+    <NewsModal items={news} />
+  </>
+)}

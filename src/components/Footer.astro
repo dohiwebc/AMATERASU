@@ -1,0 +1,224 @@
+---
+import type { SiteSettings } from '@/types/cms';
+import { getInstagramHandle, getXHandle } from '@/lib/text';
+
+interface Props {
+  settings: SiteSettings;
+}
+
+const { settings } = Astro.props;
+const currentYear = new Date().getFullYear();
+const instagramHandle = getInstagramHandle(settings.instagramUrl);
+const xHandle = getXHandle(settings.xUrl);
+
+const navItems = [
+  { href: '/news/', label: 'お知らせ' },
+  { href: '/plans/', label: '本格制作プラン' },
+  { href: '/mini-plans/', label: 'ミニ制作' },
+  { href: '/works/', label: '実績' },
+  { href: '/faq/', label: 'よくあるご質問' },
+  { href: '/contact/', label: 'お問い合わせ' },
+  { href: '/privacy/', label: 'プライバシーポリシー' },
+];
+---
+
+<footer class="footer">
+  <div class="footer__inner container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <p class="footer__logo">{settings.logoText}</p>
+        <p class="footer__studio label-en">Web Studio</p>
+        <p class="footer__tagline">{settings.footerText}</p>
+
+        <ul class="footer__contact">
+          {settings.location && (
+            <li class="footer__contact-item">
+              <span class="footer__contact-label label-en">Location</span>
+              <span class="footer__contact-value">{settings.location}</span>
+            </li>
+          )}
+          {settings.email && (
+            <li class="footer__contact-item">
+              <span class="footer__contact-label label-en">Mail</span>
+              <a href={`mailto:${settings.email}`} class="footer__contact-value footer__contact-link">
+                {settings.email}
+              </a>
+            </li>
+          )}
+          {settings.instagramUrl && instagramHandle && (
+            <li class="footer__contact-item">
+              <span class="footer__contact-label label-en">Instagram</span>
+              <a
+                href={settings.instagramUrl}
+                class="footer__contact-value footer__contact-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {instagramHandle}
+              </a>
+            </li>
+          )}
+          {settings.xUrl && xHandle && (
+            <li class="footer__contact-item">
+              <span class="footer__contact-label">X（旧Twitter）</span>
+              <a
+                href={settings.xUrl}
+                class="footer__contact-value footer__contact-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {xHandle}
+              </a>
+            </li>
+          )}
+        </ul>
+      </div>
+
+      <nav class="footer__nav" aria-label="フッターナビゲーション">
+        <ul>
+          {navItems.map((item) => (
+            <li><a href={item.href}>{item.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+
+    <div class="footer__bottom">
+      <p class="footer__copy label-en">
+        &copy; {currentYear} {settings.brandName}
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background-color: var(--color-bg);
+    padding-block: clamp(2.5rem, 6vw, 4rem) var(--space-md);
+    border-top: 1px solid var(--color-accent-light);
+  }
+
+  .footer__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+
+  .footer__top {
+    display: grid;
+    gap: var(--space-lg);
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .footer__brand {
+    max-width: 36rem;
+  }
+
+  .footer__logo {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.25rem;
+    line-height: 1.3;
+  }
+
+  .footer__studio {
+    margin-bottom: var(--space-md);
+  }
+
+  .footer__tagline {
+    font-size: clamp(1rem, 2vw, 1.125rem);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+    max-width: none;
+    white-space: pre-line;
+  }
+
+  .footer__contact {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: var(--space-lg);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .footer__contact-item {
+    display: grid;
+    grid-template-columns: minmax(5.25rem, 7.5rem) 1fr;
+    column-gap: var(--space-sm);
+    align-items: baseline;
+  }
+
+  .footer__contact-label {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    color: var(--color-text-light);
+  }
+
+  .footer__contact-value {
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    word-break: break-all;
+  }
+
+  .footer__contact-link {
+    transition: color var(--transition);
+  }
+
+  .footer__contact-link:hover {
+    color: var(--color-text);
+  }
+
+  .footer__nav ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .footer__nav a {
+    font-family: var(--font-serif);
+    font-size: var(--text-body);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    transition: color var(--transition);
+  }
+
+  .footer__nav a:hover {
+    color: var(--color-text);
+  }
+
+  .footer__bottom {
+    padding-top: var(--space-xs);
+  }
+
+  .footer__copy {
+    color: var(--color-text-light);
+    font-size: var(--text-caption);
+  }
+
+  @media (min-width: 768px) {
+    .footer__top {
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .footer__brand {
+      max-width: 40rem;
+    }
+
+    .footer__nav ul {
+      align-items: flex-end;
+    }
+
+    .footer__bottom {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+</style>

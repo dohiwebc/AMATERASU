@@ -1,0 +1,60 @@
+<script>
+  const REVEAL_SELECTOR = [
+    '.page-header',
+    '.hero',
+    '.section',
+    '.footer',
+  ].join(', ');
+
+  const REVEAL_CHILD_SELECTOR = [
+    '.work-card',
+    '.plan-card-outer',
+    '.mini-plan-card',
+    '.news-list__item',
+    '.flow__item',
+    '.worries__item',
+    '.contact-layout',
+    '.works-index',
+    '.plan-detail',
+    '.work-detail',
+  ].join(', ');
+
+  function initReveal() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const blocks = document.querySelectorAll<HTMLElement>(REVEAL_SELECTOR);
+    const children = document.querySelectorAll<HTMLElement>(REVEAL_CHILD_SELECTOR);
+
+    blocks.forEach((element, index) => {
+      element.classList.add('reveal');
+      element.style.setProperty('--reveal-delay', `${Math.min(index * 70, 350)}ms`);
+    });
+
+    children.forEach((element, index) => {
+      element.classList.add('reveal', 'reveal--child');
+      element.style.setProperty('--reveal-delay', `${Math.min((index % 6) * 55, 330)}ms`);
+    });
+
+    const targets = [...blocks, ...children];
+    if (targets.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        });
+      },
+      {
+        threshold: 0.12,
+        rootMargin: '0px 0px -6% 0px',
+      },
+    );
+
+    targets.forEach((target) => observer.observe(target));
+  }
+
+  initReveal();
+  document.addEventListener('astro:page-load', initReveal);
+</script>

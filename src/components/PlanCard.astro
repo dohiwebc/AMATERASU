@@ -1,0 +1,163 @@
+---
+import type { Plan } from '@/types/cms';
+import Button from '@/components/Button.astro';
+
+interface Props {
+  plan: Plan;
+  variant?: 'default' | 'featured' | 'compact';
+  index?: number;
+}
+
+const { plan, variant = plan.isFeatured ? 'featured' : 'default', index = 0 } = Astro.props;
+---
+
+<div class="plan-card-outer">
+  <article class:list={['plan-card', `plan-card--${variant}`]} data-plan-card>
+    <h3 class="plan-card__title">{plan.title}</h3>
+
+    <div class="plan-card__price-block">
+      <p class="plan-card__price">{plan.price}</p>
+      {plan.priceNote && <p class="plan-card__price-note">{plan.priceNote}</p>}
+    </div>
+
+    <p class="plan-card__desc">{plan.shortDescription}</p>
+
+    <div class="plan-card__includes">
+      <p class="plan-card__includes-label">含まれるもの</p>
+      <ul class="plan-card__highlights">
+        {plan.included.slice(0, 3).map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+    </div>
+
+    <p class="plan-card__period">
+      制作期間目安：<strong>{plan.productionPeriod}</strong>
+    </p>
+
+    <Button href={`/plans/${plan.slug}/`} variant="outline" size="md" class="btn--block">
+      詳しく見る
+    </Button>
+  </article>
+</div>
+
+<style>
+  .plan-card-outer {
+    position: relative;
+    height: 100%;
+  }
+
+  .plan-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: var(--space-lg);
+    background-color: var(--color-bg-white);
+    border: 1px solid var(--color-border-light);
+    transition: border-color var(--transition);
+  }
+
+  .plan-card:hover {
+    border-color: var(--color-border);
+  }
+
+  .plan-card--featured {
+    background-color: var(--color-bg-accent);
+    border-color: var(--color-border);
+    box-shadow: inset 2px 0 0 var(--color-gold-line-soft);
+  }
+
+  .plan-card__title {
+    font-family: var(--font-serif);
+    font-size: var(--text-body-lg);
+    font-weight: 500;
+    line-height: var(--leading-tight);
+    margin-bottom: var(--space-sm);
+    color: var(--color-text);
+  }
+
+  .plan-card__price-block {
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .plan-card__price {
+    font-family: var(--font-serif);
+    font-size: clamp(1.75rem, 4vw, 2.125rem);
+    font-weight: 500;
+    line-height: 1;
+    color: var(--color-text);
+  }
+
+  .plan-card__price-note {
+    margin-top: 0.375rem;
+    font-size: var(--text-small);
+    color: var(--color-text-light);
+  }
+
+  .plan-card__desc {
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+    margin-bottom: var(--space-md);
+  }
+
+  .plan-card__includes {
+    margin-bottom: var(--space-md);
+    flex-grow: 1;
+  }
+
+  .plan-card__includes-label {
+    font-size: var(--text-caption);
+    font-weight: 500;
+    color: var(--color-text-light);
+    letter-spacing: 0.1em;
+    margin-bottom: var(--space-xs);
+  }
+
+  .plan-card__highlights li {
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    padding-left: 1rem;
+    margin-bottom: 0.375rem;
+    line-height: var(--leading-snug);
+    position: relative;
+  }
+
+  .plan-card__highlights li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--color-gold);
+    font-size: 0.75rem;
+  }
+
+  .plan-card__period {
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-md);
+  }
+
+  .plan-card__period strong {
+    color: var(--color-text);
+    font-weight: 500;
+  }
+
+  .plan-card--featured :global(.btn--outline) {
+    background-color: var(--color-bg-cta);
+    color: var(--color-on-dark);
+    border-color: var(--color-bg-cta);
+  }
+
+  .plan-card--featured :global(.btn--outline:hover) {
+    background-color: transparent;
+    color: var(--color-bg-cta);
+    border-color: var(--color-bg-cta);
+  }
+
+  .plan-card :global(.btn) {
+    margin-top: auto;
+  }
+</style>

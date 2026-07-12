@@ -1,0 +1,220 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import SectionTitle from '@/components/SectionTitle.astro';
+import ContactForm from '@/components/ContactForm.astro';
+import CTASection from '@/components/CTASection.astro';
+import FaqSection from '@/components/FaqSection.astro';
+import { getContactSettings, getSiteSettings } from '@/lib/microcms';
+import { getInstagramHandle, getXHandle } from '@/lib/text';
+
+const [settings, contact] = await Promise.all([
+  getSiteSettings(),
+  getContactSettings(),
+]);
+
+const instagramHandle = getInstagramHandle(settings.instagramUrl);
+const xHandle = getXHandle(settings.xUrl);
+const xNote = contact.xDescription?.trim();
+---
+
+<Layout
+  title={contact.title}
+  description={contact.description}
+  settings={settings}
+>
+  <div class="page-header">
+    <div class="container">
+      <div class="page-header__inner">
+        <p class="page-header__label label-en">Contact</p>
+        <h1 class="page-header__title">{contact.title}</h1>
+        <p class="page-header__desc">{contact.description}</p>
+      </div>
+    </div>
+  </div>
+
+  <section class="section section--after-header">
+    <div class="container">
+      <div class="contact-reassure">
+        <p class="contact-reassure__lead">ご相談は無料です。しつこい営業は一切ありません。</p>
+        <p class="contact-reassure__reply">{contact.replyTime}</p>
+      </div>
+
+      <div class="contact-layout">
+        <div class="contact-layout__form">
+          <p class="contact-form-section__desc">{contact.formDescription}</p>
+          <ContactForm contact={contact} />
+        </div>
+
+        <aside class="contact-layout__aside">
+          <div class="contact-alt">
+            <p class="contact-alt__label label-en">Other ways</p>
+            <div class="contact-alt__list">
+              <div class="contact-alt__item">
+                <h3 class="contact-alt__title">メール</h3>
+                <a href={`mailto:${settings.email}`} class="contact-alt__link">{settings.email}</a>
+                {contact.emailDescription && (
+                  <p class="contact-alt__desc">{contact.emailDescription}</p>
+                )}
+              </div>
+              {settings.instagramUrl && instagramHandle && (
+                <div class="contact-alt__item">
+                  <h3 class="contact-alt__title">Instagram</h3>
+                  <a
+                    href={settings.instagramUrl}
+                    class="contact-alt__link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {instagramHandle}
+                  </a>
+                </div>
+              )}
+              {settings.xUrl && xHandle && (
+                <div class="contact-alt__item">
+                  <h3 class="contact-alt__title">X（旧Twitter）</h3>
+                  <a
+                    href={settings.xUrl}
+                    class="contact-alt__link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {xHandle}
+                  </a>
+                  {xNote && (
+                    <p class="contact-alt__desc contact-alt__desc--note">{xNote}</p>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {contact.tips.length > 0 && (
+            <div class="contact-note">
+              <SectionTitle en="Tips" ja="お伝えいただけると助かること" variant="minimal" />
+              <ul class="list-check">
+                {contact.tips.map((tip) => (
+                  <li>{tip}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <FaqSection
+    description="お問い合わせ前にご確認いただきたい内容です。"
+    categories={['contact', 'price', 'other']}
+    groupByCategory
+    sectionClass="section--warm"
+  />
+
+  <CTASection settings={settings} />
+</Layout>
+
+<style>
+  .contact-reassure {
+    padding: var(--space-md) var(--space-lg);
+    background-color: var(--color-bg-accent);
+    border: 1px solid var(--color-accent-light);
+    margin-bottom: var(--space-lg);
+  }
+
+  .contact-reassure__lead {
+    font-size: var(--text-body-lg);
+    font-weight: 500;
+    color: var(--color-text);
+    margin-bottom: 0.375rem;
+  }
+
+  .contact-reassure__reply {
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+  }
+
+  .contact-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+    align-items: start;
+  }
+
+  @media (min-width: 900px) {
+    .contact-layout {
+      grid-template-columns: minmax(0, 1fr) 20rem;
+      gap: clamp(2rem, 4vw, 3rem);
+    }
+
+    .contact-layout__aside {
+      position: sticky;
+      top: calc(var(--header-height) + 1.5rem);
+      padding-left: clamp(1.5rem, 3vw, 2rem);
+      border-left: 1px solid var(--color-border-light);
+    }
+  }
+
+  .contact-form-section__desc {
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+    margin-bottom: var(--space-md);
+    white-space: pre-line;
+  }
+
+  .contact-layout__aside {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .contact-alt__label {
+    margin-bottom: var(--space-sm);
+  }
+
+  .contact-alt__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .contact-alt__title {
+    font-size: var(--text-small);
+    font-weight: 500;
+    color: var(--color-text-light);
+    letter-spacing: 0.06em;
+    margin-bottom: 0.375rem;
+  }
+
+  .contact-alt__link {
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 0.125rem;
+    transition: color var(--transition), border-color var(--transition);
+  }
+
+  .contact-alt__link:hover {
+    color: var(--color-text);
+    border-bottom-color: var(--color-text);
+  }
+
+  .contact-alt__desc {
+    margin-top: 0.5rem;
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    line-height: var(--leading-snug);
+    white-space: pre-line;
+  }
+
+  .contact-alt__desc--note {
+    font-size: 0.6875rem;
+    color: var(--color-text-light);
+  }
+
+  .contact-note {
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-border-light);
+    margin-bottom: 0;
+  }
+</style>

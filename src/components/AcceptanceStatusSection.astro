@@ -1,0 +1,175 @@
+---
+import Button from '@/components/Button.astro';
+import { getContactSettings } from '@/lib/microcms';
+import type { SiteSettings } from '@/types/cms';
+
+interface Props {
+  settings: SiteSettings;
+}
+
+const { settings } = Astro.props;
+const contact = await getContactSettings();
+const isAccepting = settings.isAcceptingOrders !== false;
+
+const DEFAULT_CLOSED_NOTE =
+  '現在、新規のご相談の受付を一時休止しております。\n再開までいましばらくお待ちください。';
+const DEFAULT_CLOSED_REPLY = '受付再開の時期は、お知らせページにてご案内いたします。';
+
+const leadText = isAccepting
+  ? contact.studioNoteLead
+  : contact.closedNoteLead?.trim() || DEFAULT_CLOSED_NOTE;
+const replyText = isAccepting
+  ? contact.replyTime
+  : contact.closedReplyTime?.trim() || DEFAULT_CLOSED_REPLY;
+---
+
+<section class="acceptance-status" aria-labelledby="acceptance-status-title">
+  <div class="container">
+    <div class="acceptance-status__inner">
+      <div class="acceptance-status__head">
+        <p class="acceptance-status__label label-en">Status</p>
+        <div class="acceptance-status__title-row">
+          <h2 id="acceptance-status-title" class="acceptance-status__title">受付状況</h2>
+          <span
+            class:list={[
+              'acceptance-status__badge',
+              isAccepting ? 'acceptance-status__badge--open' : 'acceptance-status__badge--closed',
+            ]}
+          >
+            <span class="acceptance-status__dot" aria-hidden="true"></span>
+            {isAccepting ? '受付中' : '受付停止中'}
+          </span>
+        </div>
+      </div>
+
+      <div class="acceptance-status__body">
+        <p class="acceptance-status__lead">{leadText}</p>
+        <p class="acceptance-status__reply">
+          <span class="acceptance-status__term">返信目安</span>
+          <span class="acceptance-status__desc">{replyText}</span>
+        </p>
+        <Button href="/contact/" variant="text" size="md" class="acceptance-status__link">
+          お問い合わせはこちら
+        </Button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .acceptance-status {
+    padding: clamp(3.5rem, 7vw, 5rem) 0;
+    background-color: var(--color-bg-warm);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .acceptance-status__inner {
+    display: grid;
+    gap: var(--space-lg);
+    max-width: var(--container-max);
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  @media (min-width: 768px) {
+    .acceptance-status__inner {
+      grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
+      gap: clamp(2.5rem, 5vw, 4rem);
+      text-align: left;
+      align-items: start;
+    }
+  }
+
+  .acceptance-status__label {
+    margin-bottom: var(--space-md);
+  }
+
+  .acceptance-status__title-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .acceptance-status__title-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+  }
+
+  .acceptance-status__title {
+    font-family: var(--font-serif);
+    font-size: var(--text-subheading);
+    font-weight: 500;
+    line-height: var(--leading-tight);
+    color: var(--color-text);
+  }
+
+  .acceptance-status__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.9rem;
+    font-size: var(--text-small);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    border-radius: 999px;
+    border: 1px solid transparent;
+  }
+
+  .acceptance-status__dot {
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 50%;
+    background-color: currentColor;
+  }
+
+  .acceptance-status__badge--open {
+    color: var(--color-status-open);
+    background-color: var(--color-status-open-bg);
+    border-color: var(--color-status-open-border);
+  }
+
+  .acceptance-status__badge--closed {
+    color: var(--color-status-closed);
+    background-color: var(--color-status-closed-bg);
+    border-color: var(--color-status-closed-border);
+  }
+
+  .acceptance-status__lead {
+    font-size: clamp(1.0625rem, 2.2vw, 1.25rem);
+    font-weight: 500;
+    color: var(--color-text);
+    line-height: var(--leading-body);
+    white-space: pre-line;
+    margin-bottom: var(--space-lg);
+  }
+
+  .acceptance-status__reply {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    margin-bottom: var(--space-md);
+  }
+
+  .acceptance-status__term {
+    font-size: var(--text-small);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--color-text-light);
+  }
+
+  .acceptance-status__desc {
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+    white-space: pre-line;
+  }
+
+  .acceptance-status__link {
+    margin-top: var(--space-sm);
+  }
+</style>

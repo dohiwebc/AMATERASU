@@ -1,0 +1,498 @@
+---
+import Button from '@/components/Button.astro';
+import PlanRelatedWorks from '@/components/PlanRelatedWorks.astro';
+import { getPlanSharedContent } from '@/lib/plans';
+import { SITE_TYPE, type Plan, type SiteSettings } from '@/types/cms';
+
+interface Props {
+  plan: Plan;
+  settings: SiteSettings;
+  backHref: string;
+  backLabel: string;
+  compareLabel?: string;
+}
+
+const {
+  plan,
+  settings,
+  backHref,
+  backLabel,
+  compareLabel = '他のプランを比較する',
+} = Astro.props;
+
+const sharedNoteVariant = plan.siteType === SITE_TYPE.MINI ? 'mini' : 'normal';
+const { systemScopeNote } = getPlanSharedContent(settings, sharedNoteVariant);
+
+function toParagraphs(text?: string): string[] {
+  if (!text) return [];
+  return text
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
+const descriptionParagraphs = toParagraphs(plan.description);
+const pageCountLines = toParagraphs(plan.pageCount);
+const pageCountMain = pageCountLines[0] ?? '';
+const pageCountNotes = pageCountLines.slice(1);
+
+const detailSections = [
+  { title: `${plan.title}で掲載できる内容`, items: plan.publishableContent },
+  { title: `${plan.title}で用意してもらうもの`, items: plan.clientProvides },
+  { title: `${plan.title}に含まれるもの`, items: plan.included },
+  { title: `${plan.title}に含まれないもの`, items: plan.notIncluded, muted: true },
+].filter((section) => section.items.length > 0);
+
+const hasContent =
+  descriptionParagraphs.length > 0 ||
+  plan.recommendedFor.length > 0 ||
+  detailSections.length > 0;
+---
+
+<article class="plan-detail">
+  <p class="plan-detail__back">
+    <a href={backHref}>{backLabel}</a>
+  </p>
+
+  <header class="plan-detail__hero">
+    <h1 class="plan-detail__title">{plan.title}</h1>
+    {plan.shortDescription && (
+      <p class="plan-detail__lead">{plan.shortDescription}</p>
+    )}
+
+    <div class="plan-detail__summary">
+      <div class="plan-detail__price-block">
+        <p class="plan-detail__price">{plan.price}</p>
+        {plan.priceNote && <p class="plan-detail__price-note">{plan.priceNote}</p>}
+      </div>
+
+      <dl class="plan-detail__facts">
+        <div class="plan-detail__fact">
+          <dt>制作期間目安</dt>
+          <dd>{plan.productionPeriod}</dd>
+        </div>
+        <div class="plan-detail__fact">
+          <dt>修正回数</dt>
+          <dd>{plan.revisionCount}</dd>
+        </div>
+        {pageCountMain && (
+          <div
+            class:list={[
+              'plan-detail__fact',
+              pageCountNotes.length > 0 && 'plan-detail__fact--stacked',
+            ]}
+          >
+            <dt>ページ数目安</dt>
+            <dd>
+              {pageCountMain}
+              {pageCountNotes.map((note) => (
+                <span class="plan-detail__fact-note">{note}</span>
+              ))}
+            </dd>
+          </div>
+        )}
+        <div class="plan-detail__fact plan-detail__fact--stacked">
+          <dt>納品形式</dt>
+          <dd class="plan-detail__fact-value--multiline">{plan.deliveryFormat}</dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="plan-detail__action">
+      <p class="plan-detail__action-label label-en">Contact</p>
+      <Button href="/contact/" variant="primary" size="lg">
+        このプランで相談する
+      </Button>
+      <p class="plan-detail__action-note">ご相談・お見積りは無料です。</p>
+    </div>
+  </header>
+
+  {hasContent && (
+    <div class="plan-detail__content">
+      <div class="plan-detail__content-head">
+        <p class="plan-detail__content-label label-en">Details</p>
+        <h2 class="plan-detail__content-title">プランの内容</h2>
+      </div>
+
+      {descriptionParagraphs.length > 0 && (
+        <section class="plan-detail__section">
+          <h3 class="plan-detail__section-title">プランについて</h3>
+          <div class="plan-detail__prose">
+            {descriptionParagraphs.map((paragraph) => (
+              <p>{paragraph}</p>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {plan.recommendedFor.length > 0 && (
+        <section class="plan-detail__section">
+          <h3 class="plan-detail__section-title">こんな方におすすめ</h3>
+          <ul class="list-check plan-detail__list">
+            {plan.recommendedFor.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {detailSections.length > 0 && (
+        <div class="plan-detail__specs">
+          {detailSections.map((section) => (
+            <section
+              class:list={[
+                'plan-detail__section',
+                section.muted && 'plan-detail__section--muted',
+              ]}
+            >
+              <h3 class="plan-detail__section-title">{section.title}</h3>
+              <ul class="list-check plan-detail__list plan-detail__list--cols">
+                {section.items.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      )}
+    </div>
+  )}
+
+  <div class="plan-detail__notes">
+    <p class="plan-detail__note">{systemScopeNote}</p>
+    {plan.notes?.map((note) => (
+      <p class="plan-detail__note">{note}</p>
+    ))}
+  </div>
+
+  <PlanRelatedWorks works={plan.relatedWorks} />
+
+  <footer class="plan-detail__footer">
+    <a href={backHref} class="plan-detail__compare-link">{compareLabel}</a>
+  </footer>
+</article>
+
+<style>
+  .plan-detail__back {
+    margin-bottom: var(--space-lg);
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  .plan-detail__back a {
+    transition: color var(--transition);
+  }
+
+  .plan-detail__back a:hover {
+    color: var(--color-text);
+  }
+
+  .plan-detail__hero {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    padding-bottom: var(--space-xl);
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .plan-detail__title {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 4.5vw, 2.75rem);
+    font-weight: 500;
+    line-height: var(--leading-tight);
+    letter-spacing: 0.03em;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .plan-detail__lead {
+    font-size: var(--text-body-lg);
+    line-height: var(--leading-snug);
+    color: var(--color-text-muted);
+  }
+
+  .plan-detail__summary {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding-top: var(--space-sm);
+  }
+
+  .plan-detail__price {
+    font-family: var(--font-serif);
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    font-weight: 500;
+    line-height: 1.1;
+    color: var(--color-text);
+    margin-bottom: 0.25rem;
+  }
+
+  .plan-detail__price-note {
+    font-size: var(--text-small);
+    color: var(--color-text-light);
+    line-height: var(--leading-snug);
+  }
+
+  .plan-detail__facts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.75rem 1.5rem;
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .plan-detail__fact {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding-left: 1rem;
+    border-left: 1px solid var(--color-border);
+  }
+
+  .plan-detail__fact:first-child {
+    padding-left: 0;
+    border-left: none;
+  }
+
+  .plan-detail__fact dt {
+    font-size: var(--text-caption);
+    color: var(--color-text-light);
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+
+  .plan-detail__fact dd {
+    font-size: var(--text-body);
+    color: var(--color-text);
+    line-height: var(--leading-snug);
+  }
+
+  .plan-detail__fact--stacked {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    width: 100%;
+  }
+
+  .plan-detail__fact-value--multiline {
+    white-space: pre-line;
+  }
+
+  .plan-detail__fact-note {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: var(--text-caption);
+    color: var(--color-text-light);
+    line-height: var(--leading-snug);
+  }
+
+  .plan-detail__action {
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .plan-detail__action-label {
+    margin-bottom: 0.75rem;
+    color: var(--color-text-light);
+  }
+
+  .plan-detail__action-note {
+    margin-top: 0.625rem;
+    font-size: var(--text-caption);
+    color: var(--color-text-light);
+    letter-spacing: 0.06em;
+  }
+
+  .plan-detail__content {
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-xl);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .plan-detail__content-head {
+    margin-bottom: var(--space-xl);
+  }
+
+  .plan-detail__content-label {
+    margin-bottom: 0.5rem;
+    color: var(--color-text-light);
+  }
+
+  .plan-detail__content-title {
+    font-family: var(--font-serif);
+    font-size: var(--text-heading);
+    font-weight: 500;
+    line-height: var(--leading-tight);
+    letter-spacing: 0.03em;
+    color: var(--color-text);
+  }
+
+  .plan-detail__section {
+    padding-top: var(--space-lg);
+    margin-top: var(--space-lg);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .plan-detail__section:first-of-type {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .plan-detail__section-title {
+    font-family: var(--font-serif);
+    font-size: var(--text-body-lg);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: var(--color-text);
+    margin-bottom: 0.875rem;
+  }
+
+  .plan-detail__prose {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+  }
+
+  .plan-detail__prose p {
+    margin: 0;
+  }
+
+  .plan-detail__specs {
+    margin-top: var(--space-lg);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .plan-detail__specs > .plan-detail__section {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .plan-detail__specs > .plan-detail__section + .plan-detail__section {
+    margin-top: var(--space-lg);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .plan-detail__section--muted .plan-detail__section-title {
+    color: var(--color-text-muted);
+  }
+
+  .plan-detail__section--muted :global(.list-check li) {
+    color: var(--color-text-light);
+  }
+
+  .plan-detail__list--cols {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.625rem 2.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .plan-detail__list--cols {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 900px) {
+    .plan-detail__list--cols {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .plan-detail__list--cols {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .plan-detail__notes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .plan-detail__note {
+    margin: 0;
+    padding-left: 1rem;
+    border-left: 2px solid var(--color-gold-line-soft);
+    font-size: var(--text-small);
+    color: var(--color-text-light);
+    line-height: var(--leading-body);
+    white-space: pre-line;
+  }
+
+  .plan-detail__footer {
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .plan-detail__compare-link {
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 0.125rem;
+    transition: color var(--transition), border-color var(--transition);
+  }
+
+  .plan-detail__compare-link:hover {
+    color: var(--color-text);
+    border-bottom-color: var(--color-text);
+  }
+
+  @media (min-width: 900px) {
+    .plan-detail__hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 20rem);
+      grid-template-rows: auto auto 1fr;
+      gap: var(--space-md) clamp(2.5rem, 5vw, 4.5rem);
+      align-items: start;
+    }
+
+    .plan-detail__title,
+    .plan-detail__lead {
+      grid-column: 1;
+    }
+
+    .plan-detail__summary {
+      grid-column: 1;
+      grid-row: 3;
+      padding-top: 0;
+    }
+
+    .plan-detail__action {
+      grid-column: 2;
+      grid-row: 1 / -1;
+      align-self: stretch;
+      display: flex;
+      flex-direction: column;
+      margin-top: 0;
+      padding-top: 0.5rem;
+      padding-left: clamp(1.5rem, 3vw, 2.25rem);
+      border-top: none;
+      border-left: 1px solid var(--color-accent-light);
+    }
+
+    .plan-detail__action :global(.btn) {
+      margin-top: auto;
+      width: 100%;
+      white-space: normal;
+      line-height: 1.5;
+    }
+
+    .plan-detail__action-note {
+      text-align: center;
+    }
+  }
+</style>

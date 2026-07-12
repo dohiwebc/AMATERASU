@@ -1,0 +1,229 @@
+---
+import Button from '@/components/Button.astro';
+import WorkVisual from '@/components/WorkVisual.astro';
+import { getSiteTypeLabel, getWorkTypeLabel } from '@/types/cms';
+import type { Work } from '@/types/cms';
+
+interface Props {
+  works: Work[];
+}
+
+const { works } = Astro.props;
+
+const visibleWorks = works.filter((work) => work.isVisible);
+
+function getWorkSummary(work: Work): string {
+  return work.shortDescription?.trim() || work.description;
+}
+
+function hasExternalUrl(work: Work): boolean {
+  return Boolean(work.url && work.url !== '#');
+}
+---
+
+{visibleWorks.length > 0 && (
+  <section class="plan-related-works">
+    <div class="plan-related-works__head">
+      <p class="plan-related-works__label label-en">Works</p>
+      <h2 class="plan-related-works__title">このプランの制作事例</h2>
+    </div>
+
+    <ul class="plan-related-works__grid">
+      {visibleWorks.map((work) => {
+        const typeLabel = getWorkTypeLabel(work.workType);
+        const siteTypeLabel = getSiteTypeLabel(work.siteType);
+        const summary = getWorkSummary(work);
+        const detailHref = `/works/${work.slug}/`;
+        const showSiteLink = hasExternalUrl(work);
+
+        return (
+          <li class="plan-related-work">
+            <a class="plan-related-work__visual" href={detailHref} aria-label={`${work.title}の詳細を見る`}>
+              <WorkVisual work={work} />
+            </a>
+
+            <div class="plan-related-work__body">
+              <div class="plan-related-work__meta">
+                {typeLabel && <span class="plan-related-work__type">{typeLabel}</span>}
+                {siteTypeLabel && <span class="plan-related-work__site-type">{siteTypeLabel}</span>}
+              </div>
+
+              <h3 class="plan-related-work__name">
+                <a href={detailHref}>{work.title}</a>
+              </h3>
+
+              {summary && <p class="plan-related-work__desc">{summary}</p>}
+
+              <div class="plan-related-work__actions">
+                <a href={detailHref} class="plan-related-work__detail-link">
+                  詳しく見る
+                  <span class="plan-related-work__arrow" aria-hidden="true">→</span>
+                </a>
+                {showSiteLink && (
+                  <Button href={work.url!} variant="outline" size="sm" external>
+                    サイトを見る
+                  </Button>
+                )}
+              </div>
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+  </section>
+)}
+
+<style>
+  .plan-related-works {
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-xl);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .plan-related-works__head {
+    margin-bottom: var(--space-xl);
+  }
+
+  .plan-related-works__label {
+    margin-bottom: 0.5rem;
+    color: var(--color-text-light);
+  }
+
+  .plan-related-works__title {
+    font-family: var(--font-serif);
+    font-size: var(--text-heading);
+    font-weight: 500;
+    line-height: var(--leading-tight);
+    letter-spacing: 0.03em;
+    color: var(--color-text);
+  }
+
+  .plan-related-works__grid {
+    display: grid;
+    gap: var(--space-xl);
+  }
+
+  @media (min-width: 900px) {
+    .plan-related-works__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 3vw, 2.5rem);
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .plan-related-works__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .plan-related-work {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .plan-related-work__visual {
+    display: block;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    border: 1px solid var(--color-border-light);
+    transition: border-color var(--transition);
+  }
+
+  .plan-related-work__visual:hover {
+    border-color: var(--color-border);
+  }
+
+  .plan-related-work__visual :global(.work-visual) {
+    height: 100%;
+  }
+
+  .plan-related-work__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    flex: 1;
+  }
+
+  .plan-related-work__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+
+  .plan-related-work__type {
+    padding: 0.2rem 0.55rem;
+    font-size: var(--text-caption);
+    letter-spacing: 0.1em;
+    color: var(--color-gold);
+    border: 1px solid var(--color-gold-line-soft);
+    line-height: 1.3;
+  }
+
+  .plan-related-work__site-type {
+    padding: 0.2rem 0.55rem;
+    font-size: var(--text-caption);
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border-light);
+    line-height: 1.3;
+  }
+
+  .plan-related-work__name {
+    font-family: var(--font-serif);
+    font-size: var(--text-body-lg);
+    font-weight: 500;
+    line-height: var(--leading-tight);
+    letter-spacing: 0.03em;
+  }
+
+  .plan-related-work__name a {
+    color: var(--color-text);
+    transition: color var(--transition);
+  }
+
+  .plan-related-work__name a:hover {
+    color: var(--color-accent-dark);
+  }
+
+  .plan-related-work__desc {
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+  }
+
+  .plan-related-work__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.25rem;
+    margin-top: auto;
+    padding-top: 0.5rem;
+  }
+
+  .plan-related-work__detail-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: var(--text-small);
+    font-weight: 500;
+    color: var(--color-accent-dark);
+    transition: gap var(--transition);
+  }
+
+  .plan-related-work__detail-link:hover {
+    gap: 0.625rem;
+  }
+
+  .plan-related-work__arrow {
+    transition: transform var(--transition);
+  }
+
+  .plan-related-work__detail-link:hover .plan-related-work__arrow {
+    transform: translateX(3px);
+  }
+</style>

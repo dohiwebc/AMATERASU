@@ -1,0 +1,457 @@
+/* AMATERASU — 空気感（refined / editorial luxury）
+   方針：背景 → 和紙（白〜生成りの雲＋紙目） → カード（無地） */
+
+/* ── レイヤー1：ベース背景 ── */
+body {
+  background-color: var(--color-bg);
+  background-image: linear-gradient(
+    177deg,
+    #f7f3ec 0%,
+    var(--color-bg) 42%,
+    #efe9de 100%
+  );
+}
+
+/* ── レイヤー2：和紙模様（固定・ページ全体） ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background-image:
+    /* 雲模様：薄い部分・厚い部分（同一色相内） */
+    radial-gradient(ellipse 58% 46% at 10% 14%, var(--washi-bright) 0%, transparent 54%),
+    radial-gradient(ellipse 52% 40% at 82% 22%, var(--washi-cloud) 0%, transparent 52%),
+    radial-gradient(ellipse 56% 44% at 38% 72%, var(--washi-dense-soft) 0%, transparent 50%),
+    radial-gradient(ellipse 44% 36% at 90% 78%, var(--washi-bright) 0%, transparent 48%),
+    radial-gradient(ellipse 48% 38% at 18% 86%, var(--washi-dense) 0%, transparent 46%),
+    radial-gradient(ellipse 42% 34% at 58% 6%, var(--washi-cloud) 0%, transparent 44%),
+    radial-gradient(ellipse 36% 30% at 72% 52%, var(--washi-dense-soft) 0%, transparent 42%),
+    radial-gradient(ellipse 40% 32% at 4% 48%, var(--washi-bright) 0%, transparent 40%),
+    /* 紙目：極細の筋（白〜生成りのみ） */
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 3px,
+      rgba(255, 253, 248, 0.16) 3px 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 5px,
+      rgba(236, 232, 222, 0.12) 5px 6px
+    ),
+    repeating-linear-gradient(
+      8deg,
+      transparent 0 9px,
+      rgba(248, 245, 236, 0.08) 9px 10px
+    );
+}
+
+/* 画面全体に、ごく淡い光の抜け */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 55% at 82% -5%, rgba(255, 252, 246, 0.5) 0%, transparent 52%),
+    radial-gradient(circle at 50% 120%, rgba(228, 224, 214, 0.18) 0%, transparent 45%);
+}
+
+main {
+  position: relative;
+  isolation: isolate;
+}
+
+/* ── セクション共通 ── */
+.section {
+  position: relative;
+  isolation: isolate;
+}
+
+.section > .container {
+  position: relative;
+  z-index: 1;
+}
+
+.section + .section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(64%, 560px);
+  height: 1px;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-gold-line-soft) 30%,
+    var(--color-line-gold-center) 50%,
+    var(--color-gold-line-soft) 70%,
+    transparent 100%
+  );
+}
+
+/* ── セクション別：ベース + 和紙（カードより下） ── */
+
+.section--white {
+  background-color: var(--color-bg-white);
+  background-image:
+    radial-gradient(ellipse 50% 40% at 14% 20%, var(--washi-bright) 0%, transparent 52%),
+    radial-gradient(ellipse 44% 34% at 86% 76%, var(--washi-dense-soft) 0%, transparent 48%),
+    radial-gradient(ellipse 38% 30% at 52% 42%, var(--washi-cloud) 0%, transparent 46%),
+    repeating-linear-gradient(0deg, transparent 0 3px, rgba(255, 253, 248, 0.14) 3px 4px),
+    repeating-linear-gradient(90deg, transparent 0 5px, rgba(236, 232, 222, 0.1) 5px 6px),
+    linear-gradient(180deg, #fbf8f2 0%, var(--color-bg-white) 55%, #f4efe5 100%);
+}
+
+.section--white::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 58% 48% at 88% 6%, rgba(255, 252, 246, 0.35) 0%, transparent 56%);
+}
+
+.section--accent {
+  background-color: var(--color-bg-accent);
+  background-image:
+    radial-gradient(ellipse 48% 38% at 8% 84%, var(--washi-dense-soft) 0%, transparent 50%),
+    radial-gradient(ellipse 42% 32% at 92% 14%, var(--washi-bright) 0%, transparent 48%),
+    radial-gradient(ellipse 36% 28% at 48% 58%, var(--washi-cloud) 0%, transparent 44%),
+    repeating-linear-gradient(0deg, transparent 0 3px, rgba(255, 253, 248, 0.14) 3px 4px),
+    repeating-linear-gradient(90deg, transparent 0 5px, rgba(236, 232, 222, 0.1) 5px 6px),
+    linear-gradient(174deg, #f4efe4 0%, var(--color-bg-accent) 50%, #eae3d5 100%);
+}
+
+.section--accent::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 60% 50% at 6% 92%, rgba(250, 247, 238, 0.32) 0%, transparent 54%);
+}
+
+.section--warm {
+  background-color: var(--color-bg-warm);
+  background-image:
+    radial-gradient(ellipse 46% 36% at 86% 12%, var(--washi-bright) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 32% at 12% 80%, var(--washi-dense) 0%, transparent 48%),
+    radial-gradient(ellipse 38% 30% at 64% 46%, var(--washi-cloud) 0%, transparent 44%),
+    repeating-linear-gradient(0deg, transparent 0 3px, rgba(255, 253, 248, 0.14) 3px 4px),
+    repeating-linear-gradient(90deg, transparent 0 5px, rgba(236, 232, 222, 0.1) 5px 6px),
+    linear-gradient(178deg, #eee7d9 0%, var(--color-bg-warm) 50%, #e4dccb 100%);
+}
+
+.section--warm::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 62% 52% at 92% 10%, rgba(255, 252, 246, 0.3) 0%, transparent 56%);
+}
+
+.worries {
+  background-color: var(--color-bg);
+  background-image:
+    radial-gradient(ellipse 54% 42% at 50% 2%, var(--washi-bright) 0%, transparent 52%),
+    radial-gradient(ellipse 40% 32% at 10% 68%, var(--washi-dense-soft) 0%, transparent 48%),
+    radial-gradient(ellipse 42% 34% at 90% 40%, var(--washi-cloud) 0%, transparent 46%),
+    radial-gradient(ellipse 36% 28% at 32% 88%, var(--washi-dense) 0%, transparent 44%),
+    repeating-linear-gradient(0deg, transparent 0 3px, rgba(255, 253, 248, 0.14) 3px 4px),
+    repeating-linear-gradient(90deg, transparent 0 5px, rgba(236, 232, 222, 0.1) 5px 6px),
+    linear-gradient(180deg, #f7f3eb 0%, var(--color-bg) 60%, #ece6da 100%);
+}
+
+.worries::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 70% 48% at 50% -8%, rgba(255, 252, 246, 0.4) 0%, transparent 58%);
+}
+
+.flow-section::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 52% 42% at 90% 80%, var(--color-gold-glow-faint) 0%, transparent 56%);
+}
+
+/* ── ファーストビュー ── */
+.hero {
+  background-image:
+    radial-gradient(ellipse 52% 42% at 74% 16%, var(--washi-bright) 0%, transparent 52%),
+    radial-gradient(ellipse 44% 36% at 16% 76%, var(--washi-dense-soft) 0%, transparent 48%),
+    radial-gradient(ellipse 40% 32% at 48% 38%, var(--washi-cloud) 0%, transparent 46%),
+    repeating-linear-gradient(0deg, transparent 0 3px, rgba(255, 253, 248, 0.14) 3px 4px),
+    repeating-linear-gradient(90deg, transparent 0 5px, rgba(236, 232, 222, 0.1) 5px 6px),
+    linear-gradient(168deg, #f8f4ec 0%, var(--color-bg) 48%, #ece5d8 100%);
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 62% 58% at 92% -8%, rgba(255, 252, 246, 0.55) 0%, rgba(250, 247, 238, 0.22) 38%, transparent 66%),
+    radial-gradient(ellipse 40% 34% at 82% 6%, var(--color-gold-glow-medium) 0%, transparent 68%);
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 40% at 8% 108%, rgba(228, 224, 214, 0.12) 0%, transparent 52%),
+    linear-gradient(22deg, transparent 62%, rgba(255, 252, 246, 0.45) 100%);
+}
+
+.hero__wash {
+  z-index: 0;
+  background-image:
+    radial-gradient(ellipse 70% 55% at 88% 10%, rgba(250, 247, 238, 0.38) 0%, transparent 58%),
+    radial-gradient(ellipse 45% 36% at 8% 82%, rgba(236, 232, 222, 0.3) 0%, transparent 52%) !important;
+}
+
+.hero__inner {
+  z-index: 1;
+}
+
+.hero .hero__brand {
+  position: relative;
+}
+
+.hero .hero__brand::after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: -1.75rem;
+  right: -0.75rem;
+  width: 1px;
+  height: clamp(3.5rem, 13vw, 7rem);
+  background: linear-gradient(180deg, transparent 0%, var(--color-gold-line) 45%, transparent 100%);
+  pointer-events: none;
+}
+
+@media (min-width: 900px) {
+  .hero::before {
+    background:
+      radial-gradient(ellipse 55% 75% at 94% -5%, rgba(255, 252, 246, 0.5) 0%, rgba(250, 247, 238, 0.18) 40%, transparent 70%),
+      radial-gradient(ellipse 34% 32% at 78% 14%, var(--color-gold-glow-medium) 0%, transparent 72%);
+  }
+}
+
+/* ── CTA：締めのダーク ── */
+.cta-section {
+  background-color: var(--color-bg-cta);
+  background-image:
+    radial-gradient(ellipse 90% 80% at 18% 0%, #2a2620 0%, transparent 60%),
+    linear-gradient(160deg, #241f19 0%, var(--color-bg-cta) 55%, #17140f 100%);
+  color: var(--color-on-dark);
+}
+
+.cta-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 65% at 6% -5%, rgba(201, 168, 110, 0.22) 0%, rgba(201, 168, 110, 0.06) 40%, transparent 66%),
+    radial-gradient(ellipse 55% 50% at 98% 100%, rgba(201, 168, 110, 0.1) 0%, transparent 60%);
+}
+
+.cta-section::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(72%, 640px);
+  height: 1px;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(201, 168, 110, 0.35) 30%,
+    var(--color-gold-bright) 50%,
+    rgba(201, 168, 110, 0.35) 70%,
+    transparent 100%
+  );
+}
+
+.cta-section__glow {
+  z-index: 0;
+  top: -40%;
+  right: -12%;
+  width: 60%;
+  height: 115%;
+  background: radial-gradient(circle at 45% 45%, rgba(201, 168, 110, 0.14) 0%, transparent 60%) !important;
+}
+
+.cta-section__inner {
+  z-index: 1;
+}
+
+.cta-section__title { color: var(--color-on-dark) !important; }
+.cta-section__desc { color: var(--color-on-dark-muted) !important; }
+.cta-section__label { color: var(--color-gold-bright) !important; }
+.cta-section__location { color: var(--color-on-dark-muted) !important; }
+.cta-section__brand { color: var(--color-on-dark) !important; }
+.cta-section__studio { color: var(--color-gold-bright) !important; }
+.cta-section__channel-label {
+  color: rgba(201, 168, 110, 0.7) !important;
+}
+.cta-section__channel-value {
+  color: var(--color-on-dark) !important;
+}
+.cta-section__channel-value:hover {
+  color: var(--color-gold-bright) !important;
+}
+.cta-section__aside {
+  border-color: rgba(201, 168, 110, 0.28) !important;
+}
+.cta-section__line {
+  z-index: 1;
+  width: 72px;
+  background: linear-gradient(90deg, var(--color-gold-bright) 0%, transparent 100%) !important;
+}
+
+.cta-section .btn--primary {
+  background-color: transparent;
+  border-color: rgba(201, 168, 110, 0.55);
+  color: var(--color-on-dark);
+  letter-spacing: 0.12em;
+}
+
+.cta-section .btn--primary:hover {
+  background-color: var(--color-gold-bright);
+  border-color: var(--color-gold-bright);
+  color: #17140f;
+}
+
+/* ── レイヤー3：カード（無地・和紙なし） ── */
+.plan-card,
+.mini-plan-card {
+  position: relative;
+  z-index: 1;
+  background-color: #faf7f0 !important;
+  background-image: none !important;
+  border-color: #e2d8c7 !important;
+  box-shadow: none;
+}
+
+.plan-card--featured {
+  background-color: #f7f2e7 !important;
+  background-image: none !important;
+  border-color: #d8cab0 !important;
+}
+
+.flow__item {
+  position: relative;
+  z-index: 1;
+  background-color: #f6f2e8 !important;
+  background-image: none !important;
+  border-color: #e2d8c7 !important;
+}
+
+.plan-card:hover,
+.mini-plan-card:hover {
+  box-shadow: none;
+}
+
+/* ── ページヘッダー ── */
+.page-header {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background-image:
+    radial-gradient(ellipse 48% 38% at 76% 16%, var(--washi-bright) 0%, transparent 52%),
+    radial-gradient(ellipse 40% 32% at 14% 74%, var(--washi-dense-soft) 0%, transparent 48%),
+    repeating-linear-gradient(0deg, transparent 0 3px, rgba(255, 253, 248, 0.14) 3px 4px),
+    repeating-linear-gradient(90deg, transparent 0 5px, rgba(236, 232, 222, 0.1) 5px 6px),
+    linear-gradient(180deg, #faf7f0 0%, var(--color-bg) 100%);
+}
+
+.page-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 55% 90% at 96% -10%, rgba(255, 252, 246, 0.3) 0%, transparent 56%);
+}
+
+.page-header__inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── フッター ── */
+.footer {
+  position: relative;
+  isolation: isolate;
+  background-image:
+    radial-gradient(ellipse 46% 36% at 18% 28%, var(--washi-cloud) 0%, transparent 52%),
+    radial-gradient(ellipse 40% 32% at 86% 66%, var(--washi-dense-soft) 0%, transparent 48%),
+    repeating-linear-gradient(0deg, transparent 0 3px, rgba(255, 253, 248, 0.14) 3px 4px),
+    repeating-linear-gradient(90deg, transparent 0 5px, rgba(236, 232, 222, 0.1) 5px 6px),
+    linear-gradient(180deg, #efe9dd 0%, var(--color-bg-soft) 100%);
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-gold-line-soft) 28%,
+    var(--color-gold-line) 50%,
+    var(--color-gold-line-soft) 72%,
+    transparent 100%
+  );
+}
+
+.footer__inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── アクセシビリティ ── */
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  body::after,
+  .hero::before,
+  .hero::after,
+  .cta-section::before,
+  .cta-section::after,
+  .section::before,
+  .section::after,
+  .header,
+  .reveal {
+    animation: none;
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+}

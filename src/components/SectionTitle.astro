@@ -1,0 +1,142 @@
+---
+interface Props {
+  en?: string;
+  ja: string;
+  description?: string;
+  variant?: 'editorial' | 'display' | 'split' | 'centered' | 'minimal';
+  align?: 'left' | 'center';
+}
+
+const { en, ja, description, variant = 'editorial', align = 'left' } = Astro.props;
+---
+
+<div class:list={['section-title', `section-title--${variant}`, `section-title--${align}`]}>
+  {variant === 'split' && en ? (
+    <div class="section-title__split-head">
+      <p class="section-title__en label-en">{en}</p>
+      <h2 class="section-title__ja">{ja}</h2>
+    </div>
+  ) : (
+    <>
+      {en && <p class="section-title__en label-en">{en}</p>}
+      <h2 class="section-title__ja">{ja}</h2>
+    </>
+  )}
+  {description && <p class="section-title__desc">{description}</p>}
+</div>
+
+<style>
+  .section-title {
+    margin-bottom: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  .section-title--editorial .section-title__ja {
+    font-family: var(--font-serif);
+    font-size: var(--text-heading);
+    font-weight: 400;
+    line-height: var(--leading-tight);
+    letter-spacing: 0.02em;
+    max-width: 14em;
+  }
+
+  .section-title--editorial .section-title__desc {
+    margin-top: var(--space-md);
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+    max-width: 34em;
+  }
+
+  .section-title--display .section-title__ja {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 400;
+    line-height: var(--leading-tight);
+    letter-spacing: 0.01em;
+  }
+
+  .section-title--display .section-title__desc {
+    margin-top: var(--space-lg);
+    font-size: var(--text-body-lg);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+    max-width: 28em;
+  }
+
+  .section-title--split .section-title__split-head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+  }
+
+  .section-title--split .section-title__ja {
+    font-family: var(--font-serif);
+    font-size: var(--text-heading);
+    font-weight: 400;
+    line-height: var(--leading-tight);
+  }
+
+  .section-title--split .section-title__desc {
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+    max-width: 32em;
+  }
+
+  @media (min-width: 768px) {
+    .section-title--split .section-title__split-head {
+      flex-direction: row;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--space-xl);
+      padding-bottom: var(--space-md);
+      border-bottom: 1px solid var(--color-accent-light);
+    }
+
+    .section-title--split .section-title__ja {
+      text-align: right;
+      flex-shrink: 0;
+    }
+  }
+
+  .section-title--centered {
+    text-align: center;
+  }
+
+  .section-title--centered .section-title__ja {
+    font-family: var(--font-serif);
+    font-size: var(--text-heading);
+    font-weight: 400;
+    line-height: var(--leading-tight);
+    margin-inline: auto;
+    max-width: 14em;
+  }
+
+  .section-title--centered .section-title__desc {
+    margin-top: var(--space-md);
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+    max-width: 30em;
+    margin-inline: auto;
+  }
+
+  .section-title--minimal .section-title__ja {
+    font-family: var(--font-serif);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+  }
+
+  .section-title--minimal .section-title__desc {
+    margin-top: var(--space-sm);
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+  }
+
+  .section-title__en {
+    margin-bottom: var(--space-sm);
+  }
+</style>

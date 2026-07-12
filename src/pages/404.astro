@@ -1,0 +1,48 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Button from '@/components/Button.astro';
+import { getSiteSettings } from '@/lib/microcms';
+
+const settings = await getSiteSettings();
+---
+
+<Layout
+  title="ページが見つかりません"
+  description="お探しのページは見つかりませんでした。トップページまたは制作実績一覧からお探しください。"
+  settings={settings}
+>
+  <div class="page-header">
+    <div class="container">
+      <div class="page-header__inner">
+        <p class="page-header__label label-en">404</p>
+        <h1 class="page-header__title">ページが見つかりません</h1>
+        <p class="page-header__desc">
+          お探しのページは移動または削除された可能性があります。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <section class="section section--after-header section--white">
+    <div class="container">
+      <div class="not-found">
+        <div class="not-found__actions">
+          <Button href="/" variant="primary">トップページへ</Button>
+          <Button href="/works/" variant="outline">制作実績一覧へ</Button>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .not-found {
+    padding: var(--space-lg) 0 var(--space-2xl);
+  }
+
+  .not-found__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+</style>

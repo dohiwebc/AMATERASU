@@ -1,0 +1,114 @@
+---
+import type { Work } from '@/types/cms';
+
+interface Props {
+  work: Work;
+  class?: string;
+}
+
+const { work, class: className = '' } = Astro.props;
+
+const previewThemes: Record<string, { accent: string; bg: string }> = {
+  '飲食店': { accent: '#d4915c', bg: '#f5ebe0' },
+  '整体・サロン': { accent: '#8cb09a', bg: '#e8f0ea' },
+  'ハンドメイド': { accent: '#c4a882', bg: '#f3ece3' },
+  'イベント': { accent: '#d4a574', bg: '#f8f0e4' },
+  '美容室': { accent: '#b08cba', bg: '#f0e8f2' },
+  'Web名刺': { accent: '#9a7d5c', bg: '#f0ebe3' },
+};
+
+const theme = previewThemes[work.category] ?? { accent: '#c4a882', bg: '#f3ece3' };
+---
+
+<div class:list={['work-visual', className]}>
+  {work.thumbnail ? (
+    <img src={work.thumbnail} alt={work.title} loading="lazy" />
+  ) : (
+    <div class="work-preview" style={`--preview-accent: ${theme.accent}; --preview-bg: ${theme.bg}`}>
+      <div class="work-preview__chrome">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="work-preview__body">
+        <div class="work-preview__hero"></div>
+        <div class="work-preview__line work-preview__line--long"></div>
+        <div class="work-preview__line"></div>
+        <div class="work-preview__line work-preview__line--short"></div>
+      </div>
+    </div>
+  )}
+</div>
+
+<style>
+  .work-visual {
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-bg-warm);
+    border: 1px solid var(--color-border-light);
+  }
+
+  .work-visual img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .work-preview {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background-color: var(--preview-bg);
+  }
+
+  .work-preview__chrome {
+    display: flex;
+    gap: 4px;
+    padding: 8px 10px;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  }
+
+  .work-preview__chrome span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--color-border);
+  }
+
+  .work-preview__chrome span:first-child {
+    background-color: var(--preview-accent);
+    opacity: 0.5;
+  }
+
+  .work-preview__body {
+    flex: 1;
+    padding: 12% 10%;
+    display: flex;
+    flex-direction: column;
+    gap: 6%;
+  }
+
+  .work-preview__hero {
+    height: 28%;
+    background: linear-gradient(135deg, var(--preview-accent) 0%, transparent 160%);
+    opacity: 0.3;
+    border-radius: 2px;
+  }
+
+  .work-preview__line {
+    height: 6%;
+    background: linear-gradient(90deg, var(--preview-accent) 0%, transparent 140%);
+    opacity: 0.14;
+    border-radius: 1px;
+    width: 70%;
+  }
+
+  .work-preview__line--long {
+    width: 90%;
+  }
+
+  .work-preview__line--short {
+    width: 45%;
+  }
+</style>

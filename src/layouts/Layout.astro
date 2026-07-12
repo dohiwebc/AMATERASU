@@ -1,0 +1,59 @@
+---
+import '@/styles/global.css';
+import Header from '@/components/Header.astro';
+import AcceptanceStatusSection from '@/components/AcceptanceStatusSection.astro';
+import Footer from '@/components/Footer.astro';
+import PageReveal from '@/components/PageReveal.astro';
+import type { SiteSettings } from '@/types/cms';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  settings: SiteSettings;
+}
+
+const { title, description, ogImage, settings } = Astro.props;
+const pageTitle = title ? `${title} | ${settings.brandDisplay}` : settings.seoTitle;
+const pageDescription = description ?? settings.seoDescription;
+const ogImageUrl = ogImage ?? settings.ogImage;
+const canonicalUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={pageDescription} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:type" content="website" />
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    {ogImageUrl && <meta name="twitter:card" content="summary_large_image" />}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <Header settings={settings} currentPath={Astro.url.pathname} />
+    <main>
+      <slot />
+    </main>
+    <AcceptanceStatusSection settings={settings} />
+    <Footer settings={settings} />
+    <PageReveal />
+  </body>
+</html>
+
+<style is:global>
+  main {
+    min-height: calc(100vh - var(--header-height) - 240px);
+  }
+</style>

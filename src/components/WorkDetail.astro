@@ -1,0 +1,523 @@
+---
+import WorkVisual from '@/components/WorkVisual.astro';
+import { getSiteTypeLabel, getWorkTypeLabel } from '@/types/cms';
+import type { Work } from '@/types/cms';
+
+interface Props {
+  work: Work;
+}
+
+const { work } = Astro.props;
+const typeLabel = getWorkTypeLabel(work.workType);
+const siteTypeLabel = getSiteTypeLabel(work.siteType);
+const hasExternalUrl = Boolean(work.url && work.url !== '#');
+
+function toLines(text?: string): string[] {
+  if (!text) return [];
+  return text
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
+function toTags(text?: string): string[] {
+  if (!text?.trim()) return [];
+  const lines = toLines(text);
+  if (lines.length > 1) return lines;
+
+  return text
+    .split(/[,、]/)
+    .flatMap((part) => part.split(/\s+/))
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+const descriptionParagraphs = toLines(work.description);
+const purposeParagraphs = toLines(work.purpose);
+const highlightParagraphs = toLines(work.highlights);
+const technologyTags = toTags(work.technologies);
+const pageItems = toLines(work.pages);
+
+const storySections = [
+  { label: '詳細説明', paragraphs: descriptionParagraphs },
+  { label: '制作の目的', paragraphs: purposeParagraphs },
+  { label: 'こだわった点', paragraphs: highlightParagraphs },
+].filter((section) => section.paragraphs.length > 0);
+
+const hasSpecs =
+  pageItems.length > 0 || technologyTags.length > 0;
+
+const hasDetails =
+  storySections.length > 0 || hasSpecs;
+---
+
+<article class="work-detail">
+  <p class="work-detail__back">
+    <a href="/works/">← 制作実績一覧へ</a>
+  </p>
+
+  <div class="work-detail__hero">
+    <div class="work-detail__visual-wrap">
+      <div class="work-detail__visual">
+        <WorkVisual work={work} />
+      </div>
+    </div>
+
+    <div class="work-detail__overview">
+      <h1 class="work-detail__title">{work.title}</h1>
+
+      <div class="work-detail__meta">
+        <div class="work-detail__badges">
+          {typeLabel && <span class="work-detail__type">{typeLabel}</span>}
+          {siteTypeLabel && <span class="work-detail__site-type">{siteTypeLabel}</span>}
+        </div>
+        {(work.category || work.year) && (
+          <div class="work-detail__facts">
+            {work.category && <span class="work-detail__category">{work.category}</span>}
+            {work.year && (
+              <span class="work-detail__year">
+                <span class="work-detail__year-label">制作</span>
+                <time datetime={work.year}>{work.year}</time>
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+
+      {hasExternalUrl && (
+        <div class="work-detail__action">
+          <p class="work-detail__action-label label-en">Visit Site</p>
+          <a
+            class="work-detail__link"
+            href={work.url!}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span class="work-detail__link-text">サイトを見る</span>
+            <span class="work-detail__link-arrow" aria-hidden="true">→</span>
+          </a>
+          <p class="work-detail__action-note">外部サイトが新しいタブで開きます</p>
+        </div>
+      )}
+    </div>
+  </div>
+
+  {hasDetails && (
+    <div class="work-detail__details">
+      <div class="work-detail__details-head">
+        <p class="work-detail__details-label label-en">Details</p>
+        <h2 class="work-detail__details-title">制作について</h2>
+      </div>
+
+      {storySections.length > 0 && (
+        <div class="work-detail__story">
+          {storySections.map((section) => (
+            <section class="work-detail__story-item">
+              <h3 class="work-detail__story-title">{section.label}</h3>
+              <div class="work-detail__story-body">
+                {section.paragraphs.map((paragraph) => (
+                  <p>{paragraph}</p>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      )}
+
+      {hasSpecs && (
+      <div class="work-detail__specs">
+        {pageItems.length > 0 && (
+          <section class="work-detail__section">
+            <h3 class="work-detail__section-title">ページ構成</h3>
+            <ul class="list-check work-detail__list work-detail__list--pages">
+              {pageItems.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {technologyTags.length > 0 && (
+          <section class="work-detail__section">
+            <h3 class="work-detail__section-title">使用技術</h3>
+            <div class="work-detail__tags work-detail__tags--tech">
+              {technologyTags.map((tag) => (
+                <span class="work-detail__tech-tag">{tag}</span>
+              ))}
+            </div>
+          </section>
+        )}
+
+      </div>
+      )}
+    </div>
+  )}
+</article>
+
+<style>
+  .work-detail__back {
+    margin-bottom: var(--space-lg);
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  .work-detail__back a {
+    transition: color var(--transition);
+  }
+
+  .work-detail__back a:hover {
+    color: var(--color-text);
+  }
+
+  .work-detail__hero {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+
+  .work-detail__visual-wrap {
+    position: relative;
+  }
+
+  .work-detail__visual-wrap::before {
+    content: '';
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    right: -0.75rem;
+    bottom: -0.75rem;
+    border: 1px solid var(--color-gold-line-soft);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .work-detail__visual {
+    position: relative;
+    z-index: 1;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background-color: var(--color-bg-warm);
+    border: 1px solid var(--color-border-light);
+    box-shadow: 0 1.25rem 2.5rem var(--color-shadow-soft);
+  }
+
+  .work-detail__overview {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .work-detail__title {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 4.5vw, 2.75rem);
+    font-weight: 500;
+    line-height: var(--leading-tight);
+    letter-spacing: 0.03em;
+    color: var(--color-text);
+    margin: 0 0 var(--space-md);
+  }
+
+  .work-detail__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+  }
+
+  .work-detail__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .work-detail__type {
+    padding: 0.35rem 0.75rem;
+    font-size: var(--text-small);
+    letter-spacing: 0.12em;
+    color: var(--color-gold);
+    border: 1px solid var(--color-gold-line-soft);
+    line-height: 1.3;
+  }
+
+  .work-detail__site-type {
+    padding: 0.35rem 0.75rem;
+    font-size: var(--text-small);
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+    background-color: var(--color-bg-accent);
+    border: 1px solid var(--color-border-light);
+    line-height: 1.3;
+  }
+
+  .work-detail__facts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.875rem 1.5rem;
+    padding-top: 0.25rem;
+  }
+
+  .work-detail__category {
+    font-family: var(--font-serif);
+    font-size: var(--text-body-lg);
+    color: var(--color-text);
+    letter-spacing: 0.04em;
+  }
+
+  .work-detail__year {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.04em;
+    padding-left: 1rem;
+    border-left: 1px solid var(--color-border);
+  }
+
+  .work-detail__year-label {
+    font-size: var(--text-small);
+    color: var(--color-text-light);
+    letter-spacing: 0.1em;
+  }
+
+  .work-detail__action {
+    margin-top: var(--space-sm);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .work-detail__details {
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-xl);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .work-detail__action-label {
+    margin-bottom: 0.75rem;
+    color: var(--color-text-light);
+  }
+
+  .work-detail__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 0;
+    font-family: var(--font-serif);
+    font-size: var(--text-body-lg);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--color-text);
+    border-bottom: 1px solid var(--color-gold-line);
+    transition:
+      color var(--transition),
+      border-color var(--transition),
+      gap 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .work-detail__link:hover {
+    color: var(--color-accent-dark);
+    border-bottom-color: var(--color-accent-dark);
+    gap: 1.125rem;
+  }
+
+  .work-detail__link-arrow {
+    font-size: 1.125rem;
+    color: var(--color-gold);
+    transition: transform var(--transition);
+  }
+
+  .work-detail__link:hover .work-detail__link-arrow {
+    transform: translate(3px, -1px);
+  }
+
+  .work-detail__action-note {
+    margin-top: 0.625rem;
+    font-size: var(--text-caption);
+    color: var(--color-text-light);
+    letter-spacing: 0.06em;
+  }
+
+  .work-detail__details-head {
+    margin-bottom: var(--space-xl);
+  }
+
+  .work-detail__details-label {
+    margin-bottom: 0.5rem;
+    color: var(--color-text-light);
+  }
+
+  .work-detail__details-title {
+    font-family: var(--font-serif);
+    font-size: var(--text-heading);
+    font-weight: 500;
+    line-height: var(--leading-tight);
+    letter-spacing: 0.03em;
+    color: var(--color-text);
+  }
+
+  .work-detail__story {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .work-detail__story-item {
+    padding-top: var(--space-lg);
+    margin-top: var(--space-lg);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .work-detail__story-item:first-child {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .work-detail__story-title {
+    font-family: var(--font-serif);
+    font-size: var(--text-body-lg);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: var(--color-text);
+    margin-bottom: 0.875rem;
+  }
+
+  .work-detail__story-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+  }
+
+  .work-detail__story-body p {
+    margin: 0;
+  }
+
+  .work-detail__section {
+    padding-top: var(--space-lg);
+    margin-top: var(--space-lg);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .work-detail__section:first-of-type {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .work-detail__section-title {
+    font-family: var(--font-serif);
+    font-size: var(--text-body-lg);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: var(--color-text);
+    margin-bottom: 0.875rem;
+  }
+
+  .work-detail__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .work-detail__list--pages {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.625rem 2.5rem;
+    border-top: 1px solid var(--color-border-light);
+    padding-top: 0.125rem;
+  }
+
+  .work-detail__tags--tech {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 0;
+  }
+
+  .work-detail__tech-tag {
+    font-family: var(--font-serif);
+    font-size: var(--text-body);
+    letter-spacing: 0.06em;
+    color: var(--color-text);
+    line-height: 1.5;
+  }
+
+  .work-detail__tech-tag + .work-detail__tech-tag::before {
+    content: '';
+    display: inline-block;
+    width: 1px;
+    height: 0.875em;
+    margin: 0 1rem;
+    background-color: var(--color-gold-line);
+    vertical-align: -0.05em;
+  }
+
+  @media (min-width: 640px) {
+    .work-detail__list--pages {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 900px) {
+    .work-detail__list--pages {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .work-detail__specs {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: var(--space-lg);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .work-detail__specs > .work-detail__section {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .work-detail__specs > .work-detail__section + .work-detail__section {
+    margin-top: var(--space-lg);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .work-detail__list {
+    margin-top: 0.125rem;
+  }
+
+  @media (min-width: 900px) {
+    .work-detail__hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: clamp(2.5rem, 5vw, 4rem);
+      align-items: stretch;
+    }
+
+    .work-detail__visual {
+      aspect-ratio: 4 / 3;
+    }
+
+    .work-detail__overview {
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+      padding-top: 0.5rem;
+      padding-left: clamp(1.5rem, 3vw, 2.25rem);
+      border-left: 1px solid var(--color-accent-light);
+      gap: var(--space-lg);
+    }
+
+    .work-detail__action {
+      margin-top: auto;
+    }
+  }
+</style>

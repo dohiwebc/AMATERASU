@@ -1,0 +1,38 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import FaqSection from '@/components/FaqSection.astro';
+import CTASection from '@/components/CTASection.astro';
+import { getSiteSettings } from '@/lib/microcms';
+import { FAQ_CATEGORY_ORDER } from '@/types/cms';
+
+const settings = await getSiteSettings();
+---
+
+<Layout
+  title="よくあるご質問"
+  description="AMATERASU Web Studioの制作プラン、料金、納期、お問い合わせに関するよくあるご質問。"
+  settings={settings}
+>
+  <div class="page-header">
+    <div class="container">
+      <div class="page-header__inner">
+        <p class="page-header__label label-en">FAQ</p>
+        <h1 class="page-header__title">よくあるご質問</h1>
+        <p class="page-header__desc">
+          制作プランや料金、納期、お問い合わせについて、よくいただくご質問をまとめました。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <FaqSection
+    en="Questions"
+    ja="カテゴリ別のご質問"
+    description="気になる項目をタップして、回答をご確認ください。"
+    categories={FAQ_CATEGORY_ORDER}
+    groupByCategory
+    sectionClass="section--after-header section--white"
+  />
+
+  <CTASection settings={settings} />
+</Layout>

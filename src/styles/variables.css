@@ -1,0 +1,101 @@
+:root {
+  /* ── ベースパレット（refined ivory × espresso × antique gold） ── */
+  --color-bg: #f4f0e8;          /* 温かいアイボリー */
+  --color-bg-soft: #ece6da;     /* 一段落ち着いた生成り */
+  --color-text: #1c1915;        /* 深いエスプレッソ（高コントラスト） */
+  --color-gold: #96794a;        /* アンティークゴールド（彩度を抑える） */
+  --color-gold-soft: rgba(150, 121, 74, 0.16);
+  --color-light: rgba(247, 240, 226, 0.5);
+
+  /* ── 背景バリエーション（トーン差は極小に、同一色相内で） ── */
+  --color-bg-white: #faf7f0;    /* 純白ではなく骨色 */
+  --color-bg-warm: #ebe4d5;
+  --color-bg-accent: #f0ebe0;
+  --color-bg-cta: #201d18;      /* 締めのダーク（エスプレッソ） */
+
+  /* ── テキスト ── */
+  --color-text-muted: #524c42;
+  --color-text-light: #837b6e;
+
+  /* ── ゴールド系（UI・既存互換） ── */
+  --color-accent: #a8895a;
+  --color-accent-light: #ddd2bf;
+  --color-accent-dark: #7d6238;
+  --color-warm: #a8895a;
+
+  /* ── ボーダー ── */
+  --color-border: #ddd5c7;
+  --color-border-light: #e7e0d3;
+
+  /* ── 光・演出（同一色相のトーン差＋金の細線のみ） ── */
+  --color-gold-glow: rgba(150, 121, 74, 0.14);
+  --color-gold-glow-faint: rgba(150, 121, 74, 0.07);
+  --color-gold-glow-medium: rgba(150, 121, 74, 0.1);
+  --color-gold-line: rgba(150, 121, 74, 0.45);
+  --color-gold-line-soft: rgba(150, 121, 74, 0.28);
+  --color-gold-line-fade: rgba(168, 137, 90, 0.7);
+  --color-line-gold-center: rgba(168, 137, 90, 0.5);
+  --color-warm-glow: rgba(150, 121, 74, 0.08);
+  --color-warm-glow-strong: rgba(150, 121, 74, 0.12);
+  --color-morning-glow: rgba(252, 247, 236, 0.7);
+  --color-cream-glow: rgba(236, 230, 218, 0.6);
+  --color-light-strong: rgba(250, 244, 231, 0.55);
+  --color-light-wash: rgba(250, 245, 233, 0.7);
+  --color-shadow-gold: rgba(28, 25, 21, 0.1);
+  --color-shadow-soft: rgba(28, 25, 21, 0.06);
+
+  /* ── 受付状況ステータス（緑：受付中／赤：停止中） ── */
+  --color-status-open: #4f7a52;
+  --color-status-open-bg: rgba(79, 122, 82, 0.12);
+  --color-status-open-border: rgba(79, 122, 82, 0.35);
+  --color-status-closed: #a8595a;
+  --color-status-closed-bg: rgba(168, 89, 90, 0.12);
+  --color-status-closed-border: rgba(168, 89, 90, 0.35);
+
+  /* ── ダークCTA内で使う色 ── */
+  --color-on-dark: #f3ede1;
+  --color-on-dark-muted: #b9ae9b;
+  --color-gold-bright: #c9a86e;
+
+  /* ── 模様（和紙：白〜生成りの雲と紙目のみ・茶色なし） ── */
+  --washi-bright: rgba(255, 252, 246, 0.96);
+  --washi-cloud: rgba(250, 247, 238, 0.88);
+  --washi-dense: rgba(228, 224, 214, 0.72);
+  --washi-dense-soft: rgba(236, 232, 222, 0.58);
+
+  /* タイポグラフィ — 明朝体で統一 */
+  --font-serif: 'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif;
+  --font-sans: var(--font-serif);
+  --font-display: var(--font-serif);
+
+  --text-display: clamp(3rem, 10vw, 6rem);
+  --text-heading: clamp(1.625rem, 3.5vw, 2.25rem);
+  --text-subheading: clamp(1.1875rem, 2.5vw, 1.4375rem);
+  --text-body: 1rem;
+  --text-body-lg: 1.125rem;
+  --text-small: 0.875rem;
+  --text-caption: 0.75rem;
+  --leading-body: 1.85;
+  --leading-tight: 1.3;
+  --leading-snug: 1.55;
+
+  /* スペーシング */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3.5rem;
+  --space-2xl: 5rem;
+  --space-3xl: 6.5rem;
+
+  /* レイアウト */
+  --container-max: 1100px;
+  --container-wide: 1200px;
+  --container-plans: 1260px;
+  --container-extra-wide: 1400px;
+  --container-narrow: 680px;
+  --header-height: 60px;
+
+  --radius-sm: 0;
+  --transition: 0.2s ease;
+}

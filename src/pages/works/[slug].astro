@@ -1,0 +1,46 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import WorkDetail from '@/components/WorkDetail.astro';
+import CTASection from '@/components/CTASection.astro';
+import { getSiteSettings, getWorks } from '@/lib/microcms';
+import { toMetaDescription } from '@/lib/text';
+
+export async function getStaticPaths() {
+  const works = await getWorks();
+  return works.map((work) => ({
+    params: { slug: work.slug },
+    props: { work },
+  }));
+}
+
+interface Props {
+  work: import('@/types/cms').Work;
+}
+
+const { work } = Astro.props;
+const settings = await getSiteSettings();
+const pageDescription = toMetaDescription(work.shortDescription, work.description);
+---
+
+<Layout
+  title={`制作実績 | ${work.title}`}
+  description={pageDescription}
+  ogImage={work.thumbnail}
+  settings={settings}
+>
+  <div class="page-header page-header--compact">
+    <div class="container container--wide">
+      <div class="page-header__inner page-header__inner--wide">
+        <p class="page-header__label label-en">Works</p>
+      </div>
+    </div>
+  </div>
+
+  <section class="section section--after-header section--white">
+    <div class="container container--wide">
+      <WorkDetail work={work} />
+    </div>
+  </section>
+
+  <CTASection settings={settings} />
+</Layout>

@@ -1,0 +1,205 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import WorkCard from '@/components/WorkCard.astro';
+import CTASection from '@/components/CTASection.astro';
+import { getPlans, getSiteSettings, getWorks } from '@/lib/microcms';
+import { buildWorkPlansMap, countWorksByPlanSlug, isPlanSlug } from '@/lib/works';
+
+const [settings, works, plans] = await Promise.all([
+  getSiteSettings(),
+  getWorks(),
+  getPlans(),
+]);
+
+const workPlansMap = buildWorkPlansMap(plans);
+const planCounts = countWorksByPlanSlug(works, workPlansMap);
+const planSlugs = plans.map((plan) => plan.slug);
+---
+
+<Layout
+  title="制作実績"
+  description="AMATERASU Web Studioの制作実績・サンプルサイト一覧。"
+  settings={settings}
+>
+  <div class="page-header">
+    <div class="container">
+      <div class="page-header__inner">
+        <p class="page-header__label label-en">Works</p>
+        <h1 class="page-header__title">制作実績</h1>
+        <p class="page-header__desc">
+          これまでの制作事例やサンプルサイトをご紹介します。プランで絞り込んでご覧いただけます。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <section class="section section--after-header">
+    <div class="container">
+      <div class="works-index" id="works-index" data-plan-slugs={planSlugs.join(',')}>
+        <div class="works-filter">
+          <label class="works-filter__label" for="works-plan-filter">プランで絞り込む</label>
+          <select class="works-filter__select" id="works-plan-filter" data-works-plan-filter>
+            <option value="all">すべて（{planCounts.all}）</option>
+            {plans.map((plan) => (
+              <option value={plan.slug}>
+                {plan.title}（{planCounts[plan.slug] ?? 0}）
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div class="works-grid" data-works-grid>
+          {works.map((work, i) => (
+            <WorkCard
+              work={work}
+              variant={i === 0 ? 'featured' : 'gallery'}
+              index={i}
+              relatedPlans={workPlansMap.get(work.id) ?? []}
+            />
+          ))}
+        </div>
+
+        <p class="works-empty" data-works-empty hidden>
+          該当する実績はありません。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <CTASection settings={settings} />
+</Layout>
+
+<script>
+  import { isPlanSlug } from '@/lib/works';
+
+  const root = document.getElementById('works-index');
+  if (root) {
+    const planSelect = root.querySelector<HTMLSelectElement>('[data-works-plan-filter]');
+    const cards = root.querySelectorAll<HTMLElement>('[data-plan-slugs]');
+    const empty = root.querySelector<HTMLElement>('[data-works-empty]');
+    const grid = root.querySelector<HTMLElement>('[data-works-grid]');
+    const validPlanSlugs = (root.dataset.planSlugs ?? '').split(',').filter(Boolean);
+
+    let currentPlan = 'all';
+
+    const applyFilter = (updateUrl = true) => {
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const planSlugs = card.dataset.planSlugs?.split(' ').filter(Boolean) ?? [];
+        const visible = currentPlan === 'all' || planSlugs.includes(currentPlan);
+        card.toggleAttribute('hidden', !visible);
+        if (visible) visibleCount += 1;
+      });
+
+      if (planSelect) planSelect.value = currentPlan;
+      empty?.toggleAttribute('hidden', visibleCount > 0);
+      grid?.toggleAttribute('hidden', visibleCount === 0);
+
+      if (updateUrl) {
+        const url = new URL(window.location.href);
+        if (currentPlan === 'all') {
+          url.searchParams.delete('plan');
+        } else {
+          url.searchParams.set('plan', currentPlan);
+        }
+        window.history.replaceState({}, '', url);
+      }
+    };
+
+    planSelect?.addEventListener('change', () => {
+      const value = planSelect.value;
+      currentPlan =
+        value === 'all' || isPlanSlug(value, validPlanSlugs) ? value : 'all';
+      applyFilter();
+    });
+
+    const initialPlan = new URLSearchParams(window.location.search).get('plan') ?? 'all';
+    currentPlan =
+      initialPlan === 'all' || isPlanSlug(initialPlan, validPlanSlugs) ? initialPlan : 'all';
+    applyFilter(false);
+  }
+</script>
+
+<style>
+  .works-filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.75rem 1rem;
+    margin-bottom: var(--space-lg);
+  }
+
+  .works-filter__label {
+    flex-shrink: 0;
+    font-size: var(--text-small);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--color-text-light);
+  }
+
+  .works-filter__select {
+    flex: 1 1 12rem;
+    max-width: 20rem;
+    min-height: auto;
+    padding: 0.125rem 1.25rem 0.375rem 0;
+    font-family: var(--font-serif);
+    font-size: var(--text-body);
+    color: var(--color-text);
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid var(--color-border);
+    border-radius: 0;
+    line-height: 1.5;
+    cursor: pointer;
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--color-gold) 50%),
+      linear-gradient(135deg, var(--color-gold) 50%, transparent 50%);
+    background-position:
+      calc(100% - 0.625rem) calc(50% + 0.125rem),
+      calc(100% - 0.375rem) calc(50% + 0.125rem);
+    background-size: 0.375rem 0.375rem, 0.375rem 0.375rem;
+    background-repeat: no-repeat;
+    transition: border-color var(--transition), color var(--transition);
+  }
+
+  .works-filter__select:hover {
+    color: var(--color-text);
+    border-bottom-color: var(--color-text-muted);
+  }
+
+  .works-filter__select:focus {
+    outline: none;
+    border-bottom-color: var(--color-gold);
+    box-shadow: none;
+  }
+
+  .works-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+
+  .works-grid :global(.work-card[hidden]) {
+    display: none;
+  }
+
+  .works-empty {
+    padding: var(--space-xl) 0;
+    text-align: center;
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+  }
+
+  @media (min-width: 768px) {
+    .works-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-lg);
+    }
+
+    .works-grid :global(.work-card--featured) {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

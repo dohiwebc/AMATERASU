@@ -1,0 +1,66 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import PlanDetail from '@/components/PlanDetail.astro';
+import CTASection from '@/components/CTASection.astro';
+import { SITE_TYPE } from '@/types/cms';
+import { resolvePlanSlug } from '@/lib/plan-slugs';
+import { getPlanBySlug, getPlanSlugsForStaticPaths, getSiteSettings } from '@/lib/microcms';
+
+export async function getStaticPaths() {
+  const slugs = await getPlanSlugsForStaticPaths(SITE_TYPE.MINI);
+  return slugs.map((slug) => ({
+    params: { slug },
+  }));
+}
+
+const slug = Astro.params.slug!;
+const canonicalSlug = resolvePlanSlug(slug);
+
+if (slug !== canonicalSlug) {
+  return Astro.redirect(`/mini-plans/${canonicalSlug}/`);
+}
+
+const plan = await getPlanBySlug(canonicalSlug);
+
+if (!plan) {
+  return Astro.redirect('/404/');
+}
+
+if (plan.siteType === SITE_TYPE.NORMAL) {
+  return Astro.redirect(`/plans/${canonicalSlug}/`);
+}
+
+if (plan.siteType !== SITE_TYPE.MINI) {
+  return Astro.redirect('/404/');
+}
+
+const settings = await getSiteSettings();
+---
+
+<Layout
+  title={`${plan.title} | ミニ制作プラン`}
+  description={plan.shortDescription}
+  settings={settings}
+>
+  <div class="page-header page-header--compact">
+    <div class="container container--extra-wide">
+      <div class="page-header__inner page-header__inner--wide">
+        <p class="page-header__label label-en">Mini Plans</p>
+      </div>
+    </div>
+  </div>
+
+  <section class="section section--after-header section--white">
+    <div class="container container--extra-wide">
+      <PlanDetail
+        plan={plan}
+        settings={settings}
+        backHref="/mini-plans/"
+        backLabel="← ミニ制作プラン一覧へ"
+        compareLabel="他のミニプランを比較する"
+      />
+    </div>
+  </section>
+
+  <CTASection settings={settings} />
+</Layout>

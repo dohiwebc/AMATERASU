@@ -1,0 +1,144 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Hero from '@/components/Hero.astro';
+import WorriesSection from '@/components/WorriesSection.astro';
+import SectionTitle from '@/components/SectionTitle.astro';
+import PlanCard from '@/components/PlanCard.astro';
+import MiniPlanCard from '@/components/MiniPlanCard.astro';
+import WorkCard from '@/components/WorkCard.astro';
+import FlowSection from '@/components/FlowSection.astro';
+import NewsSection from '@/components/NewsSection.astro';
+import FaqSection from '@/components/FaqSection.astro';
+import CTASection from '@/components/CTASection.astro';
+import Button from '@/components/Button.astro';
+import { SITE_TYPE } from '@/types/cms';
+import { getSiteSettings, getPlans, getWorks, getNews } from '@/lib/microcms';
+import { buildWorkPlansMap } from '@/lib/works';
+
+const settings = await getSiteSettings();
+const [normalPlans, miniPlans, works, news, allPlans] = await Promise.all([
+  getPlans(SITE_TYPE.NORMAL),
+  getPlans(SITE_TYPE.MINI),
+  getWorks(),
+  getNews(),
+  getPlans(),
+]);
+const featuredWorks = works.slice(0, 3);
+const workPlansMap = buildWorkPlansMap(allPlans);
+---
+
+<Layout settings={settings}>
+  <Hero settings={settings} />
+
+  <WorriesSection />
+
+  <NewsSection news={news} featuredOnly limit={3} />
+
+  <!-- 本格制作プラン -->
+  <section class="section section--accent" id="plans">
+    <div class="container container--plans">
+      <SectionTitle
+        en="Plans"
+        ja="本格制作プラン"
+        description="お店や事業の規模に合わせて選べる、本格的なホームページ制作プランです。料金・内容を比較してお選びください。"
+        variant="editorial"
+      />
+      <div class="plans-showcase">
+        {normalPlans.map((plan, i) => (
+          <PlanCard plan={plan} variant={plan.isFeatured ? 'featured' : 'default'} index={i} />
+        ))}
+      </div>
+      <div class="section-action section-action--center">
+        <Button href="/plans/" variant="outline">すべてのプランを見る</Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ミニ制作プラン -->
+  <section class="section section--white" id="mini-plans">
+    <div class="container container--plans">
+      <SectionTitle
+        en="Mini Plans"
+        ja="ミニ制作プラン"
+        description="小さく始めたい方に。目的別のコンパクトなプランです。公開作業・サーバー・ドメイン設定は含まれません。"
+        variant="editorial"
+      />
+      <div class="mini-plans-grid">
+        {miniPlans.slice(0, 3).map((plan) => (
+          <MiniPlanCard plan={plan} />
+        ))}
+      </div>
+      <div class="section-action section-action--center">
+        <Button href="/mini-plans/" variant="outline">ミニプランをすべて見る</Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 制作実績 -->
+  <section class="section section--warm" id="works">
+    <div class="container">
+      <SectionTitle
+        en="Works"
+        ja="制作実績"
+        description="これまでの制作事例・サンプルサイトをご紹介します。実案件・自主制作・サンプルの区分で掲載しています。"
+        variant="editorial"
+      />
+      <div class="works-gallery">
+        {featuredWorks[0] && (
+          <WorkCard
+            work={featuredWorks[0]}
+            variant="featured"
+            index={0}
+            relatedPlans={workPlansMap.get(featuredWorks[0].id) ?? []}
+          />
+        )}
+        {featuredWorks.length > 1 && (
+          <div class="works-gallery__grid">
+            {featuredWorks.slice(1).map((work, i) => (
+              <WorkCard
+                work={work}
+                variant="gallery"
+                index={i + 1}
+                relatedPlans={workPlansMap.get(work.id) ?? []}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+      <div class="section-action section-action--center">
+        <Button href="/works/" variant="outline">実績をすべて見る</Button>
+      </div>
+    </div>
+  </section>
+
+  <FlowSection />
+
+  <FaqSection
+    description="初めての方からよくいただくご質問をピックアップしました。"
+    featuredOnly
+    limit={4}
+    showViewAll
+    sectionClass="section--warm"
+  />
+
+  <CTASection settings={settings} />
+</Layout>
+
+<style>
+  .works-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .works-gallery__grid {
+    display: grid;
+    gap: var(--space-lg);
+  }
+
+  @media (min-width: 768px) {
+    .works-gallery__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

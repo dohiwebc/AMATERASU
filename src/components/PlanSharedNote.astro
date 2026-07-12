@@ -1,0 +1,95 @@
+---
+import SectionTitle from '@/components/SectionTitle.astro';
+import { getPlanSharedContent, type PlanSharedNoteVariant } from '@/lib/plans';
+import type { SiteSettings } from '@/types/cms';
+
+interface Props {
+  settings: SiteSettings;
+  variant?: PlanSharedNoteVariant;
+  description?: string;
+}
+
+const NOTE_DESCRIPTIONS: Record<PlanSharedNoteVariant, string> = {
+  normal: '本格制作プランに関するご確認事項です。',
+  mini: 'ミニプランに関するご確認事項です。',
+};
+
+const { settings, variant = 'normal', description } = Astro.props;
+const { systemScopeNote, generalNotes, scopeTitle } = getPlanSharedContent(settings, variant);
+const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
+---
+
+<section class="section plan-shared-notes">
+  <div class="container">
+    <SectionTitle en="Note" ja="ご確認ください" description={noteDescription} variant="editorial" />
+
+    <div class="plan-shared-notes__content">
+      <div class="plan-shared-notes__scope">
+        <h3 class="plan-shared-notes__scope-title">{scopeTitle}</h3>
+        <p class="plan-shared-notes__scope-text">{systemScopeNote}</p>
+      </div>
+
+      <ul class="plan-shared-notes__list">
+        {generalNotes.map((note) => (
+          <li>{note}</li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .plan-shared-notes__content {
+    width: 100%;
+  }
+
+  .plan-shared-notes__scope {
+    margin-bottom: var(--space-lg);
+    padding: clamp(1.5rem, 3vw, 2rem) clamp(1.5rem, 3vw, 2.25rem);
+    border: 1px solid var(--color-border-light);
+    background-color: var(--color-bg-accent);
+    box-shadow: inset 3px 0 0 var(--color-gold-line-soft);
+  }
+
+  .plan-shared-notes__scope-title {
+    font-family: var(--font-serif);
+    font-size: var(--text-subheading);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--color-text);
+    margin-bottom: 0.875rem;
+  }
+
+  .plan-shared-notes__scope-text {
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+    white-space: pre-line;
+  }
+
+  .plan-shared-notes__list {
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .plan-shared-notes__list li {
+    display: grid;
+    grid-template-columns: 0.5rem 1fr;
+    gap: 1rem;
+    align-items: start;
+    padding: 1.125rem 0;
+    border-bottom: 1px solid var(--color-border-light);
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+  }
+
+  .plan-shared-notes__list li::before {
+    content: '';
+    width: 0.5rem;
+    height: 1px;
+    margin-top: calc((var(--leading-body) * 1em - 1px) / 2);
+    background-color: var(--color-accent);
+  }
+</style>

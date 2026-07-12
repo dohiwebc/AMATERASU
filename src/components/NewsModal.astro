@@ -1,0 +1,207 @@
+---
+import { formatNewsDate } from '@/lib/news';
+import { NEWS_CATEGORY_LABELS } from '@/types/cms';
+import type { NewsItem } from '@/types/cms';
+
+interface Props {
+  items: NewsItem[];
+}
+
+const { items } = Astro.props;
+
+const newsDataMap = Object.fromEntries(
+  items.map((item) => [
+    item.id,
+    {
+      title: item.title,
+      body: item.body,
+      date: formatNewsDate(item.date),
+      dateIso: item.date,
+      category: NEWS_CATEGORY_LABELS[item.category],
+    },
+  ]),
+);
+---
+
+<div
+  class="modal-overlay modal-overlay--news"
+  id="news-modal"
+  aria-hidden="true"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="news-modal-title"
+>
+  <div class="modal modal--news" data-news-panel>
+    <div class="modal__header news-modal__header">
+      <div class="news-modal__head">
+        <div class="news-modal__meta">
+          <time class="news-modal__date" id="news-modal-date" datetime=""></time>
+          <span class="news-modal__category" id="news-modal-category"></span>
+        </div>
+        <h2 class="modal__title news-modal__title" id="news-modal-title"></h2>
+      </div>
+      <button class="modal__close" type="button" aria-label="閉じる" data-news-close>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal__body news-modal__body" id="news-modal-body"></div>
+  </div>
+</div>
+
+<script define:vars={{ newsDataMap }}>
+  const modal = document.getElementById('news-modal');
+  const modalTitle = document.getElementById('news-modal-title');
+  const modalDate = document.getElementById('news-modal-date');
+  const modalCategory = document.getElementById('news-modal-category');
+  const modalBody = document.getElementById('news-modal-body');
+  const closeBtn = modal?.querySelector('[data-news-close]');
+
+  function isOpen() {
+    return modal?.classList.contains('is-open') ?? false;
+  }
+
+  function openModal(news) {
+    if (!modal || !modalTitle || !modalDate || !modalCategory || !modalBody) return;
+
+    modalTitle.textContent = news.title;
+    modalDate.textContent = news.date;
+    modalDate.setAttribute('datetime', news.dateIso);
+    modalCategory.textContent = news.category;
+
+    modalBody.replaceChildren();
+    news.body
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .forEach((paragraph) => {
+        const p = document.createElement('p');
+        p.textContent = paragraph;
+        modalBody.appendChild(p);
+      });
+
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('is-modal-open');
+    modalBody.scrollTop = 0;
+    closeBtn?.focus();
+  }
+
+  function closeModal() {
+    if (!modal || !isOpen()) return;
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('is-modal-open');
+  }
+
+  if (!window.__newsModalBound) {
+    window.__newsModalBound = true;
+
+    document.addEventListener('click', (e) => {
+      const target = e.target;
+      if (!(target instanceof Element)) return;
+
+      const openBtn = target.closest('[data-news-open]');
+      if (openBtn) {
+        e.preventDefault();
+        const id = openBtn.getAttribute('data-news-id');
+        if (id && newsDataMap[id]) {
+          openModal(newsDataMap[id]);
+        }
+        return;
+      }
+
+      if (target.closest('[data-news-close]')) {
+        closeModal();
+        return;
+      }
+
+      if (target === modal) {
+        closeModal();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isOpen()) {
+        closeModal();
+      }
+    });
+  }
+</script>
+
+<style is:global>
+  .modal-overlay.modal-overlay--news {
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+  }
+
+  .modal-overlay.modal-overlay--news .modal.modal--news {
+    width: 100%;
+    max-width: 36rem;
+    max-height: min(85vh, 40rem);
+    transform: translateY(0.75rem) scale(0.98);
+    opacity: 0;
+    transition:
+      transform 0.28s ease,
+      opacity 0.28s ease;
+  }
+
+  .modal-overlay.modal-overlay--news.is-open .modal.modal--news {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+
+  .news-modal__header {
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+
+  .news-modal__head {
+    flex: 1;
+    min-width: 0;
+    padding-right: 0.5rem;
+  }
+
+  .news-modal__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.625rem 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .news-modal__date {
+    font-size: var(--text-small);
+    letter-spacing: 0.06em;
+    color: var(--color-text-light);
+  }
+
+  .news-modal__category {
+    font-size: var(--text-small);
+    letter-spacing: 0.08em;
+    color: var(--color-gold);
+  }
+
+  .news-modal__title {
+    line-height: var(--leading-snug);
+  }
+
+  .news-modal__body {
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+  }
+
+  .news-modal__body p + p {
+    margin-top: 0.875rem;
+  }
+
+  @media (min-width: 640px) {
+    .modal-overlay.modal-overlay--news .modal.modal--news {
+      max-width: 40rem;
+    }
+  }
+</style>
