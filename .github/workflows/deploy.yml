@@ -12,14 +12,27 @@ permissions:
   pages: write
   id-token: write
 
+# 連続更新時は進行中のビルドをキャンセルして最新だけデプロイ
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
+    # microCMS の下書き保存時は draftKey が付くため、公開反映のビルドはスキップ
+    if: >
+      github.event_name != 'repository_dispatch' ||
+      github.event.client_payload.draftKey == null ||
+      github.event.client_payload.draftKey == ''
     runs-on: ubuntu-latest
     steps:
+      - name: Webhook payload
+        if: github.event_name == 'repository_dispatch'
+        run: |
+          echo "api=${{ github.event.client_payload.api }}"
+          echo "type=${{ github.event.client_payload.type }}"
+          echo "id=${{ github.event.client_payload.id }}"
+
       - name: Checkout
         uses: actions/checkout@v4
 
