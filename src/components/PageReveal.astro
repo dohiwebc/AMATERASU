@@ -4,55 +4,61 @@
     '.hero',
     '.section',
     '.footer',
+    '.acceptance-status',
   ].join(', ');
 
-  const REVEAL_CHILD_SELECTOR = [
-    '.work-card',
-    '.plan-card-outer',
-    '.mini-plan-card',
-    '.news-list__item',
-    '.flow__item',
-    '.worries__item',
-    '.contact-layout',
-    '.works-index',
-    '.plan-detail',
-    '.work-detail',
-  ].join(', ');
+  function markVisible(element: HTMLElement, observer: IntersectionObserver) {
+    element.classList.add('is-visible');
+    observer.unobserve(element);
+  }
+
+  function isInViewport(element: HTMLElement): boolean {
+    const rect = element.getBoundingClientRect();
+    const viewHeight = window.innerHeight || document.documentElement.clientHeight;
+    return rect.top < viewHeight * 0.94 && rect.bottom > 0;
+  }
 
   function initReveal() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const blocks = document.querySelectorAll<HTMLElement>(REVEAL_SELECTOR);
-    const children = document.querySelectorAll<HTMLElement>(REVEAL_CHILD_SELECTOR);
+    if (blocks.length === 0) return;
 
     blocks.forEach((element, index) => {
       element.classList.add('reveal');
       element.style.setProperty('--reveal-delay', `${Math.min(index * 70, 350)}ms`);
     });
 
-    children.forEach((element, index) => {
-      element.classList.add('reveal', 'reveal--child');
-      element.style.setProperty('--reveal-delay', `${Math.min((index % 6) * 55, 330)}ms`);
-    });
-
-    const targets = [...blocks, ...children];
-    if (targets.length === 0) return;
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
-          entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
+          markVisible(entry.target as HTMLElement, observer);
         });
       },
       {
-        threshold: 0.12,
-        rootMargin: '0px 0px -6% 0px',
+        threshold: 0.08,
+        rootMargin: '0px 0px -4% 0px',
       },
     );
 
-    targets.forEach((target) => observer.observe(target));
+    blocks.forEach((target) => {
+      if (isInViewport(target)) {
+        markVisible(target, observer);
+        return;
+      }
+      observer.observe(target);
+    });
+
+    // フォールバック: 監視が効かない場合でも表示する
+    window.setTimeout(() => {
+      blocks.forEach((target) => {
+        if (!target.classList.contains('is-visible')) {
+          target.classList.add('is-visible');
+          observer.unobserve(target);
+        }
+      });
+    }, 800);
   }
 
   initReveal();
