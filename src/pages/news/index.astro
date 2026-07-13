@@ -41,10 +41,10 @@ const [settings, contact, news] = await Promise.all([
           <div class="news-studio-note">
             <p class="news-studio-note__label label-en">Status</p>
             <h2 class="news-studio-note__title">受付状況</h2>
-            <p class="news-studio-note__lead">{contact.studioNoteLead}</p>
+            <p class="news-studio-note__lead cms-text">{contact.studioNoteLead}</p>
             <p class="news-studio-note__reply">
               <span class="news-studio-note__term">返信目安</span>
-              <span class="news-studio-note__desc">{contact.replyTime}</span>
+              <span class="news-studio-note__desc cms-text">{contact.replyTime}</span>
             </p>
             <Button href="/contact/" variant="text" size="sm" class="news-studio-note__link">
               お問い合わせはこちら
@@ -106,7 +106,6 @@ const [settings, contact, news] = await Promise.all([
     font-weight: 500;
     color: var(--color-text);
     line-height: var(--leading-snug);
-    white-space: pre-line;
     margin-bottom: var(--space-md);
   }
 

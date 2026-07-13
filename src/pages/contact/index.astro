@@ -5,7 +5,7 @@ import ContactForm from '@/components/ContactForm.astro';
 import CTASection from '@/components/CTASection.astro';
 import FaqSection from '@/components/FaqSection.astro';
 import { getContactSettings, getSiteSettings } from '@/lib/microcms';
-import { getInstagramHandle, getXHandle } from '@/lib/text';
+import { getInstagramHandle, getXHandle, hasSocialUrl } from '@/lib/text';
 
 const [settings, contact] = await Promise.all([
   getSiteSettings(),
@@ -27,7 +27,7 @@ const xNote = contact.xDescription?.trim();
       <div class="page-header__inner">
         <p class="page-header__label label-en">Contact</p>
         <h1 class="page-header__title">{contact.title}</h1>
-        <p class="page-header__desc">{contact.description}</p>
+        <p class="page-header__desc cms-text">{contact.description}</p>
       </div>
     </div>
   </div>
@@ -36,12 +36,12 @@ const xNote = contact.xDescription?.trim();
     <div class="container">
       <div class="contact-reassure">
         <p class="contact-reassure__lead">ご相談は無料です。しつこい営業は一切ありません。</p>
-        <p class="contact-reassure__reply">{contact.replyTime}</p>
+        <p class="contact-reassure__reply cms-text">{contact.replyTime}</p>
       </div>
 
       <div class="contact-layout">
         <div class="contact-layout__form">
-          <p class="contact-form-section__desc">{contact.formDescription}</p>
+          <p class="contact-form-section__desc cms-text">{contact.formDescription}</p>
           <ContactForm contact={contact} />
         </div>
 
@@ -53,10 +53,10 @@ const xNote = contact.xDescription?.trim();
                 <h3 class="contact-alt__title">メール</h3>
                 <a href={`mailto:${settings.email}`} class="contact-alt__link">{settings.email}</a>
                 {contact.emailDescription && (
-                  <p class="contact-alt__desc">{contact.emailDescription}</p>
+                  <p class="contact-alt__desc cms-text">{contact.emailDescription}</p>
                 )}
               </div>
-              {settings.instagramUrl && instagramHandle && (
+              {hasSocialUrl(settings.instagramUrl) && instagramHandle && (
                 <div class="contact-alt__item">
                   <h3 class="contact-alt__title">Instagram</h3>
                   <a
@@ -69,7 +69,7 @@ const xNote = contact.xDescription?.trim();
                   </a>
                 </div>
               )}
-              {settings.xUrl && xHandle && (
+              {hasSocialUrl(settings.xUrl) && xHandle && (
                 <div class="contact-alt__item">
                   <h3 class="contact-alt__title">X（旧Twitter）</h3>
                   <a
@@ -81,7 +81,7 @@ const xNote = contact.xDescription?.trim();
                     {xHandle}
                   </a>
                   {xNote && (
-                    <p class="contact-alt__desc contact-alt__desc--note">{xNote}</p>
+                    <p class="contact-alt__desc contact-alt__desc--note cms-text">{xNote}</p>
                   )}
                 </div>
               )}
@@ -93,7 +93,7 @@ const xNote = contact.xDescription?.trim();
               <SectionTitle en="Tips" ja="お伝えいただけると助かること" variant="minimal" />
               <ul class="list-check">
                 {contact.tips.map((tip) => (
-                  <li>{tip}</li>
+                  <li class="cms-text">{tip}</li>
                 ))}
               </ul>
             </div>
@@ -159,7 +159,6 @@ const xNote = contact.xDescription?.trim();
     color: var(--color-text-muted);
     line-height: var(--leading-body);
     margin-bottom: var(--space-md);
-    white-space: pre-line;
   }
 
   .contact-layout__aside {
@@ -204,7 +203,6 @@ const xNote = contact.xDescription?.trim();
     font-size: var(--text-small);
     color: var(--color-text-muted);
     line-height: var(--leading-snug);
-    white-space: pre-line;
   }
 
   .contact-alt__desc--note {

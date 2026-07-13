@@ -18,10 +18,8 @@ const { faqs } = Astro.props;
         </summary>
         <div class="faq-accordion__answer">
           <div class="faq-accordion__answer-inner">
-            {faq.answer.split('\n').map((paragraph) => (
-              <p>{paragraph}</p>
-            ))}
-          </div>
+          <p class="cms-text">{faq.answer}</p>
+        </div>
         </div>
       </details>
     ))}
@@ -202,8 +200,8 @@ const { faqs } = Astro.props;
     line-height: var(--leading-body);
   }
 
-  .faq-accordion__answer-inner p + p {
-    margin-top: 0.75rem;
+  .faq-accordion__answer-inner p {
+    margin: 0;
   }
 
   @media (min-width: 768px) {

@@ -1,13 +1,11 @@
 ---
 import Button from '@/components/Button.astro';
 import PlanRelatedWorks from '@/components/PlanRelatedWorks.astro';
-import { getPlanSharedContent } from '@/lib/plans';
 import { withBase } from '@/lib/paths';
-import { SITE_TYPE, type Plan, type SiteSettings } from '@/types/cms';
+import { type Plan } from '@/types/cms';
 
 interface Props {
   plan: Plan;
-  settings: SiteSettings;
   backHref: string;
   backLabel: string;
   compareLabel?: string;
@@ -15,27 +13,12 @@ interface Props {
 
 const {
   plan,
-  settings,
   backHref,
   backLabel,
   compareLabel = '他のプランを比較する',
 } = Astro.props;
 
-const sharedNoteVariant = plan.siteType === SITE_TYPE.MINI ? 'mini' : 'normal';
-const { systemScopeNote } = getPlanSharedContent(settings, sharedNoteVariant);
-
-function toParagraphs(text?: string): string[] {
-  if (!text) return [];
-  return text
-    .split('\n')
-    .map((line) => line.trim())
-    .filter(Boolean);
-}
-
-const descriptionParagraphs = toParagraphs(plan.description);
-const pageCountLines = toParagraphs(plan.pageCount);
-const pageCountMain = pageCountLines[0] ?? '';
-const pageCountNotes = pageCountLines.slice(1);
+const planNotes = plan.notes?.filter((note) => note.trim()) ?? [];
 
 const detailSections = [
   { title: `${plan.title}で掲載できる内容`, items: plan.publishableContent },
@@ -45,9 +28,20 @@ const detailSections = [
 ].filter((section) => section.items.length > 0);
 
 const hasContent =
-  descriptionParagraphs.length > 0 ||
+  Boolean(plan.description?.trim()) ||
   plan.recommendedFor.length > 0 ||
   detailSections.length > 0;
+
+function toDescriptionParagraphs(text?: string): string[] {
+  if (!text?.trim()) return [];
+  const blocks = text
+    .split(/\n{2,}/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+  return blocks.length > 0 ? blocks : [text.trim()];
+}
+
+const descriptionParagraphs = toDescriptionParagraphs(plan.description);
 ---
 
 <article class="plan-detail">
@@ -58,43 +52,33 @@ const hasContent =
   <header class="plan-detail__hero">
     <h1 class="plan-detail__title">{plan.title}</h1>
     {plan.shortDescription && (
-      <p class="plan-detail__lead">{plan.shortDescription}</p>
+      <p class="plan-detail__lead cms-text">{plan.shortDescription}</p>
     )}
 
     <div class="plan-detail__summary">
       <div class="plan-detail__price-block">
         <p class="plan-detail__price">{plan.price}</p>
-        {plan.priceNote && <p class="plan-detail__price-note">{plan.priceNote}</p>}
+        {plan.priceNote && <p class="plan-detail__price-note cms-text">{plan.priceNote}</p>}
       </div>
 
       <dl class="plan-detail__facts">
         <div class="plan-detail__fact">
           <dt>制作期間目安</dt>
-          <dd>{plan.productionPeriod}</dd>
+          <dd class="cms-text">{plan.productionPeriod}</dd>
         </div>
         <div class="plan-detail__fact">
           <dt>修正回数</dt>
-          <dd>{plan.revisionCount}</dd>
+          <dd class="cms-text">{plan.revisionCount}</dd>
         </div>
-        {pageCountMain && (
-          <div
-            class:list={[
-              'plan-detail__fact',
-              pageCountNotes.length > 0 && 'plan-detail__fact--stacked',
-            ]}
-          >
+        {plan.pageCount && (
+          <div class="plan-detail__fact plan-detail__fact--stacked">
             <dt>ページ数目安</dt>
-            <dd>
-              {pageCountMain}
-              {pageCountNotes.map((note) => (
-                <span class="plan-detail__fact-note">{note}</span>
-              ))}
-            </dd>
+            <dd class="cms-text">{plan.pageCount}</dd>
           </div>
         )}
         <div class="plan-detail__fact plan-detail__fact--stacked">
           <dt>納品形式</dt>
-          <dd class="plan-detail__fact-value--multiline">{plan.deliveryFormat}</dd>
+          <dd class="cms-text">{plan.deliveryFormat}</dd>
         </div>
       </dl>
     </div>
@@ -120,7 +104,7 @@ const hasContent =
           <h3 class="plan-detail__section-title">プランについて</h3>
           <div class="plan-detail__prose">
             {descriptionParagraphs.map((paragraph) => (
-              <p>{paragraph}</p>
+              <p class="cms-text">{paragraph}</p>
             ))}
           </div>
         </section>
@@ -159,12 +143,13 @@ const hasContent =
     </div>
   )}
 
-  <div class="plan-detail__notes">
-    <p class="plan-detail__note">{systemScopeNote}</p>
-    {plan.notes?.map((note) => (
-      <p class="plan-detail__note">{note}</p>
-    ))}
-  </div>
+  {planNotes.length > 0 && (
+    <div class="plan-detail__notes">
+      {planNotes.map((note) => (
+        <p class="plan-detail__note cms-text">{note}</p>
+      ))}
+    </div>
+  )}
 
   <PlanRelatedWorks works={plan.relatedWorks} />
 
@@ -237,56 +222,45 @@ const hasContent =
 
   .plan-detail__facts {
     display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.75rem 1.5rem;
+    flex-direction: column;
+    gap: 0;
     padding-top: var(--space-md);
     border-top: 1px solid var(--color-border-light);
   }
 
   .plan-detail__fact {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0.5rem;
-    padding-left: 1rem;
-    border-left: 1px solid var(--color-border);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.375rem;
+    width: 100%;
+    padding: 0.875rem 0;
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .plan-detail__fact:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
   }
 
   .plan-detail__fact:first-child {
-    padding-left: 0;
-    border-left: none;
+    padding-top: 0;
   }
 
   .plan-detail__fact dt {
     font-size: var(--text-caption);
+    font-weight: 500;
     color: var(--color-text-light);
     letter-spacing: 0.1em;
-    white-space: nowrap;
   }
 
   .plan-detail__fact dd {
     font-size: var(--text-body);
     color: var(--color-text);
-    line-height: var(--leading-snug);
+    line-height: var(--leading-body);
   }
 
   .plan-detail__fact--stacked {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.25rem;
-    width: 100%;
-  }
-
-  .plan-detail__fact-value--multiline {
-    white-space: pre-line;
-  }
-
-  .plan-detail__fact-note {
-    display: block;
-    margin-top: 0.25rem;
-    font-size: var(--text-caption);
-    color: var(--color-text-light);
-    line-height: var(--leading-snug);
+    gap: 0.375rem;
   }
 
   .plan-detail__action {
@@ -430,7 +404,6 @@ const hasContent =
     font-size: var(--text-small);
     color: var(--color-text-light);
     line-height: var(--leading-body);
-    white-space: pre-line;
   }
 
   .plan-detail__footer {
@@ -452,7 +425,179 @@ const hasContent =
     border-bottom-color: var(--color-text);
   }
 
+  @media (max-width: 899px) {
+    .plan-detail__back {
+      margin-bottom: var(--space-md);
+    }
+
+    .plan-detail__hero {
+      gap: var(--space-md);
+      padding-bottom: var(--space-lg);
+    }
+
+    .plan-detail__title {
+      font-size: clamp(1.625rem, 6.5vw, 2rem);
+      line-height: 1.35;
+    }
+
+    .plan-detail__lead {
+      font-size: var(--text-body);
+      line-height: var(--leading-body);
+    }
+
+    .plan-detail__summary {
+      gap: var(--space-sm);
+      padding-top: 0;
+    }
+
+    .plan-detail__price-block {
+      padding: 1.125rem 1.25rem;
+      background-color: var(--color-bg-accent);
+      border: 1px solid var(--color-border-light);
+    }
+
+    .plan-detail__price {
+      font-size: clamp(1.5rem, 7vw, 1.875rem);
+    }
+
+    .plan-detail__action {
+      padding-top: var(--space-sm);
+    }
+
+    .plan-detail__action :global(.btn) {
+      width: 100%;
+      white-space: normal;
+      line-height: 1.5;
+    }
+
+    .plan-detail__content {
+      margin-top: var(--space-xl);
+      padding-top: var(--space-lg);
+    }
+
+    .plan-detail__content-head {
+      margin-bottom: var(--space-lg);
+    }
+
+    .plan-detail__content-title {
+      font-size: clamp(1.375rem, 5vw, 1.625rem);
+    }
+
+    .plan-detail__section {
+      padding-top: var(--space-md);
+      margin-top: var(--space-md);
+    }
+
+    .plan-detail__section-title {
+      font-size: var(--text-body);
+      line-height: 1.5;
+      margin-bottom: 0.5rem;
+    }
+
+    .plan-detail__prose {
+      gap: 0.5rem;
+      font-size: var(--text-small);
+      line-height: 1.6;
+      text-wrap: pretty;
+    }
+
+    .plan-detail__list--cols {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .plan-detail__list :global(li) {
+      position: relative;
+      font-size: var(--text-small);
+      line-height: 1.6;
+      text-wrap: pretty;
+      padding-left: 0.75rem;
+    }
+
+    .plan-detail__list :global(li::before) {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.8em;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 3px;
+      background-color: var(--color-gold);
+      border-radius: 50%;
+    }
+
+    .plan-detail__section--muted .plan-detail__list :global(li::before) {
+      background-color: var(--color-border);
+    }
+
+    .plan-detail__specs {
+      margin-top: var(--space-md);
+      padding-top: var(--space-md);
+    }
+
+    .plan-detail__specs > .plan-detail__section + .plan-detail__section {
+      margin-top: var(--space-md);
+      padding-top: var(--space-md);
+    }
+
+    .plan-detail__notes {
+      margin-top: var(--space-lg);
+      padding-top: var(--space-md);
+      gap: 0.5rem;
+    }
+
+    .plan-detail__note {
+      font-size: var(--text-caption);
+      line-height: 1.55;
+      text-wrap: pretty;
+      padding-left: 0.625rem;
+      border-left-width: 1px;
+    }
+
+    .plan-detail__footer {
+      margin-top: var(--space-xl);
+    }
+  }
+
   @media (min-width: 900px) {
+    .plan-detail__facts {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.75rem 1.5rem;
+    }
+
+    .plan-detail__fact {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      width: auto;
+      padding: 0 0 0 1rem;
+      border-bottom: none;
+      border-left: 1px solid var(--color-border);
+    }
+
+    .plan-detail__fact:first-child {
+      padding-left: 0;
+      border-left: none;
+    }
+
+    .plan-detail__fact dt {
+      white-space: nowrap;
+    }
+
+    .plan-detail__fact dd {
+      line-height: var(--leading-snug);
+    }
+
+    .plan-detail__fact--stacked {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.25rem;
+      width: 100%;
+    }
+
     .plan-detail__hero {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 20rem);

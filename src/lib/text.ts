@@ -20,11 +20,21 @@ export function toMetaDescription(
   return `${firstParagraph.slice(0, maxLength).trimEnd()}…`;
 }
 
+/** SNS URL が空・プレースホルダーでないか */
+export function hasSocialUrl(url?: string): boolean {
+  const trimmed = url?.trim() ?? '';
+  if (!trimmed) return false;
+  // 仮入力や未設定っぽい値は非表示
+  if (/^[＠@]?[〇○◯0０]+$/u.test(trimmed)) return false;
+  if (/example\.com|your[-_]?/i.test(trimmed)) return false;
+  return true;
+}
+
 /** Instagram URL から @ハンドル名を取得 */
 export function getInstagramHandle(url?: string): string | undefined {
-  if (!url?.trim()) return undefined;
+  if (!hasSocialUrl(url)) return undefined;
 
-  const trimmed = url.trim();
+  const trimmed = url!.trim();
   if (trimmed.startsWith('@')) return trimmed;
 
   try {
@@ -41,9 +51,9 @@ export function getInstagramHandle(url?: string): string | undefined {
 
 /** X（Twitter）URL から @ハンドル名を取得 */
 export function getXHandle(url?: string): string | undefined {
-  if (!url?.trim()) return undefined;
+  if (!hasSocialUrl(url)) return undefined;
 
-  const trimmed = url.trim();
+  const trimmed = url!.trim();
   if (trimmed.startsWith('@')) return trimmed;
 
   try {

@@ -43,10 +43,10 @@ const replyText = isAccepting
       </div>
 
       <div class="acceptance-status__body">
-        <p class="acceptance-status__lead">{leadText}</p>
+        <p class="acceptance-status__lead cms-text">{leadText}</p>
         <p class="acceptance-status__reply">
           <span class="acceptance-status__term">返信目安</span>
-          <span class="acceptance-status__desc">{replyText}</span>
+          <span class="acceptance-status__desc cms-text">{replyText}</span>
         </p>
         <Button href="/contact/" variant="text" size="md" class="acceptance-status__link">
           お問い合わせはこちら
@@ -144,7 +144,6 @@ const replyText = isAccepting
     font-weight: 500;
     color: var(--color-text);
     line-height: var(--leading-body);
-    white-space: pre-line;
     margin-bottom: var(--space-lg);
   }
 
@@ -166,7 +165,6 @@ const replyText = isAccepting
     font-size: var(--text-body);
     color: var(--color-text-muted);
     line-height: var(--leading-body);
-    white-space: pre-line;
   }
 
   .acceptance-status__link {

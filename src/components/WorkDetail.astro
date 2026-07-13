@@ -33,17 +33,14 @@ function toTags(text?: string): string[] {
     .filter(Boolean);
 }
 
-const descriptionParagraphs = toLines(work.description);
-const purposeParagraphs = toLines(work.purpose);
-const highlightParagraphs = toLines(work.highlights);
+const storySections = [
+  { label: '詳細説明', text: work.description },
+  { label: '制作の目的', text: work.purpose },
+  { label: 'こだわった点', text: work.highlights },
+].filter((section) => section.text?.trim());
+
 const technologyTags = toTags(work.technologies);
 const pageItems = toLines(work.pages);
-
-const storySections = [
-  { label: '詳細説明', paragraphs: descriptionParagraphs },
-  { label: '制作の目的', paragraphs: purposeParagraphs },
-  { label: 'こだわった点', paragraphs: highlightParagraphs },
-].filter((section) => section.paragraphs.length > 0);
 
 const hasSpecs =
   pageItems.length > 0 || technologyTags.length > 0;
@@ -116,9 +113,7 @@ const hasDetails =
             <section class="work-detail__story-item">
               <h3 class="work-detail__story-title">{section.label}</h3>
               <div class="work-detail__story-body">
-                {section.paragraphs.map((paragraph) => (
-                  <p>{paragraph}</p>
-                ))}
+                <p class="cms-text">{section.text}</p>
               </div>
             </section>
           ))}

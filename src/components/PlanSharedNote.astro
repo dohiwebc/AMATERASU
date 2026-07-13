@@ -26,12 +26,12 @@ const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
     <div class="plan-shared-notes__content">
       <div class="plan-shared-notes__scope">
         <h3 class="plan-shared-notes__scope-title">{scopeTitle}</h3>
-        <p class="plan-shared-notes__scope-text">{systemScopeNote}</p>
+        <p class="plan-shared-notes__scope-text cms-text">{systemScopeNote}</p>
       </div>
 
       <ul class="plan-shared-notes__list">
         {generalNotes.map((note) => (
-          <li>{note}</li>
+          <li class="cms-text">{note}</li>
         ))}
       </ul>
     </div>
@@ -64,7 +64,6 @@ const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
     font-size: var(--text-body);
     color: var(--color-text-muted);
     line-height: var(--leading-body);
-    white-space: pre-line;
   }
 
   .plan-shared-notes__list {

@@ -1,7 +1,7 @@
 ---
 import Button from '@/components/Button.astro';
 import { getContactSettings } from '@/lib/microcms';
-import { getInstagramHandle, getXHandle } from '@/lib/text';
+import { getInstagramHandle, getXHandle, hasSocialUrl } from '@/lib/text';
 import type { SiteSettings } from '@/types/cms';
 
 interface Props {
@@ -34,15 +34,15 @@ const xNote = contact.xDescription?.trim();
   <div class="cta-section__inner container">
     <div class="cta-section__main">
       <p class="cta-section__label label-en">Contact</p>
-      <h2 class="cta-section__title">{title}</h2>
-      <p class="cta-section__desc">{description}</p>
+      <h2 class="cta-section__title cms-text">{title}</h2>
+      <p class="cta-section__desc cms-text">{description}</p>
 
       <div class="cta-section__contact">
         <Button href="/contact/" variant="primary" size="lg" class="cta-section__cta">
           お問い合わせはこちら
         </Button>
 
-        {(settings.email || settings.instagramUrl || settings.xUrl) && (
+        {(settings.email || (hasSocialUrl(settings.instagramUrl) && instagramHandle) || (hasSocialUrl(settings.xUrl) && xHandle)) && (
           <ul class="cta-section__channels">
             {settings.email && (
               <li class="cta-section__channel">
@@ -52,7 +52,7 @@ const xNote = contact.xDescription?.trim();
                 </a>
               </li>
             )}
-            {settings.instagramUrl && instagramHandle && (
+            {hasSocialUrl(settings.instagramUrl) && instagramHandle && (
               <li class="cta-section__channel">
                 <span class="cta-section__channel-label label-en">Instagram</span>
                 <a
@@ -65,7 +65,7 @@ const xNote = contact.xDescription?.trim();
                 </a>
               </li>
             )}
-            {settings.xUrl && xHandle && (
+            {hasSocialUrl(settings.xUrl) && xHandle && (
               <li class="cta-section__channel">
                 <span class="cta-section__channel-label">X（旧Twitter）</span>
                 <div class="cta-section__channel-body">
@@ -77,7 +77,7 @@ const xNote = contact.xDescription?.trim();
                   >
                     {xHandle}
                   </a>
-                  {xNote && <p class="cta-section__channel-note">{xNote}</p>}
+                  {xNote && <p class="cta-section__channel-note cms-text">{xNote}</p>}
                 </div>
               </li>
             )}
@@ -150,7 +150,6 @@ const xNote = contact.xDescription?.trim();
     margin-bottom: var(--space-md);
     max-width: none;
     color: var(--color-on-dark);
-    white-space: pre-line;
   }
 
   .cta-section__desc {
@@ -159,7 +158,6 @@ const xNote = contact.xDescription?.trim();
     line-height: var(--leading-body);
     margin-bottom: var(--space-lg);
     max-width: none;
-    white-space: pre-line;
   }
 
   .cta-section__contact {

@@ -72,15 +72,10 @@ const newsDataMap = Object.fromEntries(
     modalCategory.textContent = news.category;
 
     modalBody.replaceChildren();
-    news.body
-      .split('\n')
-      .map((line) => line.trim())
-      .filter(Boolean)
-      .forEach((paragraph) => {
-        const p = document.createElement('p');
-        p.textContent = paragraph;
-        modalBody.appendChild(p);
-      });
+    const body = document.createElement('p');
+    body.className = 'cms-text';
+    body.textContent = news.body;
+    modalBody.appendChild(body);
 
     modal.classList.add('is-open');
     modal.setAttribute('aria-hidden', 'false');

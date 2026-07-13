@@ -49,10 +49,10 @@ const meta = MINI_PLAN_META[resolvePlanSlug(plan.slug)] ?? { label: 'ミニ制�
 
   <span class="mini-plan-card__label">{meta.label}</span>
   <h3 class="mini-plan-card__title">{plan.title}</h3>
-  <p class="mini-plan-card__desc">{plan.shortDescription}</p>
+  <p class="mini-plan-card__desc cms-text">{plan.shortDescription}</p>
 
   {plan.recommendedFor[0] && (
-    <p class="mini-plan-card__for">
+    <p class="mini-plan-card__for cms-text">
       <span class="mini-plan-card__for-label">こんな方に</span>
       {plan.recommendedFor[0]}
     </p>
@@ -61,7 +61,7 @@ const meta = MINI_PLAN_META[resolvePlanSlug(plan.slug)] ?? { label: 'ミニ制�
   <div class="mini-plan-card__meta">
     <div>
       <p class="mini-plan-card__price">{plan.price}</p>
-      <p class="mini-plan-card__period">{plan.productionPeriod}</p>
+      <p class="mini-plan-card__period cms-text">{plan.productionPeriod}</p>
     </div>
   </div>
 

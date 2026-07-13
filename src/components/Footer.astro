@@ -1,6 +1,6 @@
 ---
 import type { SiteSettings } from '@/types/cms';
-import { getInstagramHandle, getXHandle } from '@/lib/text';
+import { getInstagramHandle, getXHandle, hasSocialUrl } from '@/lib/text';
 import { withBase } from '@/lib/paths';
 
 interface Props {
@@ -29,7 +29,7 @@ const navItems = [
       <div class="footer__brand">
         <p class="footer__logo">{settings.logoText}</p>
         <p class="footer__studio label-en">Web Studio</p>
-        <p class="footer__tagline">{settings.footerText}</p>
+        <p class="footer__tagline cms-text">{settings.footerText}</p>
 
         <ul class="footer__contact">
           {settings.location && (
@@ -46,7 +46,7 @@ const navItems = [
               </a>
             </li>
           )}
-          {settings.instagramUrl && instagramHandle && (
+          {hasSocialUrl(settings.instagramUrl) && instagramHandle && (
             <li class="footer__contact-item">
               <span class="footer__contact-label label-en">Instagram</span>
               <a
@@ -59,7 +59,7 @@ const navItems = [
               </a>
             </li>
           )}
-          {settings.xUrl && xHandle && (
+          {hasSocialUrl(settings.xUrl) && xHandle && (
             <li class="footer__contact-item">
               <span class="footer__contact-label">X（旧Twitter）</span>
               <a
@@ -134,7 +134,6 @@ const navItems = [
     color: var(--color-text-muted);
     line-height: var(--leading-body);
     max-width: none;
-    white-space: pre-line;
   }
 
   .footer__contact {

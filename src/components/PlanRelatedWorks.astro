@@ -227,4 +227,33 @@ function hasExternalUrl(work: Work): boolean {
   .plan-related-work__detail-link:hover .plan-related-work__arrow {
     transform: translateX(3px);
   }
+
+  @media (max-width: 899px) {
+    .plan-related-works {
+      margin-top: var(--space-xl);
+      padding-top: var(--space-lg);
+    }
+
+    .plan-related-works__head {
+      margin-bottom: var(--space-lg);
+    }
+
+    .plan-related-works__title {
+      font-size: clamp(1.375rem, 5vw, 1.625rem);
+    }
+
+    .plan-related-works__grid {
+      gap: var(--space-lg);
+    }
+
+    .plan-related-work__actions {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.625rem;
+    }
+
+    .plan-related-work__actions :global(.btn) {
+      width: 100%;
+    }
+  }
 </style>
