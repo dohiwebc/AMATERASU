@@ -51,7 +51,7 @@ const settings = await getSiteSettings();
     </div>
   </div>
 
-  <section class="section section--after-header section--white">
+  <section class="section section--after-header section--white plan-detail-page">
     <div class="container container--extra-wide">
       <PlanDetail
         plan={plan}
@@ -64,3 +64,16 @@ const settings = await getSiteSettings();
 
   <CTASection settings={settings} />
 </Layout>
+
+<style>
+  @media (max-width: 767px) {
+    .page-header--compact {
+      padding-block: var(--space-sm) var(--space-xs);
+    }
+
+    .plan-detail-page {
+      padding-top: var(--space-md);
+      padding-bottom: var(--space-xl);
+    }
+  }
+</style>

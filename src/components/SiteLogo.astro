@@ -1,0 +1,99 @@
+---
+import { withBase } from '@/lib/paths';
+
+type LogoVariant = 'full' | 'text';
+type LogoSize = 'header' | 'hero' | 'footer' | 'cta';
+
+interface Props {
+  variant?: LogoVariant;
+  size?: LogoSize;
+  class?: string;
+  alt?: string;
+  loading?: 'eager' | 'lazy';
+}
+
+const {
+  variant = 'text',
+  size,
+  class: className,
+  alt = 'AMATERASU Web Studio',
+  loading = 'lazy',
+} = Astro.props;
+
+const logos: Record<LogoVariant, { src: string; width: number; height: number }> = {
+  full: {
+    src: withBase('/images/logo-amaterasu.png'),
+    width: 830,
+    height: 622,
+  },
+  text: {
+    src: withBase('/images/logo-amaterasu-text.png'),
+    width: 919,
+    height: 152,
+  },
+};
+
+const logo = logos[variant];
+---
+
+<img
+  class:list={['site-logo', size && `site-logo--${size}`, className]}
+  src={logo.src}
+  alt={alt}
+  width={logo.width}
+  height={logo.height}
+  loading={loading}
+  decoding="async"
+/>
+
+<style>
+  .site-logo {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .site-logo--header {
+    width: auto;
+    max-width: min(100%, 10.5rem);
+    max-height: 1.625rem;
+  }
+
+  .site-logo--hero {
+    width: min(100%, 18rem);
+  }
+
+  .site-logo--footer {
+    width: auto;
+    max-width: min(100%, 14rem);
+    max-height: 2.25rem;
+    margin-bottom: var(--space-md);
+  }
+
+  .site-logo--cta {
+    width: auto;
+    max-width: min(100%, 11rem);
+    max-height: 1.75rem;
+    margin-top: var(--space-xs);
+    filter: brightness(0) invert(0.93);
+    opacity: 0.92;
+  }
+
+  @media (max-width: 767px) {
+    .site-logo--hero {
+      width: min(100%, 16.5rem);
+    }
+  }
+
+  @media (min-width: 900px) {
+    .site-logo--hero {
+      width: min(100%, 28rem);
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .site-logo--hero {
+      width: min(100%, 32rem);
+    }
+  }
+</style>

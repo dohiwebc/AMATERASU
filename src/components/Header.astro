@@ -1,4 +1,5 @@
 ---
+import SiteLogo from '@/components/SiteLogo.astro';
 import type { SiteSettings } from '@/types/cms';
 import { withBase } from '@/lib/paths';
 
@@ -28,8 +29,7 @@ function isNavActive(pathname: string, href: string): boolean {
 <header class="header">
   <div class="header__inner container">
     <a href={withBase('/')} class="header__logo">
-      <span class="header__logo-text">{settings.logoText}</span>
-      <span class="header__logo-sub label-en">Web Studio</span>
+      <SiteLogo variant="text" size="header" alt={settings.brandDisplay} loading="eager" />
     </a>
 
     <button
@@ -141,13 +141,19 @@ function isNavActive(pathname: string, href: string): boolean {
     document.body.classList.toggle('is-nav-open', isOpen);
   };
 
-  toggle?.addEventListener('click', () => {
+  toggle?.addEventListener('click', (event) => {
+    event.stopPropagation();
     if (isDesktop()) return;
     setOpen(!nav?.classList.contains('is-open'));
   });
 
   nav?.querySelectorAll('a').forEach((link) => {
     link.addEventListener('click', () => setOpen(false));
+  });
+
+  document.addEventListener('click', () => {
+    if (isDesktop() || !nav?.classList.contains('is-open')) return;
+    setOpen(false);
   });
 
   document.addEventListener('keydown', (event) => {
@@ -181,23 +187,8 @@ function isNavActive(pathname: string, href: string): boolean {
   .header__logo {
     position: relative;
     z-index: 102;
-    display: flex;
-    flex-direction: column;
-    line-height: 1.2;
-    gap: 0.125rem;
-  }
-
-  .header__logo-text {
-    font-family: var(--font-serif);
-    font-size: 1.0625rem;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    color: var(--color-text);
-  }
-
-  .header__logo-sub {
-    font-size: 0.6875rem;
-    letter-spacing: 0.12em;
+    display: block;
+    line-height: 0;
   }
 
   .header__toggle {
@@ -434,6 +425,7 @@ function isNavActive(pathname: string, href: string): boolean {
         calc(var(--header-height) + 1.25rem)
         clamp(1.25rem, 4vw, 1.5rem)
         1.5rem;
+      padding-left: calc(clamp(1.25rem, 4vw, 1.5rem) + 0.375rem);
     }
 
     .header__nav-mobile-label {

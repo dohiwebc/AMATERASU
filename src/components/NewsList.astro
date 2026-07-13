@@ -120,4 +120,37 @@ const { items, compact = false } = Astro.props;
   .news-list--compact .news-card__title {
     font-size: 1.0625rem;
   }
+
+  @media (max-width: 767px) {
+    .news-list {
+      gap: var(--space-sm);
+    }
+
+    .news-card {
+      padding: 0.875rem 0;
+    }
+
+    .news-list--compact .news-card {
+      padding: 0.875rem 0;
+    }
+
+    .news-card__meta {
+      gap: 0.5rem 0.75rem;
+      margin-bottom: 0.375rem;
+    }
+
+    .news-card__date,
+    .news-card__category {
+      font-size: var(--text-caption);
+    }
+
+    .news-card__title {
+      font-size: var(--text-body);
+      line-height: 1.45;
+    }
+
+    .news-list--compact .news-card__title {
+      font-size: var(--text-body);
+    }
+  }
 </style>

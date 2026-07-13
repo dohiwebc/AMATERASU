@@ -1,6 +1,6 @@
 ---
 import SectionTitle from '@/components/SectionTitle.astro';
-import { getPlanSharedContent, type PlanSharedNoteVariant } from '@/lib/plans';
+import { getPlanSharedContent, splitGeneralNotesByTopic, type PlanSharedNoteVariant } from '@/lib/plans';
 import type { SiteSettings } from '@/types/cms';
 
 interface Props {
@@ -16,6 +16,7 @@ const NOTE_DESCRIPTIONS: Record<PlanSharedNoteVariant, string> = {
 
 const { settings, variant = 'normal', description } = Astro.props;
 const { systemScopeNote, generalNotes, scopeTitle } = getPlanSharedContent(settings, variant);
+const { confirmNotes, priceNotes } = splitGeneralNotesByTopic(generalNotes);
 const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
 ---
 
@@ -23,7 +24,7 @@ const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
   <div class="container">
     <SectionTitle en="Note" ja="ご確認ください" description={noteDescription} variant="editorial" />
 
-    <div class="plan-shared-notes__content">
+    <div class="plan-shared-notes__content plan-shared-notes__content--desktop">
       <div class="plan-shared-notes__scope">
         <h3 class="plan-shared-notes__scope-title">{scopeTitle}</h3>
         <p class="plan-shared-notes__scope-text cms-text">{systemScopeNote}</p>
@@ -35,12 +36,60 @@ const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
         ))}
       </ul>
     </div>
+
+    <div class="plan-notes-accordion plan-shared-notes__accordion--mobile">
+      <details class="plan-notes-accordion__item">
+        <summary class="plan-notes-accordion__summary">
+          <span class="plan-notes-accordion__summary-text">{scopeTitle}</span>
+          <span class="plan-notes-accordion__icon" aria-hidden="true"></span>
+        </summary>
+        <div class="plan-notes-accordion__panel">
+          <p class="plan-notes-accordion__text cms-text">{systemScopeNote}</p>
+        </div>
+      </details>
+
+      {confirmNotes.length > 0 && (
+        <details class="plan-notes-accordion__item">
+          <summary class="plan-notes-accordion__summary">
+            <span class="plan-notes-accordion__summary-text">ご確認ください</span>
+            <span class="plan-notes-accordion__icon" aria-hidden="true"></span>
+          </summary>
+          <div class="plan-notes-accordion__panel">
+            <ul class="plan-notes-accordion__list">
+              {confirmNotes.map((note) => (
+                <li class="cms-text">{note}</li>
+              ))}
+            </ul>
+          </div>
+        </details>
+      )}
+
+      {priceNotes.length > 0 && (
+        <details class="plan-notes-accordion__item">
+          <summary class="plan-notes-accordion__summary">
+            <span class="plan-notes-accordion__summary-text">料金について</span>
+            <span class="plan-notes-accordion__icon" aria-hidden="true"></span>
+          </summary>
+          <div class="plan-notes-accordion__panel">
+            <ul class="plan-notes-accordion__list">
+              {priceNotes.map((note) => (
+                <li class="cms-text">{note}</li>
+              ))}
+            </ul>
+          </div>
+        </details>
+      )}
+    </div>
   </div>
 </section>
 
 <style>
   .plan-shared-notes__content {
     width: 100%;
+  }
+
+  .plan-shared-notes__accordion--mobile {
+    display: none;
   }
 
   .plan-shared-notes__scope {
@@ -92,45 +141,136 @@ const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
     background-color: var(--color-accent);
   }
 
+  .plan-notes-accordion {
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .plan-notes-accordion__item {
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .plan-notes-accordion__summary {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.875rem 0;
+    font-family: var(--font-serif);
+    font-size: var(--text-small);
+    font-weight: 500;
+    line-height: var(--leading-snug);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    list-style: none;
+    transition: color var(--transition);
+  }
+
+  .plan-notes-accordion__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .plan-notes-accordion__summary::marker {
+    content: '';
+  }
+
+  .plan-notes-accordion__summary:hover,
+  .plan-notes-accordion__item[open] .plan-notes-accordion__summary {
+    color: var(--color-text);
+  }
+
+  .plan-notes-accordion__summary-text {
+    flex: 1;
+    padding-block: 0.125rem;
+  }
+
+  .plan-notes-accordion__icon {
+    position: relative;
+    flex-shrink: 0;
+    width: 0.625rem;
+    height: 0.625rem;
+    margin-top: 0.35rem;
+  }
+
+  .plan-notes-accordion__icon::before,
+  .plan-notes-accordion__icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background-color: var(--color-gold);
+    transform: translate(-50%, -50%);
+    transition: transform 0.25s ease;
+  }
+
+  .plan-notes-accordion__icon::before {
+    width: 0.5rem;
+    height: 1px;
+  }
+
+  .plan-notes-accordion__icon::after {
+    width: 1px;
+    height: 0.5rem;
+  }
+
+  .plan-notes-accordion__item[open] .plan-notes-accordion__icon::after {
+    transform: translate(-50%, -50%) scaleY(0);
+  }
+
+  .plan-notes-accordion__panel {
+    padding: 0 0 0.875rem;
+  }
+
+  .plan-notes-accordion__text {
+    font-size: var(--text-caption);
+    color: var(--color-text-muted);
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  .plan-notes-accordion__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .plan-notes-accordion__list li {
+    position: relative;
+    padding-left: 0.75rem;
+    font-size: var(--text-caption);
+    color: var(--color-text-muted);
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  .plan-notes-accordion__list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+    width: 3px;
+    height: 3px;
+    background-color: var(--color-gold);
+    border-radius: 50%;
+    transform: translateY(-50%);
+  }
+
   @media (max-width: 767px) {
     .plan-shared-notes :global(.section-title) {
-      margin-bottom: var(--space-md);
+      margin-bottom: var(--space-sm);
     }
 
     .plan-shared-notes :global(.section-title__desc) {
       font-size: var(--text-caption);
       line-height: 1.55;
-    }
-
-    .plan-shared-notes__scope {
-      margin-bottom: var(--space-md);
-      padding: 0.875rem 1rem;
-      box-shadow: inset 2px 0 0 var(--color-gold-line-soft);
-    }
-
-    .plan-shared-notes__scope-title {
-      font-size: var(--text-body);
-      margin-bottom: 0.5rem;
-    }
-
-    .plan-shared-notes__scope-text {
-      font-size: var(--text-caption);
-      line-height: 1.55;
       text-wrap: pretty;
     }
 
-    .plan-shared-notes__list li {
-      grid-template-columns: 0.375rem 1fr;
-      gap: 0.625rem;
-      padding: 0.625rem 0;
-      font-size: var(--text-caption);
-      line-height: 1.55;
-      text-wrap: pretty;
+    .plan-shared-notes__content--desktop {
+      display: none;
     }
 
-    .plan-shared-notes__list li::before {
-      width: 0.375rem;
-      margin-top: calc((1.55em - 1px) / 2);
+    .plan-shared-notes__accordion--mobile {
+      display: block;
     }
   }
 </style>

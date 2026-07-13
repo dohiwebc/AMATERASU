@@ -36,7 +36,7 @@ const pageDescription = toMetaDescription(work.shortDescription, work.descriptio
     </div>
   </div>
 
-  <section class="section section--after-header section--white">
+  <section class="section section--after-header section--white work-detail-page">
     <div class="container container--wide">
       <WorkDetail work={work} />
     </div>
@@ -44,3 +44,16 @@ const pageDescription = toMetaDescription(work.shortDescription, work.descriptio
 
   <CTASection settings={settings} />
 </Layout>
+
+<style>
+  @media (max-width: 767px) {
+    .page-header--compact {
+      padding-block: var(--space-sm) var(--space-xs);
+    }
+
+    .work-detail-page {
+      padding-top: var(--space-md);
+      padding-bottom: var(--space-xl);
+    }
+  }
+</style>

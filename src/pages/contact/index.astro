@@ -35,7 +35,10 @@ const xNote = contact.xDescription?.trim();
   <section class="section section--after-header">
     <div class="container">
       <div class="contact-reassure">
-        <p class="contact-reassure__lead">ご相談は無料です。しつこい営業は一切ありません。</p>
+        <p class="contact-reassure__lead">
+          <span>ご相談は無料です。</span>
+          <span>しつこい営業は一切ありません。</span>
+        </p>
         <p class="contact-reassure__reply cms-text">{contact.replyTime}</p>
       </div>
 
@@ -214,5 +217,107 @@ const xNote = contact.xDescription?.trim();
     padding-top: var(--space-md);
     border-top: 1px solid var(--color-border-light);
     margin-bottom: 0;
+  }
+
+  @media (max-width: 767px) {
+    :global(.page-header) {
+      padding-block: var(--space-md) var(--space-sm);
+    }
+
+    :global(.page-header__label) {
+      margin-bottom: 0.375rem;
+    }
+
+    :global(.page-header__title) {
+      font-size: clamp(1.5rem, 6vw, 1.75rem);
+      margin-bottom: 0.5rem;
+    }
+
+    :global(.page-header__desc) {
+      font-size: var(--text-small);
+      line-height: 1.55;
+      text-wrap: pretty;
+    }
+
+    :global(.section.section--after-header) {
+      padding-top: var(--space-md);
+    }
+
+    :global(.faq-section.section) {
+      padding-block: var(--space-xl);
+    }
+
+    .contact-reassure {
+      padding: var(--space-sm) var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .contact-reassure__lead {
+      font-size: var(--text-body);
+      margin-bottom: 0.25rem;
+    }
+
+    .contact-reassure__lead span {
+      display: block;
+    }
+
+    .contact-reassure__reply {
+      font-size: var(--text-small);
+      line-height: 1.55;
+    }
+
+    .contact-layout {
+      gap: var(--space-lg);
+    }
+
+    .contact-form-section__desc {
+      font-size: var(--text-small);
+      line-height: 1.55;
+      margin-bottom: var(--space-sm);
+    }
+
+    .contact-layout__aside {
+      gap: var(--space-md);
+    }
+
+    .contact-alt__label {
+      margin-bottom: 0.375rem;
+    }
+
+    .contact-alt__list {
+      gap: var(--space-sm);
+    }
+
+    .contact-alt__title {
+      font-size: var(--text-caption);
+      margin-bottom: 0.25rem;
+    }
+
+    .contact-alt__link {
+      font-size: var(--text-small);
+    }
+
+    .contact-alt__desc {
+      margin-top: 0.375rem;
+      font-size: var(--text-caption);
+      line-height: 1.5;
+    }
+
+    .contact-note {
+      padding-top: var(--space-sm);
+    }
+
+    .contact-note :global(.section-title) {
+      margin-bottom: var(--space-sm);
+    }
+
+    .contact-note :global(.list-check) {
+      gap: 0.5rem;
+    }
+
+    .contact-note :global(.list-check li) {
+      font-size: var(--text-small);
+      line-height: 1.55;
+    }
   }
 </style>

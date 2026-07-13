@@ -1,5 +1,6 @@
 ---
 import Button from '@/components/Button.astro';
+import SiteLogo from '@/components/SiteLogo.astro';
 import { getContactSettings } from '@/lib/microcms';
 import { getInstagramHandle, getXHandle, hasSocialUrl } from '@/lib/text';
 import type { SiteSettings } from '@/types/cms';
@@ -91,8 +92,7 @@ const hasChannels = Boolean(settings.email) || hasSocialChannels;
 
     <aside class="cta-section__aside">
       <p class="cta-section__location">{settings.location}を拠点に活動</p>
-      <p class="cta-section__brand">{settings.logoText}</p>
-      <p class="cta-section__studio label-en">Web Studio</p>
+      <SiteLogo variant="text" size="cta" alt={settings.brandDisplay} />
     </aside>
   </div>
 </section>
@@ -208,17 +208,19 @@ const hasChannels = Boolean(settings.email) || hasSocialChannels;
     margin-bottom: var(--space-sm);
   }
 
-  .cta-section__brand {
-    font-family: var(--font-serif);
-    font-size: 1.375rem;
-    letter-spacing: 0.08em;
-  }
-
-  .cta-section__studio {
-    margin-top: 0.25rem;
-  }
-
   @media (max-width: 767px) {
+    .cta-section__title {
+      font-size: clamp(1.5rem, 5vw, 1.75rem);
+      margin-bottom: var(--space-sm);
+    }
+
+    .cta-section__desc {
+      font-size: var(--text-small);
+      line-height: 1.6;
+      text-wrap: pretty;
+      margin-bottom: var(--space-md);
+    }
+
     .cta-section__channels {
       margin-top: var(--space-sm);
       padding-top: 0;

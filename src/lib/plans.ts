@@ -78,3 +78,24 @@ export function getPlanSharedContent(
     scopeTitle: 'システム開発について',
   };
 }
+
+const PRICE_NOTE_KEYWORDS = ['価格', '料金', '費用', 'ドメイン', 'サーバー', 'CMS機能'] as const;
+
+/** ご確認事項を「料金について」とそれ以外に分類 */
+export function splitGeneralNotesByTopic(notes: string[]): {
+  confirmNotes: string[];
+  priceNotes: string[];
+} {
+  const confirmNotes: string[] = [];
+  const priceNotes: string[] = [];
+
+  for (const note of notes) {
+    if (PRICE_NOTE_KEYWORDS.some((keyword) => note.includes(keyword))) {
+      priceNotes.push(note);
+    } else {
+      confirmNotes.push(note);
+    }
+  }
+
+  return { confirmNotes, priceNotes };
+}

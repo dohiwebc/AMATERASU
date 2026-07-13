@@ -1,6 +1,7 @@
 ---
 import Button from '@/components/Button.astro';
 import { getContactSettings } from '@/lib/microcms';
+import { getAcceptanceStatus } from '@/lib/acceptance-status';
 import type { SiteSettings } from '@/types/cms';
 
 interface Props {
@@ -9,18 +10,7 @@ interface Props {
 
 const { settings } = Astro.props;
 const contact = await getContactSettings();
-const isAccepting = settings.isAcceptingOrders !== false;
-
-const DEFAULT_CLOSED_NOTE =
-  '現在、新規のご相談の受付を一時休止しております。\n再開までいましばらくお待ちください。';
-const DEFAULT_CLOSED_REPLY = '受付再開の時期は、お知らせページにてご案内いたします。';
-
-const leadText = isAccepting
-  ? contact.studioNoteLead
-  : contact.closedNoteLead?.trim() || DEFAULT_CLOSED_NOTE;
-const replyText = isAccepting
-  ? contact.replyTime
-  : contact.closedReplyTime?.trim() || DEFAULT_CLOSED_REPLY;
+const { isAccepting, leadText, replyText } = getAcceptanceStatus(settings, contact);
 ---
 
 <section class="acceptance-status" aria-labelledby="acceptance-status-title">

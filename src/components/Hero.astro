@@ -1,5 +1,6 @@
 ---
 import Button from '@/components/Button.astro';
+import SiteLogo from '@/components/SiteLogo.astro';
 import type { SiteSettings } from '@/types/cms';
 
 interface Props {
@@ -10,6 +11,8 @@ const { settings } = Astro.props;
 ---
 
 <section class="hero">
+  <div class="hero__accent" aria-hidden="true"></div>
+  <div class="hero__glow" aria-hidden="true"></div>
   <div class="hero__wash" aria-hidden="true"></div>
 
   <div class="hero__inner container">
@@ -18,14 +21,9 @@ const { settings } = Astro.props;
         {settings.location} — Web Production Studio
       </p>
 
-      <h1 class="hero__display" aria-label={settings.brandDisplay}>
-        <span class="hero__display-line">{settings.logoText}</span>
+      <h1 class="hero__title">
+        <SiteLogo variant="full" size="hero" alt={settings.brandDisplay} loading="eager" />
       </h1>
-
-      <div class="hero__meta">
-        <p class="hero__studio label-en">Web Studio</p>
-        <div class="hero__rule" aria-hidden="true"></div>
-      </div>
     </header>
 
     <div class="hero__content">
@@ -37,8 +35,8 @@ const { settings } = Astro.props;
       </div>
 
       <div class="hero__actions">
-        <Button href="/plans/" variant="primary" size="lg">本格制作プランを見る</Button>
-        <Button href="/works/" variant="text" size="lg">実績を見る</Button>
+        <Button href="/plans/" variant="primary" size="lg" class="hero__btn">本格制作プランを見る</Button>
+        <Button href="/works/" variant="text" size="lg" class="hero__btn">実績を見る</Button>
       </div>
     </div>
   </div>
@@ -60,8 +58,67 @@ const { settings } = Astro.props;
     z-index: 0;
     pointer-events: none;
     background:
+      radial-gradient(ellipse 70% 55% at 12% 88%, rgba(201, 168, 110, 0.1) 0%, transparent 58%),
       radial-gradient(ellipse 80% 60% at 85% 15%, rgba(229, 217, 197, 0.45) 0%, transparent 60%),
       radial-gradient(ellipse 50% 40% at 10% 80%, rgba(244, 240, 233, 0.8) 0%, transparent 50%);
+  }
+
+  .hero__glow {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.9;
+    background:
+      conic-gradient(
+        from 200deg at 72% 14%,
+        transparent 0deg,
+        rgba(201, 168, 110, 0.07) 14deg,
+        transparent 28deg,
+        rgba(201, 168, 110, 0.05) 42deg,
+        transparent 56deg,
+        rgba(201, 168, 110, 0.04) 70deg,
+        transparent 84deg
+      ),
+      linear-gradient(118deg, transparent 58%, rgba(255, 252, 246, 0.35) 100%);
+  }
+
+  .hero__accent {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .hero__accent::before {
+    content: '';
+    position: absolute;
+    top: -12%;
+    right: -8%;
+    width: min(62vw, 34rem);
+    height: min(62vw, 34rem);
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      rgba(201, 168, 110, 0.16) 0%,
+      rgba(201, 168, 110, 0.05) 38%,
+      transparent 68%
+    );
+  }
+
+  .hero__accent::after {
+    content: '';
+    position: absolute;
+    top: 4%;
+    right: 6%;
+    width: min(44vw, 22rem);
+    height: min(44vw, 22rem);
+    border-radius: 50%;
+    border: 1px solid rgba(201, 168, 110, 0.2);
+    box-shadow:
+      0 0 0 1.25rem rgba(201, 168, 110, 0.05),
+      0 0 0 2.75rem rgba(201, 168, 110, 0.025);
   }
 
   .hero__inner {
@@ -75,34 +132,13 @@ const { settings } = Astro.props;
 
   .hero__eyebrow {
     margin-bottom: clamp(2rem, 5vw, 3.5rem);
+    font-size: 0.8125rem;
+    letter-spacing: 0.14em;
   }
 
-  .hero__display {
+  .hero__title {
     margin-bottom: clamp(1rem, 3vw, 1.75rem);
-  }
-
-  .hero__display-line {
-    display: block;
-    font-family: var(--font-serif);
-    font-size: var(--text-display);
-    font-weight: 500;
-    line-height: 0.95;
-    letter-spacing: 0.12em;
-    color: var(--color-text);
-  }
-
-  .hero__meta {
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
-  }
-
-  .hero__rule {
-    flex: 1;
-    max-width: 120px;
-    height: 1px;
-    background-color: var(--color-accent);
-    opacity: 0.6;
+    line-height: 0;
   }
 
   .hero__content {
@@ -149,6 +185,13 @@ const { settings } = Astro.props;
     margin-top: var(--space-sm);
   }
 
+  @media (max-width: 767px) {
+    .hero__title {
+      display: flex;
+      justify-content: center;
+    }
+  }
+
   @media (min-width: 480px) {
     .hero__actions {
       flex-direction: row;
@@ -165,17 +208,64 @@ const { settings } = Astro.props;
 
     .hero__wash {
       background:
-        radial-gradient(ellipse 55% 45% at 75% 20%, rgba(229, 217, 197, 0.35) 0%, transparent 65%),
-        radial-gradient(ellipse 35% 30% at 15% 75%, rgba(244, 240, 233, 0.55) 0%, transparent 55%);
+        radial-gradient(ellipse 48% 42% at 4% 92%, rgba(201, 168, 110, 0.14) 0%, transparent 62%),
+        radial-gradient(ellipse 55% 45% at 75% 20%, rgba(229, 217, 197, 0.4) 0%, transparent 65%),
+        radial-gradient(ellipse 35% 30% at 15% 75%, rgba(244, 240, 233, 0.6) 0%, transparent 55%);
+    }
+
+    .hero__glow {
+      background:
+        conic-gradient(
+          from 198deg at 70% 12%,
+          transparent 0deg,
+          rgba(201, 168, 110, 0.09) 12deg,
+          transparent 26deg,
+          rgba(201, 168, 110, 0.06) 40deg,
+          transparent 54deg,
+          rgba(201, 168, 110, 0.05) 68deg,
+          transparent 82deg,
+          rgba(201, 168, 110, 0.03) 96deg,
+          transparent 110deg
+        ),
+        linear-gradient(125deg, transparent 52%, rgba(255, 252, 246, 0.42) 100%);
+    }
+
+    .hero__accent::before {
+      top: -6%;
+      right: 2%;
+      width: min(48vw, 38rem);
+      height: min(48vw, 38rem);
+      background: radial-gradient(
+        circle,
+        rgba(201, 168, 110, 0.18) 0%,
+        rgba(201, 168, 110, 0.06) 40%,
+        transparent 70%
+      );
+    }
+
+    .hero__accent::after {
+      top: 10%;
+      right: 14%;
+      width: min(34vw, 26rem);
+      height: min(34vw, 26rem);
+      border-color: rgba(201, 168, 110, 0.24);
+      box-shadow:
+        0 0 0 1.5rem rgba(201, 168, 110, 0.06),
+        0 0 0 3.25rem rgba(201, 168, 110, 0.03);
     }
 
     .hero__inner {
       display: grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-      gap: clamp(3rem, 6vw, 5.5rem);
+      grid-template-columns: minmax(0, 26rem) minmax(0, 1fr);
+      gap: clamp(2rem, 3.5vw, 3.5rem);
       align-items: end;
+      transform: translateX(-1.5rem);
       padding-top: 0;
-      max-width: var(--container-wide);
+      width: 100%;
+      max-width: var(--container-extra-wide);
+      margin-inline: auto;
+      padding-left: clamp(0.5rem, 1.5vw, 1rem);
+      padding-right: clamp(1.25rem, 3vw, 2rem);
     }
 
     .hero__brand {
@@ -184,52 +274,91 @@ const { settings } = Astro.props;
 
     .hero__eyebrow {
       margin-bottom: var(--space-xl);
+      font-size: clamp(0.875rem, 1.1vw, 1rem);
+      letter-spacing: 0.16em;
     }
 
-    .hero__display {
+    .hero__title {
       margin-bottom: var(--space-lg);
     }
 
-    .hero__display-line {
-      font-size: clamp(3.25rem, 5vw, 4.5rem);
-      letter-spacing: 0.1em;
-      line-height: 1.05;
-    }
-
-    .hero__meta {
-      display: none;
-    }
-
     .hero__content {
-      gap: var(--space-lg);
+      gap: var(--space-xl);
+      width: 100%;
+      min-width: 0;
+      max-width: none;
       padding-bottom: 0.35rem;
       border-left: 1px solid var(--color-accent-light);
-      padding-left: clamp(2rem, 4vw, 3rem);
+      padding-left: clamp(1rem, 1.75vw, 1.5rem);
+      margin-left: -1.75rem;
     }
 
     .hero__catch {
-      font-size: clamp(1.25rem, 1.8vw, 1.4375rem);
+      font-size: clamp(1.625rem, 2.5vw, 2.125rem);
       max-width: none;
-      line-height: var(--leading-snug);
+      line-height: 1.45;
+      letter-spacing: 0.05em;
     }
 
-    .hero__desc,
+    .hero__copy {
+      max-width: none;
+    }
+
+    .hero__desc {
+      font-size: clamp(1.125rem, 1.45vw, 1.3125rem);
+      line-height: 1.95;
+      max-width: none;
+    }
+
     .hero__note {
+      font-size: clamp(1.0625rem, 1.2vw, 1.1875rem);
+      line-height: 1.85;
       max-width: none;
     }
 
     .hero__actions {
-      margin-top: var(--space-md);
+      margin-top: var(--space-lg);
+      gap: var(--space-xl);
+    }
+
+    .hero__actions :global(.hero__btn.btn--lg) {
+      padding: 1.125rem 2.375rem;
+      font-size: 1.0625rem;
+      letter-spacing: 0.1em;
+    }
+
+    .hero__actions :global(.hero__btn.btn--text) {
+      font-size: 1.0625rem;
+      letter-spacing: 0.08em;
     }
   }
 
   @media (min-width: 1200px) {
     .hero__inner {
-      gap: 6rem;
+      grid-template-columns: minmax(0, 32rem) minmax(0, 1fr);
+      gap: clamp(2.5rem, 4vw, 4rem);
     }
 
-    .hero__display-line {
-      font-size: 4.75rem;
+    .hero__eyebrow {
+      font-size: 1.0625rem;
+      letter-spacing: 0.18em;
+    }
+
+    .hero__catch {
+      font-size: 2.125rem;
+    }
+
+    .hero__desc {
+      font-size: 1.3125rem;
+    }
+
+    .hero__actions :global(.hero__btn.btn--lg) {
+      padding: 1.25rem 2.625rem;
+      font-size: 1.125rem;
+    }
+
+    .hero__actions :global(.hero__btn.btn--text) {
+      font-size: 1.125rem;
     }
   }
 </style>

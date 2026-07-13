@@ -95,4 +95,29 @@ const hasContent = groupByCategory ? groupedFaqs.length > 0 : filteredFaqs.lengt
   .faq-section__action {
     margin-top: var(--space-xl);
   }
+
+  @media (max-width: 767px) {
+    .faq-section :global(.section-title) {
+      margin-bottom: var(--space-md);
+    }
+
+    .faq-section :global(.section-title__desc) {
+      font-size: var(--text-caption);
+      line-height: 1.55;
+      text-wrap: pretty;
+    }
+
+    .faq-section__groups {
+      gap: var(--space-lg);
+    }
+
+    .faq-section__category {
+      font-size: var(--text-body);
+      margin-bottom: var(--space-xs);
+    }
+
+    .faq-section__action {
+      margin-top: var(--space-md);
+    }
+  }
 </style>
