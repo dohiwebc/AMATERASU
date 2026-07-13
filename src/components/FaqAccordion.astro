@@ -204,6 +204,38 @@ const { faqs } = Astro.props;
     margin: 0;
   }
 
+  @media (max-width: 767px) {
+    .faq-accordion__question {
+      gap: 0.875rem;
+      padding: 0.875rem 0;
+      font-size: var(--text-small);
+    }
+
+    .faq-accordion__question-text {
+      padding-block: 0;
+    }
+
+    .faq-accordion__icon {
+      width: 0.625rem;
+      height: 0.625rem;
+      margin-top: 0.3rem;
+    }
+
+    .faq-accordion__icon::before {
+      width: 0.5rem;
+    }
+
+    .faq-accordion__icon::after {
+      height: 0.5rem;
+    }
+
+    .faq-accordion__answer-inner {
+      padding: 0 0.5rem 0.875rem 0;
+      font-size: var(--text-small);
+      line-height: 1.55;
+    }
+  }
+
   @media (min-width: 768px) {
     .faq-accordion__question {
       padding: 1.375rem 0;

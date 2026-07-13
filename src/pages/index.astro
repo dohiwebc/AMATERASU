@@ -13,7 +13,7 @@ import CTASection from '@/components/CTASection.astro';
 import Button from '@/components/Button.astro';
 import { SITE_TYPE } from '@/types/cms';
 import { getSiteSettings, getPlans, getWorks, getNews } from '@/lib/microcms';
-import { buildWorkPlansMap } from '@/lib/works';
+import { buildWorkPlansMap, getHomeFeaturedWorks } from '@/lib/works';
 
 const settings = await getSiteSettings();
 const [normalPlans, miniPlans, works, news, allPlans] = await Promise.all([
@@ -23,7 +23,7 @@ const [normalPlans, miniPlans, works, news, allPlans] = await Promise.all([
   getNews(),
   getPlans(),
 ]);
-const featuredWorks = works.slice(0, 3);
+const featuredWorks = getHomeFeaturedWorks(works);
 const workPlansMap = buildWorkPlansMap(allPlans);
 ---
 
@@ -134,6 +134,26 @@ const workPlansMap = buildWorkPlansMap(allPlans);
   .works-gallery__grid {
     display: grid;
     gap: var(--space-lg);
+  }
+
+  @media (max-width: 767px) {
+    #works :global(.section-title) {
+      margin-bottom: var(--space-md);
+    }
+
+    #works :global(.section-title__desc) {
+      font-size: var(--text-caption);
+      line-height: 1.55;
+      text-wrap: pretty;
+    }
+
+    .works-gallery {
+      gap: var(--space-md);
+    }
+
+    .works-gallery__grid {
+      gap: var(--space-md);
+    }
   }
 
   @media (min-width: 768px) {

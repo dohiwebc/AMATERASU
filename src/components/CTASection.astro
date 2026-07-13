@@ -25,13 +25,16 @@ const {
 const instagramHandle = getInstagramHandle(settings.instagramUrl);
 const xHandle = getXHandle(settings.xUrl);
 const xNote = contact.xDescription?.trim();
+const showInstagram = hasSocialUrl(settings.instagramUrl) && !!instagramHandle;
+const showX = hasSocialUrl(settings.xUrl) && !!xHandle;
+const hasSocialChannels = showInstagram || showX;
+const hasChannels = Boolean(settings.email) || hasSocialChannels;
 ---
 
 <section class="cta-section">
-  <div class="cta-section__glow" aria-hidden="true"></div>
   <div class="cta-section__line" aria-hidden="true"></div>
 
-  <div class="cta-section__inner container">
+  <div class:list={['cta-section__inner', 'container', !hasSocialChannels && 'cta-section__inner--mail-only']}>
     <div class="cta-section__main">
       <p class="cta-section__label label-en">Contact</p>
       <h2 class="cta-section__title cms-text">{title}</h2>
@@ -42,8 +45,8 @@ const xNote = contact.xDescription?.trim();
           お問い合わせはこちら
         </Button>
 
-        {(settings.email || (hasSocialUrl(settings.instagramUrl) && instagramHandle) || (hasSocialUrl(settings.xUrl) && xHandle)) && (
-          <ul class="cta-section__channels">
+        {hasChannels && (
+          <ul class:list={['cta-section__channels', !hasSocialChannels && 'cta-section__channels--mail-only']}>
             {settings.email && (
               <li class="cta-section__channel">
                 <span class="cta-section__channel-label label-en">Mail</span>
@@ -52,7 +55,7 @@ const xNote = contact.xDescription?.trim();
                 </a>
               </li>
             )}
-            {hasSocialUrl(settings.instagramUrl) && instagramHandle && (
+            {showInstagram && (
               <li class="cta-section__channel">
                 <span class="cta-section__channel-label label-en">Instagram</span>
                 <a
@@ -65,7 +68,7 @@ const xNote = contact.xDescription?.trim();
                 </a>
               </li>
             )}
-            {hasSocialUrl(settings.xUrl) && xHandle && (
+            {showX && (
               <li class="cta-section__channel">
                 <span class="cta-section__channel-label">X（旧Twitter）</span>
                 <div class="cta-section__channel-body">
@@ -96,32 +99,7 @@ const xNote = contact.xDescription?.trim();
 
 <style>
   .cta-section {
-    position: relative;
-    background-color: var(--color-bg-cta);
     padding-block: clamp(3.5rem, 8vw, 5.5rem);
-    overflow: hidden;
-  }
-
-  .cta-section__glow {
-    position: absolute;
-    z-index: 0;
-    top: -40%;
-    right: -15%;
-    width: 50%;
-    height: 100%;
-    pointer-events: none;
-    background: radial-gradient(circle, rgba(232, 220, 200, 0.5) 0%, transparent 65%);
-  }
-
-  .cta-section__line {
-    position: absolute;
-    z-index: 1;
-    top: 0;
-    left: clamp(1.25rem, 4vw, 2.5rem);
-    width: 64px;
-    height: 1px;
-    pointer-events: none;
-    background-color: var(--color-accent);
   }
 
   .cta-section__inner {
@@ -138,7 +116,6 @@ const xNote = contact.xDescription?.trim();
   }
 
   .cta-section__label {
-    color: var(--color-accent-dark);
     margin-bottom: var(--space-md);
   }
 
@@ -223,12 +200,11 @@ const xNote = contact.xDescription?.trim();
 
   .cta-section__aside {
     padding-top: var(--space-md);
-    border-top: 1px solid var(--color-accent-light);
+    border-top: 1px solid rgba(201, 168, 110, 0.28);
   }
 
   .cta-section__location {
     font-size: var(--text-body);
-    color: var(--color-text-muted);
     margin-bottom: var(--space-sm);
   }
 
@@ -236,11 +212,35 @@ const xNote = contact.xDescription?.trim();
     font-family: var(--font-serif);
     font-size: 1.375rem;
     letter-spacing: 0.08em;
-    color: var(--color-text);
   }
 
   .cta-section__studio {
     margin-top: 0.25rem;
+  }
+
+  @media (max-width: 767px) {
+    .cta-section__channels {
+      margin-top: var(--space-sm);
+      padding-top: 0;
+      border-top: none;
+    }
+
+    .cta-section__inner--mail-only {
+      gap: var(--space-md);
+    }
+
+    .cta-section__channels--mail-only {
+      margin-top: var(--space-sm);
+      gap: 0;
+    }
+
+    .cta-section__inner--mail-only .cta-section__aside {
+      padding-top: var(--space-sm);
+    }
+
+    .cta-section__inner--mail-only .cta-section__location {
+      margin-bottom: 0.375rem;
+    }
   }
 
   @media (min-width: 768px) {
@@ -256,7 +256,7 @@ const xNote = contact.xDescription?.trim();
 
     .cta-section__aside {
       border-top: none;
-      border-left: 1px solid var(--color-accent-light);
+      border-left: 1px solid rgba(201, 168, 110, 0.28);
       padding-top: 0;
       padding-left: var(--space-xl);
       text-align: right;

@@ -257,10 +257,13 @@ main {
 
 /* ── CTA：締めのダーク ── */
 .cta-section {
-  background-color: var(--color-bg-cta);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background-color: #1a1713;
   background-image:
-    radial-gradient(ellipse 90% 80% at 18% 0%, #2a2620 0%, transparent 60%),
-    linear-gradient(160deg, #241f19 0%, var(--color-bg-cta) 55%, #17140f 100%);
+    radial-gradient(ellipse 110% 95% at 12% -15%, #2a2620 0%, #201d18 42%, #1a1713 72%),
+    radial-gradient(ellipse 75% 65% at 100% 105%, rgba(23, 20, 15, 0.95) 0%, #1a1713 58%);
   color: var(--color-on-dark);
 }
 
@@ -271,8 +274,8 @@ main {
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 70% 65% at 6% -5%, rgba(201, 168, 110, 0.22) 0%, rgba(201, 168, 110, 0.06) 40%, transparent 66%),
-    radial-gradient(ellipse 55% 50% at 98% 100%, rgba(201, 168, 110, 0.1) 0%, transparent 60%);
+    radial-gradient(ellipse 70% 65% at 6% -5%, rgba(201, 168, 110, 0.2) 0%, rgba(201, 168, 110, 0.05) 42%, rgba(26, 23, 19, 0) 68%),
+    radial-gradient(ellipse 55% 50% at 98% 100%, rgba(201, 168, 110, 0.09) 0%, rgba(26, 23, 19, 0) 62%);
 }
 
 .cta-section::after {
@@ -295,13 +298,15 @@ main {
   );
 }
 
-.cta-section__glow {
-  z-index: 0;
-  top: -40%;
-  right: -12%;
-  width: 60%;
-  height: 115%;
-  background: radial-gradient(circle at 45% 45%, rgba(201, 168, 110, 0.14) 0%, transparent 60%) !important;
+.cta-section__line {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: clamp(1.25rem, 4vw, 2.5rem);
+  width: 72px;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, var(--color-gold-bright) 0%, transparent 100%);
 }
 
 .cta-section__inner {
@@ -326,11 +331,6 @@ main {
 .cta-section__aside {
   border-color: rgba(201, 168, 110, 0.28) !important;
 }
-.cta-section__line {
-  z-index: 1;
-  width: 72px;
-  background: linear-gradient(90deg, var(--color-gold-bright) 0%, transparent 100%) !important;
-}
 
 .cta-section .btn--primary {
   background-color: transparent;
@@ -346,8 +346,7 @@ main {
 }
 
 /* ── レイヤー3：カード（無地・和紙なし） ── */
-.plan-card,
-.mini-plan-card {
+.plan-card {
   position: relative;
   z-index: 1;
   background-color: #faf7f0 !important;
@@ -370,8 +369,7 @@ main {
   border-color: #e2d8c7 !important;
 }
 
-.plan-card:hover,
-.mini-plan-card:hover {
+.plan-card:hover {
   box-shadow: none;
 }
 

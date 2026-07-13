@@ -54,6 +54,10 @@ export interface Work {
   thumbnail?: string;
   url?: string;
   isVisible: boolean;
+  /** トップページに表示するか */
+  isFeatured: boolean;
+  /** 表示順（数値が小さいほど先） */
+  sortOrder: number;
   /** 制作（完了）年 */
   year?: string;
 }

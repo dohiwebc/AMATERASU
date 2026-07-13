@@ -1,6 +1,7 @@
 import { createClient } from 'microcms-js-sdk';
 import { mockContactSettings, mockNews, mockPlans, mockSiteSettings, mockWorks } from '@/data/mock';
 import { sortNewsItems } from '@/lib/news';
+import { sortWorks } from '@/lib/works';
 import { resolvePlanSlug, PLAN_SLUG_ALIASES } from '@/lib/plan-slugs';
 import type { ContactSettings, NewsItem, ParsedContactSettings, Plan, SiteSettings, SiteType, Work, WorkType } from '@/types/cms';
 
@@ -45,6 +46,7 @@ type RawWork = Partial<Work> & {
   siteUrl?: string;
   thumbnail?: string | { url?: string };
   relatedPlans?: Array<{ id?: string; slug?: string }>;
+  order?: number;
 };
 
 function pickSelectValue<T extends string>(
@@ -82,6 +84,8 @@ function normalizeWork(raw: RawWork): Work {
     thumbnail: normalizeThumbnail(raw.thumbnail),
     url: raw.siteUrl ?? raw.url,
     isVisible: raw.isVisible ?? true,
+    isFeatured: Boolean(raw.isFeatured),
+    sortOrder: raw.sortOrder ?? raw.order ?? 0,
     year: raw.year,
   };
 }
@@ -139,7 +143,8 @@ function normalizePlanRelatedWorks(
       if (!source?.title && !source?.slug) return null;
       return normalizeWork(source);
     })
-    .filter((work): work is Work => Boolean(work && work.isVisible && work.slug));
+    .filter((work): work is Work => Boolean(work && work.isVisible && work.slug))
+    .sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
 function resolveRelatedWorksFromPlans(
@@ -154,7 +159,8 @@ function resolveRelatedWorksFromPlans(
       ),
     )
     .map((raw) => normalizeWork(raw))
-    .filter((work) => work.isVisible);
+    .filter((work) => work.isVisible)
+    .sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
 function attachRelatedWorks(plans: Plan[], rawPlans: RawPlan[], allWorks: RawWork[]): Plan[] {
@@ -197,7 +203,7 @@ async function fetchVisiblePlansFromCMS(): Promise<{
         queries: {
           depth: '2',
           filters: 'isVisible[equals]true',
-          orders: '-year',
+          orders: 'sortOrder',
           limit: 100,
         },
       }),
@@ -336,20 +342,20 @@ export async function getPlanBySlug(slug: string): Promise<Plan | undefined> {
 
 export async function getWorks(): Promise<Work[]> {
   const client = getClient();
-  if (!client) return mockWorks.filter((w) => w.isVisible);
+  if (!client) return sortWorks(mockWorks.filter((w) => w.isVisible));
 
   try {
     const data = await client.getList<RawWork>({
       endpoint: 'works',
       queries: {
         filters: 'isVisible[equals]true',
-        orders: '-year',
+        orders: 'sortOrder',
       },
     });
-    return data.contents.map((work) => normalizeWork(work));
+    return sortWorks(data.contents.map((work) => normalizeWork(work)));
   } catch {
     console.warn('[microCMS] works の取得に失敗しました。モックデータを使用します。');
-    return mockWorks.filter((w) => w.isVisible);
+    return sortWorks(mockWorks.filter((w) => w.isVisible));
   }
 }
 

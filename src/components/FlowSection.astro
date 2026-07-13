@@ -86,6 +86,43 @@ const steps = [
     line-height: 1.75;
   }
 
+  @media (max-width: 767px) {
+    .flow-section :global(.section-title) {
+      margin-bottom: var(--space-md);
+    }
+
+    .flow-section :global(.section-title__desc) {
+      font-size: var(--text-caption);
+      line-height: 1.55;
+      text-wrap: pretty;
+    }
+
+    .flow {
+      gap: var(--space-sm);
+    }
+
+    .flow__item {
+      padding: 0.875rem 1rem;
+      grid-template-columns: 2.25rem 1fr;
+      gap: 0.125rem 0.75rem;
+    }
+
+    .flow__number {
+      font-size: 0.9375rem;
+      padding-top: 0.05rem;
+    }
+
+    .flow__title {
+      font-size: var(--text-small);
+    }
+
+    .flow__desc {
+      font-size: var(--text-caption);
+      line-height: 1.55;
+      text-wrap: pretty;
+    }
+  }
+
   @media (min-width: 768px) {
     .flow {
       grid-template-columns: repeat(2, 1fr);

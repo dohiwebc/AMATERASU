@@ -196,6 +196,16 @@ const hasWorks = works.length > 0;
     color: var(--color-text-muted);
   }
 
+  @media (max-width: 767px) {
+    .works-filter {
+      margin-bottom: var(--space-md);
+    }
+
+    .works-grid {
+      gap: var(--space-lg);
+    }
+  }
+
   @media (min-width: 768px) {
     .works-grid {
       display: grid;

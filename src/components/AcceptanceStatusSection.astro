@@ -170,4 +170,82 @@ const replyText = isAccepting
   .acceptance-status__link {
     margin-top: var(--space-sm);
   }
+
+  @media (max-width: 767px) {
+    .acceptance-status {
+      padding: var(--space-xl) 0;
+    }
+
+    .acceptance-status__inner {
+      gap: var(--space-md);
+      text-align: left;
+    }
+
+    .acceptance-status__head {
+      width: 100%;
+    }
+
+    .acceptance-status__label {
+      margin-bottom: var(--space-sm);
+    }
+
+    .acceptance-status__title-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.625rem;
+    }
+
+    .acceptance-status__title {
+      font-size: clamp(1.25rem, 4.8vw, 1.4375rem);
+    }
+
+    .acceptance-status__badge {
+      padding: 0.35rem 0.75rem;
+      font-size: var(--text-caption);
+    }
+
+    .acceptance-status__dot {
+      width: 0.5rem;
+      height: 0.5rem;
+    }
+
+    .acceptance-status__body {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+    }
+
+    .acceptance-status__lead {
+      font-size: var(--text-small);
+      line-height: 1.55;
+      margin-bottom: var(--space-sm);
+      text-wrap: pretty;
+    }
+
+    .acceptance-status__reply {
+      width: 100%;
+      gap: 0.25rem;
+      margin-bottom: 0;
+      padding-top: var(--space-sm);
+      border-top: 1px solid var(--color-border-light);
+    }
+
+    .acceptance-status__term {
+      font-size: var(--text-caption);
+    }
+
+    .acceptance-status__desc {
+      font-size: var(--text-small);
+      line-height: 1.55;
+      text-wrap: pretty;
+    }
+
+    .acceptance-status__link {
+      display: inline-flex;
+      width: 100%;
+      margin-top: var(--space-md);
+      justify-content: center;
+    }
+  }
 </style>

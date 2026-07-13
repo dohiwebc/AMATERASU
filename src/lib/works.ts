@@ -50,3 +50,13 @@ export function countWorksByPlanSlug(
 export function isPlanSlug(value: string, planSlugs: string[]): boolean {
   return planSlugs.includes(value);
 }
+
+/** 表示順（sortOrder）の昇順で並べ替え */
+export function sortWorks(works: Work[]): Work[] {
+  return [...works].sort((a, b) => a.sortOrder - b.sortOrder);
+}
+
+/** トップページ用：「トップに表示」がオンな実績を最大 limit 件 */
+export function getHomeFeaturedWorks(works: Work[], limit = 3): Work[] {
+  return sortWorks(works.filter((work) => work.isFeatured)).slice(0, limit);
+}

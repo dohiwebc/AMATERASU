@@ -172,6 +172,8 @@ export const mockWorks: Work[] = [
     thumbnail: undefined,
     url: '#',
     isVisible: true,
+    isFeatured: true,
+    sortOrder: 1,
     year: '2025',
   },
   {
@@ -185,6 +187,8 @@ export const mockWorks: Work[] = [
     thumbnail: undefined,
     url: '#',
     isVisible: true,
+    isFeatured: true,
+    sortOrder: 2,
     year: '2025',
   },
   {
@@ -198,6 +202,8 @@ export const mockWorks: Work[] = [
     thumbnail: undefined,
     url: '#',
     isVisible: true,
+    isFeatured: true,
+    sortOrder: 3,
     year: '2024',
   },
   {
@@ -211,6 +217,8 @@ export const mockWorks: Work[] = [
     thumbnail: undefined,
     url: '#',
     isVisible: true,
+    isFeatured: false,
+    sortOrder: 4,
     year: '2025',
   },
   {
@@ -224,6 +232,8 @@ export const mockWorks: Work[] = [
     thumbnail: undefined,
     url: '#',
     isVisible: true,
+    isFeatured: false,
+    sortOrder: 5,
     year: '2025',
   },
   {
@@ -237,6 +247,8 @@ export const mockWorks: Work[] = [
     thumbnail: undefined,
     url: '#',
     isVisible: true,
+    isFeatured: false,
+    sortOrder: 6,
     year: '2025',
   },
 ];
