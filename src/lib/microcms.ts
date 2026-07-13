@@ -363,13 +363,25 @@ export async function getNews(): Promise<NewsItem[]> {
       queries: {
         filters: 'isVisible[equals]true',
         orders: '-date',
+        limit: 100,
       },
     });
-    return sortNewsItems(data.contents);
+    return sortNewsItems(data.contents.map(normalizeNewsItem));
   } catch {
     console.warn('[microCMS] news の取得に失敗しました。モックデータを使用します。');
     return sortNewsItems(mockNews);
   }
+}
+
+function normalizeNewsItem(raw: NewsItem): NewsItem {
+  return {
+    ...raw,
+    // API フィルタ後でも isVisible が欠けることがあるため明示的に正規化
+    isVisible: raw.isVisible !== false,
+    isFeatured: Boolean(raw.isFeatured),
+    sortOrder: typeof raw.sortOrder === 'number' ? raw.sortOrder : 0,
+    category: raw.category ?? 'info',
+  };
 }
 
 export function isUsingMockData(): boolean {
