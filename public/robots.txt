@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://dohiwebc.github.io/AMATERASU/sitemap-index.xml
+Sitemap: https://amaterasu-web.studio/sitemap-index.xml
