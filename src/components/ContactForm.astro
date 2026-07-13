@@ -1,5 +1,6 @@
 ---
 import type { ParsedContactSettings } from '@/types/cms';
+import { withBase } from '@/lib/paths';
 
 interface Props {
   contact: Pick<
@@ -155,7 +156,7 @@ const submitLabel = hasEndpoint ? contact.submitButtonText : 'フォーム準備
           required
         />
         <span class="contact-form__consent-text">
-          <a href="/privacy/" target="_blank" rel="noopener noreferrer">プライバシーポリシー</a>
+          <a href={withBase('/privacy/')} target="_blank" rel="noopener noreferrer">プライバシーポリシー</a>
           に同意のうえ送信する <span class="contact-form__required">必須</span>
         </span>
       </label>

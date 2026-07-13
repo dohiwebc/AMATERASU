@@ -3,6 +3,7 @@ import Button from '@/components/Button.astro';
 import WorkVisual from '@/components/WorkVisual.astro';
 import { getSiteTypeLabel, getWorkTypeLabel } from '@/types/cms';
 import type { Work } from '@/types/cms';
+import { withBase } from '@/lib/paths';
 
 interface Props {
   works: Work[];
@@ -33,7 +34,7 @@ function hasExternalUrl(work: Work): boolean {
         const typeLabel = getWorkTypeLabel(work.workType);
         const siteTypeLabel = getSiteTypeLabel(work.siteType);
         const summary = getWorkSummary(work);
-        const detailHref = `/works/${work.slug}/`;
+        const detailHref = withBase(`/works/${work.slug}/`);
         const showSiteLink = hasExternalUrl(work);
 
         return (

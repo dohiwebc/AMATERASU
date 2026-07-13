@@ -1,6 +1,7 @@
 ---
 import Layout from '@/layouts/Layout.astro';
 import { getSiteSettings } from '@/lib/microcms';
+import { withBase } from '@/lib/paths';
 
 const settings = await getSiteSettings();
 ---
@@ -160,7 +161,7 @@ const settings = await getSiteSettings();
           <h2>11. お問い合わせ</h2>
           <p>
             個人情報の取り扱いに関するご質問・ご相談は、
-            <a href="/contact/">お問い合わせページ</a>
+            <a href={withBase('/contact/')}>お問い合わせページ</a>
             または
             <a href={`mailto:${settings.email}`}>{settings.email}</a>
             までご連絡ください。

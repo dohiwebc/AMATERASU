@@ -3,6 +3,7 @@ import WorkVisual from '@/components/WorkVisual.astro';
 import { getSiteTypeLabel, getWorkTypeLabel } from '@/types/cms';
 import type { Work } from '@/types/cms';
 import type { WorkRelatedPlan } from '@/lib/works';
+import { withBase } from '@/lib/paths';
 
 interface Props {
   work: Work;
@@ -14,7 +15,7 @@ interface Props {
 const { work, variant = 'gallery', relatedPlans = [] } = Astro.props;
 const typeLabel = getWorkTypeLabel(work.workType);
 const siteTypeLabel = getSiteTypeLabel(work.siteType);
-const detailHref = `/works/${work.slug}/`;
+const detailHref = withBase(`/works/${work.slug}/`);
 const planSlugs = relatedPlans.map((plan) => plan.slug);
 ---
 

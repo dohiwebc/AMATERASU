@@ -2,6 +2,7 @@
 import Button from '@/components/Button.astro';
 import PlanRelatedWorks from '@/components/PlanRelatedWorks.astro';
 import { getPlanSharedContent } from '@/lib/plans';
+import { withBase } from '@/lib/paths';
 import { SITE_TYPE, type Plan, type SiteSettings } from '@/types/cms';
 
 interface Props {
@@ -51,7 +52,7 @@ const hasContent =
 
 <article class="plan-detail">
   <p class="plan-detail__back">
-    <a href={backHref}>{backLabel}</a>
+    <a href={withBase(backHref)}>{backLabel}</a>
   </p>
 
   <header class="plan-detail__hero">
@@ -168,7 +169,7 @@ const hasContent =
   <PlanRelatedWorks works={plan.relatedWorks} />
 
   <footer class="plan-detail__footer">
-    <a href={backHref} class="plan-detail__compare-link">{compareLabel}</a>
+    <a href={withBase(backHref)} class="plan-detail__compare-link">{compareLabel}</a>
   </footer>
 </article>
 

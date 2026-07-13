@@ -2,6 +2,7 @@
 import WorkVisual from '@/components/WorkVisual.astro';
 import { getSiteTypeLabel, getWorkTypeLabel } from '@/types/cms';
 import type { Work } from '@/types/cms';
+import { withBase } from '@/lib/paths';
 
 interface Props {
   work: Work;
@@ -53,7 +54,7 @@ const hasDetails =
 
 <article class="work-detail">
   <p class="work-detail__back">
-    <a href="/works/">← 制作実績一覧へ</a>
+    <a href={withBase('/works/')}>← 制作実績一覧へ</a>
   </p>
 
   <div class="work-detail__hero">

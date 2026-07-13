@@ -1,5 +1,6 @@
 ---
 import type { SiteSettings } from '@/types/cms';
+import { withBase } from '@/lib/paths';
 
 interface Props {
   settings: SiteSettings;
@@ -9,11 +10,11 @@ interface Props {
 const { settings, currentPath } = Astro.props;
 
 const navItems = [
-  { href: '/news/', label: 'お知らせ' },
-  { href: '/plans/', label: '本格制作プラン' },
-  { href: '/mini-plans/', label: 'ミニ制作' },
-  { href: '/works/', label: '実績' },
-  { href: '/contact/', label: 'お問い合わせ' },
+  { href: withBase('/news/'), label: 'お知らせ' },
+  { href: withBase('/plans/'), label: '本格制作プラン' },
+  { href: withBase('/mini-plans/'), label: 'ミニ制作' },
+  { href: withBase('/works/'), label: '実績' },
+  { href: withBase('/contact/'), label: 'お問い合わせ' },
 ];
 
 function isNavActive(pathname: string, href: string): boolean {
@@ -24,7 +25,7 @@ function isNavActive(pathname: string, href: string): boolean {
 
 <header class="header">
   <div class="header__inner container">
-    <a href="/" class="header__logo">
+    <a href={withBase('/')} class="header__logo">
       <span class="header__logo-text">{settings.logoText}</span>
       <span class="header__logo-sub label-en">Web Studio</span>
     </a>
@@ -51,7 +52,7 @@ function isNavActive(pathname: string, href: string): boolean {
           );
         })}
       </ul>
-      <a href="/contact/" class="header__cta btn btn--primary btn--sm">相談する</a>
+      <a href={withBase('/contact/')} class="header__cta btn btn--primary btn--sm">相談する</a>
     </nav>
   </div>
 </header>

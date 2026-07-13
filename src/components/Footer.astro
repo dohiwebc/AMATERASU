@@ -1,6 +1,7 @@
 ---
 import type { SiteSettings } from '@/types/cms';
 import { getInstagramHandle, getXHandle } from '@/lib/text';
+import { withBase } from '@/lib/paths';
 
 interface Props {
   settings: SiteSettings;
@@ -12,13 +13,13 @@ const instagramHandle = getInstagramHandle(settings.instagramUrl);
 const xHandle = getXHandle(settings.xUrl);
 
 const navItems = [
-  { href: '/news/', label: 'お知らせ' },
-  { href: '/plans/', label: '本格制作プラン' },
-  { href: '/mini-plans/', label: 'ミニ制作' },
-  { href: '/works/', label: '実績' },
-  { href: '/faq/', label: 'よくあるご質問' },
-  { href: '/contact/', label: 'お問い合わせ' },
-  { href: '/privacy/', label: 'プライバシーポリシー' },
+  { href: withBase('/news/'), label: 'お知らせ' },
+  { href: withBase('/plans/'), label: '本格制作プラン' },
+  { href: withBase('/mini-plans/'), label: 'ミニ制作' },
+  { href: withBase('/works/'), label: '実績' },
+  { href: withBase('/faq/'), label: 'よくあるご質問' },
+  { href: withBase('/contact/'), label: 'お問い合わせ' },
+  { href: withBase('/privacy/'), label: 'プライバシーポリシー' },
 ];
 ---
 

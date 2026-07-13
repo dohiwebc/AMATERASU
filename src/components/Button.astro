@@ -1,4 +1,6 @@
 ---
+import { resolveHref } from '@/lib/paths';
+
 interface Props {
   href: string;
   variant?: 'primary' | 'secondary' | 'outline' | 'text';
@@ -14,10 +16,12 @@ const {
   external = false,
   class: className = '',
 } = Astro.props;
+
+const resolvedHref = resolveHref(href);
 ---
 
 <a
-  href={href}
+  href={resolvedHref}
   class:list={['btn', `btn--${variant}`, `btn--${size}`, className]}
   {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
 >
