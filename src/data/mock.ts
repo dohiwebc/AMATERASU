@@ -27,7 +27,10 @@ export const mockSiteSettings: SiteSettings = {
     "ミニ制作プランはHTML・CSS・画像ファイルの納品が基本です。\nサーバーへの公開作業、ドメイン設定、会員機能・決済・予約システムなどのシステム開発は含まれません。\n必要な場合は外部サービスへのリンク設置で対応します。",
   miniGeneralNotes:
     "表示価格は目安です。ページ数や掲載内容によって料金が変動する場合があります。\n制作したファイルはお客様にお渡しします。公開作業・サーバー・ドメイン設定は含まれません。\nドメイン・サーバー費用は別途必要です。\n写真撮影・ロゴ制作・文章の丸投げ作成は含まれません。文章の整理や見せ方の調整は対応可能です。\n納品後7日以内の軽微な修正は無料で対応します。大幅な内容変更や仕様変更は別途ご相談となります。\n制作実績への掲載は、お客様の許可をいただいた場合のみ行います。非公開での制作も可能です。\nまずはお気軽にご相談ください。ご予算に合わせたご提案も可能です。",
-  acceptanceStatus: "ご相談受付中",
+  isAcceptingOrders: true,
+  acceptanceStatus: [
+    "ご相談受付中",
+  ],
 };
 
 export const mockContactSettings: ContactSettings = {
@@ -35,7 +38,7 @@ export const mockContactSettings: ContactSettings = {
   description:
     "ホームページ制作のご相談、お見積りのご依頼など、お気軽にお問い合わせください。\n初めての方も大歓迎です。",
   emailDescription: "フォーム以外でもメールでお問い合わせいただけます。",
-  formDescription: "下記フォームよりお送りください。\n事業内容やご希望が分かると、より具体的なご提案ができます。",
+  formDescription: "下記フォームよりお送りください。事業内容やご希望が分かると、より具体的なご提案ができます。",
   formspreeEndpoint: "https://formspree.io/f/maqgrrbe",
   categoryOptions:
     "本格制作プラン\nミニ制作プラン\nリニューアル\n制作実績について\n料金・見積もり相談\nその他",
@@ -85,40 +88,215 @@ export const mockNews: NewsItem[] = [
 
 export const mockWorks: Work[] = [
   {
-    id: "jn-ed4uiqc",
-    title: "いうえf",
-    slug: "dshafhao",
-    workType: "実案件",
-    siteType: "LP",
+    id: "a01yz16hta0x",
+    title: "古民家茶房 灯庵",
+    slug: "touan",
+    workType: "自主制作",
+    siteType: "通常サイト",
     category: "",
-    shortDescription: "hadfhfadhdah",
-    description: "ghfdhdhfd",
-    purpose: "hafdhafdh",
-    pages: "ahfdahfdha",
-    technologies: "adhafhfad",
-    highlights: "hfadhafdhf",
-    thumbnail: "https://images.microcms-assets.io/assets/8c0a3a945f2d49b9a5f0ea2c26212fd4/27acf3cac2734ce6a2aae898cf9ad87d/salon-set-mirror.webp",
-    url: "dgadgda",
+    shortDescription: "山あいの古民家茶房をテーマに、和の世界観と店舗情報を丁寧に伝える架空カフェサイトを制作しました。",
+    description:
+      "「古い家に、甘い時間を。」をコンセプトに、庭付きの古民家茶房を想定した架空店舗サイトです。\nトップページでは店舗の雰囲気やおすすめ甘味を印象的に伝え、お品書き・空間紹介・季節の甘味・店舗案内へ自然に遷移できる構成にしました。\n和紙のような背景、抹茶色や木の色を基調にした配色、明朝体を活かした余白のあるデザインで、静かで落ち着いた古民家カフェの世界観を表現しています。\nスマートフォン表示、ハンバーガーメニュー、スクロール演出、画像拡大ギャラリーにも対応しています。",
+    purpose: "和カフェや個人店向けに、雰囲気・メニュー・空間・アクセス情報を分かりやすく伝える店舗サイトの制作例として作成しました。",
+    pages:
+      "トップページ\nお品書き\n空間紹介\n季節の甘味\n店舗案内・アクセス",
+    technologies:
+      "HTML\nCSS\nJavaScript",
+    highlights:
+      "古民家茶房らしい静けさや上品さが伝わるよう、抹茶・苔・木・和紙をイメージした配色で統一しました。\n写真を大きく見せるレイアウト、季節ごとの甘味紹介、席や庭の魅力が伝わる空間ページを用意し、来店前に店舗の雰囲気を想像しやすい構成にしています。\nスマホでも見やすいように、カード配置やナビゲーション、メニュー一覧の読みやすさも調整しました。",
+    thumbnail: "https://images.microcms-assets.io/assets/8c0a3a945f2d49b9a5f0ea2c26212fd4/cf4af7e56dad4767ba62ae57bedd3cf8/hero-touan-exterior.jpg",
+    url: "https://dohiwebc.github.io/touan/",
+    isVisible: true,
+    isFeatured: true,
+    sortOrder: 20,
+    year: "2026年",
+  },
+  {
+    id: "w8quq1-qt",
+    title: "NEON MIRA 公式サイト",
+    slug: "neon-mira",
+    workType: "自主制作",
+    siteType: "通常サイト",
+    category: "",
+    shortDescription:
+      "架空アーティスト「NEON MIRA」の公式サイトとして制作した、音楽・プロフィール・グッズ・お問い合わせ導線を備えた本格的なWebサイトです。\nY2K、サイバー、シティポップの世界観をビジュアルとUIで表現しました。",
+    description:
+      "NEON MIRAは、クロームの質感、夜の都市、ネオンピンク、デジタルな孤独感をテーマにした架空のソロアーティストです。\n本サイトでは、1st EP「Angel.exe」の紹介を中心に、楽曲一覧、MV風のビジュアル、プロフィール、グッズ一覧、お問い合わせページまでを構成しました。\nトップページではアーティストの世界観とリリース情報を印象的に伝え、音楽ページではEPの詳細やトラックリストを整理。\nグッズページでは商品一覧、カテゴリ切り替え、商品プレビューのような動きを入れ、実在する公式サイトに近い見せ方を意識しています。",
+    purpose: "架空アーティストのブランド世界観を伝えながら、楽曲紹介・グッズ閲覧・お問い合わせまで自然につなげる公式サイトとして制作しました。",
+    pages:
+      "トップページ\n音楽ページ\nグッズページ\nプロフィールページ\nお問い合わせページ",
+    technologies:
+      "HTML\nCSS\nJavaScript",
+    highlights:
+      "Y2Kやサイバーシティポップの雰囲気を、配色、フォント、グラス風カード、ネオン表現、スキャンライン演出で統一しました。\nスマホでも世界観が崩れないようにレスポンシブ対応を行い、モバイルメニュー、試聴プレイヤー風UI、グッズのカテゴリ切り替え、モーダル表示など、静的サイトの中でも動きのある体験を加えています。",
+    thumbnail: "https://images.microcms-assets.io/assets/8c0a3a945f2d49b9a5f0ea2c26212fd4/a658cea5d0804d98a9e8fde30bc0d008/chrome-city-bg.jpg",
+    url: "https://dohiwebc.github.io/NEONMIRA/",
+    isVisible: true,
+    isFeatured: true,
+    sortOrder: 30,
+    year: "2026年",
+  },
+  {
+    id: "v5js1nx8de",
+    title: "青凪工務店",
+    slug: "aonagi-works",
+    workType: "自主制作",
+    siteType: "通常サイト",
+    category: "",
+    shortDescription: "京都のリフォーム工務店を想定した、信頼感と温かみを伝える本格的なコーポレートサイトです。",
+    description:
+      "京都市を拠点にした架空のリフォーム工務店「青凪工務店」のWebサイトを制作しました。\n町家リノベーション・中古住宅改修・水回りリフォーム・店舗改装などのサービス内容を整理し、初めて相談する人にも安心感が伝わる構成にしています。\n施工事例、料金目安、会社紹介、ご相談の流れ、FAQ、お問い合わせフォームまで用意し、実際の工務店サイトとして運用しやすい情報設計を意識しました。",
+    purpose: "地域密着型の工務店としての信頼感を伝え、リフォーム相談につなげることを目的に制作しました。",
+    pages:
+      "トップページ\n施工事例\nサービス・料金\n会社紹介\nご相談の流れ\nお問い合わせ",
+    technologies:
+      "HTML\nCSS\nJavaScript",
+    highlights:
+      "和モダンな雰囲気と職人らしい誠実さが伝わるよう、落ち着いた配色と余白設計を意識しました。\n施工事例にはカテゴリ絞り込みやビフォーアフター比較を入れ、リフォーム後の変化が直感的に伝わるようにしています。スマホでも相談導線に迷わないよう、固定CTAやお問い合わせフォームも整えました。",
+    thumbnail: "https://images.microcms-assets.io/assets/8c0a3a945f2d49b9a5f0ea2c26212fd4/1ce72cfe7eda4078ae4f8ec88c3759ab/hero-renovation.jpg",
+    url: "https://dohiwebc.github.io/aonagi-works/",
     isVisible: true,
     isFeatured: false,
+    sortOrder: 40,
+    year: "2026年",
+  },
+  {
+    id: "w4yc7kgqsjtn",
+    title: "SETOUCHI BLUE VILLA",
+    slug: "setouchi-blue-villa",
+    workType: "自主制作",
+    siteType: "通常サイト",
+    category: "",
+    shortDescription: "瀬戸内の海とサウナを独占できる、1日1組限定の一棟貸しヴィラサイトです。",
+    description:
+      "SETOUCHI BLUE VILLAは、瀬戸内エリアに佇む高級一棟貸しヴィラを想定した宿泊施設サイトです。\n海が見えるサウナ、インフィニティプール、プライベートテラス、BBQ、朝食、ギャラリー、予約導線までを複数ページで整理し、施設の世界観と滞在イメージが伝わる構成にしました。\n写真を大きく使いながら、落ち着いた余白と上品な配色で、特別感のある宿泊体験を表現しています。",
+    purpose: "高級ヴィラの魅力を視覚的に伝え、予約リクエストにつなげること。",
+    pages:
+      "トップページ\nヴィラ紹介\nサウナ紹介\nダイニング\n滞在イメージ\nギャラリー\n予約ページ\nFAQ\nプライバシーポリシー",
+    technologies:
+      "HTML\nCSS\nJavaScript",
+    highlights:
+      "瀬戸内の静けさや上質な滞在感が伝わるよう、写真を主役にした余白のあるデザインにしました。\nサウナ・プール・食事・客室などの魅力をページごとに分け、検討中のユーザーが知りたい情報へ自然に進める構成にしています。\n予約ページでは料金目安やオプション選択、予約リクエストフォームを用意し、実際の宿泊サイトに近い導線を意識しました。",
+    thumbnail: "https://images.microcms-assets.io/assets/8c0a3a945f2d49b9a5f0ea2c26212fd4/7459141d1d7c4284b61b6bf93b9c6d2b/setouchibluevilla-exterior-distant.webp",
+    url: "https://dohiwebc.github.io/SETOUCHIBLUEVILLA/",
+    isVisible: true,
+    isFeatured: false,
+    sortOrder: 50,
+    year: "2026年",
+  },
+  {
+    id: "o36hrmezq",
+    title: "HOTEL SETOUCHI BLUE",
+    slug: "hotel-setouchi-blue",
+    workType: "自主制作",
+    siteType: "通常サイト",
+    category: "",
+    shortDescription: "瀬戸内海を望むスモールデザインホテルを想定した、宿泊予約導線付きの本格サイトです。",
+    description:
+      "愛媛県今治市・しまなみ海道エリアに佇む架空ホテル「HOTEL SETOUCHI BLUE」のWebサイトを制作しました。\n全室オーシャンビューの客室紹介、朝食、周辺案内、レンタサイクル、系列ヴィラ、FAQ、予約リクエストまでを複数ページで整理し、宿泊前に必要な情報を分かりやすく確認できる構成にしています。",
+    purpose: "ホテルの世界観を丁寧に伝えながら、客室情報や滞在イメージを整理し、予約リクエストまで自然につなげること。",
+    pages:
+      "トップページ\n客室一覧\n過ごし方\n朝食\n周辺案内\nレンタサイクル\nアクセス\n予約リクエスト\nFAQ\n系列ヴィラ紹介\nプライバシーポリシー\n404ページ",
+    technologies:
+      "HTML\nCSS\nJavaScript",
+    highlights:
+      "瀬戸内らしい静けさや上質感が伝わるよう、写真を大きく使った余白のあるデザインにしました。\n客室タイプ、料金、設備、朝食、周辺情報を比較しやすく整理し、予約フォームでは日付選択・客室選択・料金目安の表示まで実装しています。",
+    thumbnail: "https://images.microcms-assets.io/assets/8c0a3a945f2d49b9a5f0ea2c26212fd4/82989c70f1e544f6b1e0ab7bbd3605d6/hotelsetouchiblue-exterior-main.webp",
+    url: "https://dohiwebc.github.io/HOTELSETOUCHIBLUE/index.html",
+    isVisible: true,
+    isFeatured: true,
+    sortOrder: 60,
+    year: "2026年",
+  },
+  {
+    id: "1b_yjn_vz",
+    title: "SETOUCHI TRIP",
+    slug: "setouchi-trip",
+    workType: "自主制作",
+    siteType: "通常サイト",
+    category: "",
+    shortDescription: "瀬戸内のローカル体験を探して予約できる観光体験サイトです。",
+    description:
+      "SETOUCHI TRIPは、瀬戸内エリアの島旅やローカル体験を紹介し、予約リクエストまでつなげる架空の観光体験予約サイトです。\n体験一覧、エリア紹介、各体験の詳細ページ、FAQ、ステップ形式の予約フォームを用意し、旅行前に必要な情報を分かりやすく整理しました。\n写真を大きく見せる構成や、雑誌のような余白感を意識し、瀬戸内らしい穏やかな世界観が伝わるように制作しています。",
+    purpose: "観光体験の魅力を整理し、予約までスムーズに誘導するため。",
+    pages:
+      "トップページ\n体験一覧\n体験詳細ページ\nエリア紹介\nサービス紹介\nFAQ\n予約フォーム",
+    technologies:
+      "HTML\nCSS\nJavaScript",
+    highlights:
+      "旅雑誌のような余白と写真の見せ方を意識し、瀬戸内らしい静かで上質な雰囲気にまとめました。\n体験カテゴリの絞り込み、日英切り替え、ステップ形式の予約フォームなど、実際の観光予約サイトを想定した導線も作り込んでいます。",
+    thumbnail: "https://images.microcms-assets.io/assets/8c0a3a945f2d49b9a5f0ea2c26212fd4/5a563cccc9e74872b97633268d1ea737/hero-cycling.png",
+    url: "https://dohiwebc.github.io/SETOUCHITRIP/",
+    isVisible: true,
+    isFeatured: true,
+    sortOrder: 70,
+    year: "2026年",
+  },
+  {
+    id: "c_yf071bxdxs",
+    title: "LITHE KOBE",
+    slug: "lithe-kobe",
+    workType: "自主制作",
+    siteType: "通常サイト",
+    category: "",
+    shortDescription: "神戸・三宮の架空美容室を想定し、世界観と予約導線まで作り込んだ本格サロンサイトです。",
+    description:
+      "LITHE KOBEは、神戸・三宮にある少人数制ヘアサロンを想定して制作した自主制作サイトです。\n透明感カラーや韓国風レイヤーを得意とするサロンらしく、白・グレーを基調にした上品でミニマルなデザインにまとめました。\nトップページではコンセプト、店内紹介、人気メニュー、スタイル、スタッフ、初めての方への案内、アクセス、FAQ、お知らせまで整理し、初めて訪れる方が安心して予約できる流れを意識しています。",
+    purpose: "美容室の雰囲気・得意メニュー・スタッフ情報を分かりやすく伝え、初回予約につなげるため。",
+    pages:
+      "トップページ\nコンセプト\nメニュー・料金\nスタイルギャラリー\nスタッフ紹介\n初めての方へ\nアクセス\n採用情報\nFAQ\nお知らせ\nプライバシーポリシー\n",
+    technologies:
+      "HTML\nCSS\nJavaScript",
+    highlights: "美容室の世界観が伝わる写真中心の構成、スマホでも見やすいレイアウト、スタイル詳細モーダルやFAQ開閉などの操作感、Hot Pepper Beautyへの予約導線にこだわりました。",
+    thumbnail: "https://images.microcms-assets.io/assets/8c0a3a945f2d49b9a5f0ea2c26212fd4/f45249c717e94bf4b7d9252dd3ff80ec/hero-salon-dark.webp",
+    url: "https://dohiwebc.github.io/LITHEKOBE/",
+    isVisible: true,
+    isFeatured: true,
+    sortOrder: 80,
+    year: "2026年",
+  },
+  {
+    id: "g0zg9ffq9x",
+    title: "OSAKA NIGHT CULTURE FEST 2026",
+    slug: "osaka-night-culture-fest-2026",
+    workType: "自主制作",
+    siteType: "通常サイト",
+    category: "",
+    shortDescription:
+      "大阪・中之島の夜をテーマにした、架空イベントの本格的なWebサイトです。\nフード、ライトアップ、マーケット、スケジュール、アクセス情報までを整理して掲載しました。",
+    description:
+      "OSAKA NIGHT CULTURE FEST 2026は、大阪・中之島リバーサイドで開催される架空のナイトカルチャーフェスを想定して制作したWebサイトです。\nイベントの世界観が伝わるビジュアルを大きく使いながら、フードエリア、ライトアップ、マーケット、プログラム、アクセス情報を複数ページに分けて構成しました。\n来場前に必要な情報を確認しやすいよう、会場マップやFAQ、日別スケジュールも用意しています。",
+    purpose: "架空イベントの魅力や会場の雰囲気を伝えながら、来場者が必要な情報に迷わずアクセスできるイベントサイトを制作すること",
+    pages:
+      "トップページ\nフードページ\nライトアップページ\nマーケットページ\nプログラムページ\nアクセス・FAQページ",
+    technologies:
+      "HTML\nCSS\nJavaScript",
+    highlights:
+      "夜のフェスらしい赤・ゴールド・黒を基調に、写真を大きく見せる構成にしました。\n各エリアの情報をページごとに分け、イベント内容を見やすく整理しています。\nスマホでも閲覧しやすいナビゲーションや、タブ切り替え、FAQ、画像プレビューなどの動きも実装しました。",
+    thumbnail: "https://images.microcms-assets.io/assets/8c0a3a945f2d49b9a5f0ea2c26212fd4/e49e41b9cc004d77837eb548c6a85042/hero-night-riverside.webp",
+    url: "https://dohiwebc.github.io/ONCF2026/index.html",
+    isVisible: true,
+    isFeatured: true,
     sortOrder: 90,
-    year: "father",
+    year: "2026年",
   },
   {
     id: "y20hjnr2jw",
-    title: "LUNE CAFE",
+    title: "LUNE CAFE 公式サイト",
     slug: "lune-cafe",
     workType: "自主制作",
     siteType: "通常サイト",
     category: "",
-    shortDescription: "夜にだけ開くカフェの世界観を、写真と余白で静かに伝える公式サイト。",
+    shortDescription: "夜18時から営業する架空の夜カフェを想定した、本格的な店舗サイトです。",
     description:
-      "夜にだけ開くカフェ「LUNE CAFE」の公式サイト。\n単なる店舗紹介のサイトではなく、間接照明に包まれた店内や夜の街並み、コーヒーとデザートの写真を通して、静かに過ごせる夜の空気感が伝わる構成を目指しました。\nメニュー・座席紹介・アクセス・予約フォームなどの導線を組み込み、初めて訪れる人にも店舗の雰囲気と利用イメージが自然に伝わるように設計しています。",
-    purpose: "カフェなどの飲食店のHPのポートフォリオ制作のため。",
+      "LUNE CAFEは、松山市中心部にある架空の夜カフェをテーマに制作したポートフォリオ用Webサイトです。\n夜にゆっくり過ごせるカフェの世界観を伝えるため、落ち着いた配色、写真を大きく見せるレイアウト、余白を活かしたデザインで構成しました。\nトップページではコンセプトや代表メニューを紹介し、下層ページではメニュー一覧、店内空間、アクセス情報、席予約フォームまで用意しています。\n店舗サイトとして必要な情報を整理しながら、ブランドの雰囲気まで伝わる構成を意識しました。",
+    purpose: "架空店舗の魅力や世界観を伝え、来店・予約につながる導線を設計するため。",
     pages:
-      "トップページ\nコンセプト\nメニュー一覧\n店内\nアクセス\n予約フォーム",
-    technologies: "HTML CSS JavaScript",
-    highlights: "サイトの世界観、ファーストビューのデザインなど、LUNECAFEの雰囲気が最大限伝わるデザインと構成にしました。",
+      "トップページ\nメニュー一覧\n店内・空間紹介\nアクセス・店舗情報\n席予約フォーム",
+    technologies:
+      "HTML\nCSS\nJavaScript",
+    highlights:
+      "夜カフェらしい落ち着いた世界観を表現するため、暗めの配色と写真の見せ方にこだわりました。\nメニュー、空間、アクセス、予約まで自然に移動できる導線を設計し、スマートフォンでも見やすく操作しやすい構成にしています。\n予約フォームには入力確認や完了表示も用意し、実際の店舗サイトに近い体験になるよう制作しました。",
     thumbnail: "https://images.microcms-assets.io/assets/8c0a3a945f2d49b9a5f0ea2c26212fd4/b698bcf27760406f8b059ac0adfde047/hero-night-cafe.jpg",
     url: "https://dohiwebc.github.io/LUNECAFE/",
     isVisible: true,
@@ -203,7 +381,7 @@ export const mockPlans: Plan[] = [
     ],
     order: 10,
     isFeatured: false,
-    relatedWorks: [mockWorks[1]],
+    relatedWorks: [mockWorks[8]],
   },
   {
     id: "ifn_9rtxb",
