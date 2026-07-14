@@ -36,7 +36,8 @@ const { en, ja, description, variant = 'editorial', align = 'left' } = Astro.pro
     font-weight: 400;
     line-height: var(--leading-tight);
     letter-spacing: 0.02em;
-    max-width: 14em;
+    max-width: 18em;
+    text-wrap: pretty;
   }
 
   .section-title--editorial .section-title__desc {
@@ -44,7 +45,8 @@ const { en, ja, description, variant = 'editorial', align = 'left' } = Astro.pro
     font-size: var(--text-body);
     color: var(--color-text-muted);
     line-height: var(--leading-body);
-    max-width: 34em;
+    max-width: 40em;
+    text-wrap: pretty;
   }
 
   .section-title--display .section-title__ja {
@@ -110,7 +112,8 @@ const { en, ja, description, variant = 'editorial', align = 'left' } = Astro.pro
     font-weight: 400;
     line-height: var(--leading-tight);
     margin-inline: auto;
-    max-width: 14em;
+    max-width: 18em;
+    text-wrap: pretty;
   }
 
   .section-title--centered .section-title__desc {
@@ -118,15 +121,18 @@ const { en, ja, description, variant = 'editorial', align = 'left' } = Astro.pro
     font-size: var(--text-body);
     color: var(--color-text-muted);
     line-height: var(--leading-body);
-    max-width: 30em;
+    max-width: 36em;
     margin-inline: auto;
+    text-wrap: pretty;
   }
 
   .section-title--minimal .section-title__ja {
     font-family: var(--font-serif);
     font-size: 0.9375rem;
     font-weight: 500;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.05em;
+    line-height: 1.5;
+    text-wrap: pretty;
   }
 
   .section-title--minimal .section-title__desc {
@@ -134,9 +140,37 @@ const { en, ja, description, variant = 'editorial', align = 'left' } = Astro.pro
     font-size: var(--text-small);
     color: var(--color-text-muted);
     line-height: var(--leading-body);
+    text-wrap: pretty;
   }
 
   .section-title__en {
     margin-bottom: var(--space-sm);
+  }
+
+  @media (min-width: 768px) {
+    .section-title--minimal .section-title__ja {
+      font-size: 1rem;
+      letter-spacing: 0.04em;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .section-title--editorial .section-title__ja,
+    .section-title--centered .section-title__ja {
+      max-width: none;
+      text-wrap: pretty;
+    }
+
+    .section-title--editorial .section-title__desc,
+    .section-title--centered .section-title__desc {
+      max-width: none;
+      font-size: var(--text-small);
+      line-height: 1.65;
+    }
+
+    .section-title--minimal .section-title__ja {
+      font-size: var(--text-small);
+      letter-spacing: 0.04em;
+    }
   }
 </style>

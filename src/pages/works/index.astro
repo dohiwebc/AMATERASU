@@ -28,7 +28,7 @@ const planSlugs = filterPlans.map((plan) => plan.slug);
         <p class="page-header__label label-en">Works</p>
         <h1 class="page-header__title">制作実績</h1>
         <p class="page-header__desc">
-          これまでの制作事例やサンプルサイトをご紹介します。プランで絞り込んでご覧いただけます。
+          {'これまでの制作事例やサンプルサイトをご紹介します。\nプランで絞り込んでご覧いただけます。'}
         </p>
       </div>
     </div>
@@ -212,6 +212,10 @@ const planSlugs = filterPlans.map((plan) => plan.slug);
   }
 
   @media (max-width: 767px) {
+    .page-header__desc {
+      white-space: normal;
+    }
+
     .works-filter {
       margin-bottom: var(--space-md);
     }
@@ -222,6 +226,10 @@ const planSlugs = filterPlans.map((plan) => plan.slug);
   }
 
   @media (min-width: 768px) {
+    .page-header__desc {
+      white-space: pre-line;
+    }
+
     .works-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);

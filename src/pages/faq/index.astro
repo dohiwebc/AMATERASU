@@ -2,6 +2,7 @@
 import Layout from '@/layouts/Layout.astro';
 import FaqSection from '@/components/FaqSection.astro';
 import CTASection from '@/components/CTASection.astro';
+import Button from '@/components/Button.astro';
 import { getSiteSettings } from '@/lib/microcms';
 import { FAQ_CATEGORY_ORDER } from '@/types/cms';
 
@@ -34,5 +35,58 @@ const settings = await getSiteSettings();
     sectionClass="section--after-header section--white"
   />
 
+  <div class="faq-options-link">
+    <div class="container">
+      <p class="faq-options-link__text">
+        公開作業・保守・CMS追加などの料金は、オプションページでもご確認いただけます。
+      </p>
+      <Button href="/options/" variant="outline" size="lg">
+        詳しいオプション料金を見る
+      </Button>
+    </div>
+  </div>
+
   <CTASection settings={settings} />
 </Layout>
+
+<style>
+  .faq-options-link {
+    padding: 0 0 var(--space-xl);
+    background-color: var(--color-bg-white);
+  }
+
+  .faq-options-link__text {
+    margin: 0 0 1rem;
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+    text-wrap: pretty;
+  }
+
+  @media (min-width: 768px) {
+    .faq-options-link__text {
+      font-size: var(--text-body);
+      max-width: 42rem;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .faq-options-link {
+      padding-bottom: var(--space-lg);
+    }
+
+    .faq-options-link__text {
+      font-size: var(--text-caption);
+      line-height: 1.65;
+      margin-bottom: 0.875rem;
+    }
+
+    .faq-options-link :global(.btn) {
+      width: 100%;
+      text-align: center;
+      white-space: normal;
+      height: auto;
+      line-height: 1.5;
+    }
+  }
+</style>

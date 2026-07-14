@@ -2,15 +2,22 @@
 import Layout from '@/layouts/Layout.astro';
 import SectionTitle from '@/components/SectionTitle.astro';
 import ContactForm from '@/components/ContactForm.astro';
+import NotifyOnlyForm from '@/components/NotifyOnlyForm.astro';
 import CTASection from '@/components/CTASection.astro';
 import FaqSection from '@/components/FaqSection.astro';
+import Button from '@/components/Button.astro';
 import { getContactSettings, getSiteSettings } from '@/lib/microcms';
+import { getAcceptanceStatus } from '@/lib/acceptance-status';
+import { ACCEPTANCE_STATUS } from '@/types/cms';
 import { getInstagramHandle, getXHandle, hasSocialUrl } from '@/lib/text';
 
 const [settings, contact] = await Promise.all([
   getSiteSettings(),
   getContactSettings(),
 ]);
+
+const acceptance = getAcceptanceStatus(settings, contact);
+const isOpen = acceptance.status === ACCEPTANCE_STATUS.OPEN;
 
 const instagramHandle = getInstagramHandle(settings.instagramUrl);
 const xHandle = getXHandle(settings.xUrl);
@@ -45,18 +52,42 @@ const consultationTips = [
 
   <section class="section section--after-header">
     <div class="container">
-      <div class="contact-reassure">
-        <p class="contact-reassure__lead">
-          <span>ご相談は無料です。</span>
-          <span>しつこい営業は一切ありません。</span>
-        </p>
-        <p class="contact-reassure__reply cms-text">{contact.replyTime}</p>
-      </div>
+      {isOpen ? (
+        <div class="contact-reassure">
+          <p class="contact-reassure__lead">
+            <span>ご相談は無料です。</span>
+            <span>しつこい営業は一切ありません。</span>
+          </p>
+          <p class="contact-reassure__reply cms-text">{contact.replyTime}</p>
+        </div>
+      ) : (
+        <div class="contact-closed" role="status">
+          <p class="contact-closed__label label-en">Status</p>
+          <h2 class="contact-closed__title">{acceptance.pageTitle}</h2>
+          <p class="contact-closed__lead cms-text">{acceptance.leadText}</p>
+          <p class="contact-closed__reply cms-text">{acceptance.replyText}</p>
+        </div>
+      )}
 
       <div class="contact-layout">
         <div class="contact-layout__form">
-          <p class="contact-form-section__desc cms-text">{contact.formDescription}</p>
-          <ContactForm contact={contact} />
+          {acceptance.formMode === 'full' && (
+            <>
+              <p class="contact-form-section__desc cms-text">{acceptance.formDescription}</p>
+              <ContactForm contact={contact} />
+            </>
+          )}
+          {acceptance.formMode === 'notify' && (
+            <>
+              <p class="contact-form-section__desc cms-text">{acceptance.formDescription}</p>
+              <NotifyOnlyForm contact={contact} replyText={acceptance.replyText} />
+            </>
+          )}
+          {acceptance.formMode === 'none' && (
+            <p class="contact-form-section__desc contact-form-section__desc--closed cms-text">
+              {'現在はフォームからのお問い合わせをお受けしておりません。\n再開の際はお知らせにてご案内いたします。'}
+            </p>
+          )}
         </div>
 
         <aside class="contact-layout__aside">
@@ -122,6 +153,11 @@ const consultationTips = [
                 <li>{tip}</li>
               ))}
             </ul>
+            <p class="contact-options-hint">
+              <Button href="/options/" variant="outline" size="sm">
+                公開作業や保守などのオプションも相談できます
+              </Button>
+            </p>
           </div>
         </aside>
       </div>
@@ -158,6 +194,63 @@ const consultationTips = [
     color: var(--color-text-muted);
   }
 
+  .contact-closed {
+    padding: clamp(2rem, 5vw, 3rem) var(--space-lg);
+    margin-bottom: var(--space-lg);
+    text-align: center;
+    background-color: var(--color-status-closed-bg);
+    border: 1px solid var(--color-status-closed-border);
+  }
+
+  .contact-closed__label {
+    margin-bottom: 0.75rem;
+    color: var(--color-status-closed);
+  }
+
+  .contact-closed__title {
+    margin: 0 0 1rem;
+    font-family: var(--font-serif);
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    line-height: var(--leading-tight);
+    color: var(--color-status-closed);
+  }
+
+  .contact-closed__lead {
+    max-width: 40rem;
+    margin: 0 auto 0.875rem;
+    font-size: var(--text-body-lg);
+    font-weight: 500;
+    color: var(--color-text);
+    line-height: var(--leading-snug);
+    text-wrap: pretty;
+  }
+
+  .contact-closed__reply {
+    max-width: 40rem;
+    margin: 0 auto;
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+    text-wrap: pretty;
+  }
+
+  .contact-form-section__desc--closed {
+    padding: var(--space-md);
+    background-color: var(--color-bg-accent);
+    border: 1px solid var(--color-border-light);
+  }
+
+  @media (min-width: 768px) {
+    .contact-closed__lead,
+    .contact-closed__reply,
+    .contact-form-section__desc,
+    .contact-form-section__desc--closed {
+      white-space: pre-line;
+    }
+  }
+
   .contact-layout {
     display: grid;
     grid-template-columns: 1fr;
@@ -167,8 +260,8 @@ const consultationTips = [
 
   @media (min-width: 900px) {
     .contact-layout {
-      grid-template-columns: minmax(0, 1fr) 20rem;
-      gap: clamp(2rem, 4vw, 3rem);
+      grid-template-columns: minmax(0, 1fr) minmax(22rem, 26rem);
+      gap: clamp(2rem, 4vw, 3.5rem);
     }
 
     .contact-layout__aside {
@@ -176,6 +269,15 @@ const consultationTips = [
       top: calc(var(--header-height) + 1.5rem);
       padding-left: clamp(1.5rem, 3vw, 2rem);
       border-left: 1px solid var(--color-border-light);
+    }
+
+    .contact-closed__lead,
+    .contact-closed__reply {
+      max-width: 44rem;
+    }
+
+    .contact-reassure__lead {
+      text-wrap: pretty;
     }
   }
 
@@ -213,6 +315,7 @@ const consultationTips = [
     font-size: var(--text-small);
     color: var(--color-text-muted);
     line-height: var(--leading-body);
+    text-wrap: pretty;
   }
 
   .contact-studio__body p {
@@ -268,6 +371,20 @@ const consultationTips = [
     margin-bottom: 0;
   }
 
+  .contact-options-hint {
+    margin: var(--space-md) 0 0;
+  }
+
+  .contact-options-hint :global(.btn) {
+    white-space: normal;
+    height: auto;
+    line-height: 1.5;
+    text-align: center;
+    font-size: var(--text-caption);
+    letter-spacing: 0.06em;
+    padding: 0.5rem 1rem;
+  }
+
   @media (max-width: 767px) {
     :global(.page-header) {
       padding-block: var(--space-md) var(--space-sm);
@@ -315,6 +432,50 @@ const consultationTips = [
       line-height: 1.55;
     }
 
+    .contact-closed {
+      padding: 1rem 1rem 1.125rem;
+      margin-bottom: var(--space-md);
+      text-align: left;
+    }
+
+    .contact-closed__label {
+      margin-bottom: 0.25rem;
+      font-size: 0.625rem;
+      letter-spacing: 0.14em;
+    }
+
+    .contact-closed__title {
+      margin-bottom: 0.5rem;
+      font-size: 1.125rem;
+      letter-spacing: 0.04em;
+      line-height: 1.35;
+    }
+
+    .contact-closed__lead {
+      font-size: var(--text-caption);
+      font-weight: 500;
+      line-height: 1.55;
+      margin-bottom: 0.5rem;
+      white-space: normal;
+      text-wrap: pretty;
+    }
+
+    .contact-closed__reply {
+      padding-top: 0.5rem;
+      border-top: 1px solid color-mix(in srgb, var(--color-status-closed-border) 70%, transparent);
+      font-size: var(--text-caption);
+      line-height: 1.55;
+      white-space: normal;
+      text-wrap: pretty;
+    }
+
+    .contact-form-section__desc--closed {
+      padding: var(--space-sm) var(--space-md);
+      font-size: var(--text-small);
+      line-height: 1.55;
+      white-space: normal;
+    }
+
     .contact-layout {
       gap: var(--space-lg);
     }
@@ -323,6 +484,7 @@ const consultationTips = [
       font-size: var(--text-small);
       line-height: 1.55;
       margin-bottom: var(--space-sm);
+      white-space: normal;
     }
 
     .contact-layout__aside {
@@ -367,6 +529,14 @@ const consultationTips = [
       padding-top: var(--space-sm);
     }
 
+    .contact-options-hint {
+      margin-top: var(--space-sm);
+    }
+
+    .contact-options-hint :global(.btn) {
+      width: 100%;
+    }
+
     .contact-note :global(.section-title) {
       margin-bottom: var(--space-sm);
     }
@@ -377,7 +547,8 @@ const consultationTips = [
 
     .contact-note :global(.list-check li) {
       font-size: var(--text-small);
-      line-height: 1.55;
+      line-height: 1.65;
+      text-wrap: pretty;
     }
   }
 </style>

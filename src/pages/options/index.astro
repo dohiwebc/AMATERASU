@@ -1,0 +1,362 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Button from '@/components/Button.astro';
+import SectionTitle from '@/components/SectionTitle.astro';
+import CTASection from '@/components/CTASection.astro';
+import { getSiteSettings } from '@/lib/microcms';
+import { optionGroups, optionNotes } from '@/data/options';
+
+const settings = await getSiteSettings();
+
+const pageTitle = 'オプション・公開サポート';
+const pageDescription =
+  '制作プランに必要な機能やサポートを追加できます。公開作業・ページ追加・CMS・保守など、ご希望に合わせてご相談ください。';
+---
+
+<Layout title={pageTitle} description={pageDescription} settings={settings}>
+  <div class="page-header">
+    <div class="container">
+      <div class="page-header__inner page-header__inner--wide">
+        <p class="page-header__label label-en">Options</p>
+        <h1 class="page-header__title">{pageTitle}</h1>
+        <p class="page-header__desc options-hero__desc">{pageDescription}</p>
+        <div class="options-hero__action">
+          <Button href="/contact/" variant="primary" size="md">オプションについて相談する</Button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="section section--after-header section--white">
+    <div class="container">
+      <SectionTitle
+        en="Menu"
+        ja="オプション一覧"
+        description="制作プランに追加できるサポートです。表示価格は目安です。"
+        variant="editorial"
+      />
+
+      <div class="options-sheet">
+        {optionGroups.map((group, index) => (
+          <section class="options-group">
+            <header class="options-group__head">
+              <span class="options-group__index label-en">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <h3 class="options-group__title">{group.title}</h3>
+            </header>
+            <ul class="options-rows">
+              {group.items.map((item) => (
+                <li class="options-row">
+                  <span class="options-row__label">{item.label}</span>
+                  <span class="options-row__rule" aria-hidden="true"></span>
+                  <span class="options-row__price">{item.price}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section options-note-section">
+    <div class="container">
+      <SectionTitle en="Note" ja="ご確認ください" variant="editorial" />
+
+      <div class="options-note">
+        <ul class="options-note__list">
+          {optionNotes.map((line) => (
+            <li>{line}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <CTASection
+    settings={settings}
+    title="必要なオプションが分からない場合も、お気軽にご相談ください。"
+    description="ご希望の内容に合わせて、必要なサポートをご提案します。"
+    buttonLabel="お問い合わせする"
+  />
+</Layout>
+
+<style>
+  .options-hero__desc {
+    max-width: 42rem;
+    text-wrap: pretty;
+  }
+
+  .options-hero__action {
+    margin-top: var(--space-md);
+  }
+
+  .options-sheet {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2.75rem, 5vw, 3.75rem);
+    width: 100%;
+  }
+
+  .options-note {
+    width: 100%;
+    padding: clamp(1.5rem, 3vw, 2rem) clamp(1.75rem, 3.5vw, 2.5rem);
+    background-color: var(--color-bg-accent);
+    border: 1px solid var(--color-border-light);
+    box-shadow: inset 3px 0 0 var(--color-gold-line-soft);
+  }
+
+  .options-group__head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.875rem;
+    margin-bottom: 0.375rem;
+    padding-bottom: 0.875rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .options-group__index {
+    flex-shrink: 0;
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+    color: var(--color-gold);
+  }
+
+  .options-group__title {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: var(--text-body-lg);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--color-text);
+    line-height: var(--leading-tight);
+    text-wrap: pretty;
+  }
+
+  .options-rows {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .options-row {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem 1.25rem;
+    padding: 1.05rem 0;
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .options-row:last-child {
+    border-bottom: none;
+  }
+
+  .options-row__label {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-family: var(--font-serif);
+    font-size: var(--text-body);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--color-text);
+    line-height: var(--leading-snug);
+    text-wrap: pretty;
+    overflow-wrap: anywhere;
+  }
+
+  .options-row__rule {
+    flex: 1 1 3rem;
+    min-width: 2rem;
+    max-width: 10rem;
+    height: 1px;
+    margin-bottom: 0.35em;
+    background-image: linear-gradient(
+      to right,
+      var(--color-border) 0,
+      var(--color-border) 33%,
+      transparent 33%
+    );
+    background-size: 6px 1px;
+    background-repeat: repeat-x;
+  }
+
+  .options-row__price {
+    flex: 0 1 auto;
+    max-width: 18rem;
+    font-family: var(--font-serif);
+    font-size: var(--text-small);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--color-accent-dark);
+    line-height: var(--leading-snug);
+    text-align: right;
+    text-wrap: pretty;
+  }
+
+  .options-note-section {
+    background-color: var(--color-bg);
+  }
+
+  .options-note__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .options-note__list li {
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+    text-wrap: pretty;
+  }
+
+  /* PC */
+  @media (min-width: 768px) {
+    .options-hero__desc {
+      max-width: 48rem;
+      font-size: var(--text-body-lg);
+      line-height: var(--leading-body);
+    }
+
+    .options-row {
+      gap: 1.25rem 1.75rem;
+      padding: 1.125rem 0;
+    }
+
+    .options-row__label {
+      font-size: 1.0625rem;
+      letter-spacing: 0.03em;
+    }
+
+    .options-row__rule {
+      flex: 1 1 4rem;
+      max-width: 14rem;
+    }
+
+    .options-row__price {
+      flex: 0 0 auto;
+      max-width: none;
+      white-space: nowrap;
+      font-size: var(--text-body);
+      letter-spacing: 0.04em;
+    }
+
+    .options-note {
+      padding: 2rem 2.5rem;
+    }
+
+    .options-note__list li {
+      font-size: var(--text-body-lg);
+      line-height: 1.85;
+      max-width: none;
+    }
+
+    .options-group__title {
+      font-size: 1.25rem;
+    }
+  }
+
+  /* スマホ */
+  @media (max-width: 767px) {
+    :global(.page-header) {
+      padding-block: var(--space-md) var(--space-sm);
+    }
+
+    :global(.page-header__label) {
+      margin-bottom: 0.375rem;
+    }
+
+    :global(.page-header__title) {
+      font-size: clamp(1.5rem, 6vw, 1.75rem);
+      margin-bottom: 0.5rem;
+      text-wrap: pretty;
+    }
+
+    :global(.page-header__desc) {
+      font-size: var(--text-small);
+      line-height: 1.65;
+      text-wrap: pretty;
+    }
+
+    :global(.section.section--after-header) {
+      padding-top: var(--space-md);
+    }
+
+    .options-hero__desc {
+      max-width: none;
+    }
+
+    .options-hero__action {
+      margin-top: var(--space-sm);
+    }
+
+    .options-hero__action :global(.btn) {
+      width: 100%;
+      max-width: 22rem;
+      white-space: normal;
+      text-wrap: pretty;
+      line-height: 1.45;
+      padding-block: 0.875rem;
+    }
+
+    .options-sheet {
+      gap: var(--space-xl);
+    }
+
+    .options-group__head {
+      gap: 0.625rem;
+      padding-bottom: 0.625rem;
+      margin-bottom: 0.125rem;
+    }
+
+    .options-group__title {
+      font-size: var(--text-body);
+      letter-spacing: 0.05em;
+    }
+
+    .options-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.35rem;
+      padding: 0.9rem 0;
+    }
+
+    .options-row__rule {
+      display: none;
+    }
+
+    .options-row__label {
+      width: 100%;
+      font-size: 0.9375rem;
+      letter-spacing: 0.03em;
+      line-height: 1.55;
+    }
+
+    .options-row__price {
+      width: 100%;
+      max-width: none;
+      font-size: var(--text-small);
+      letter-spacing: 0.04em;
+      color: var(--color-gold);
+      text-align: left;
+      white-space: normal;
+    }
+
+    .options-note {
+      padding: 1.125rem 1.125rem;
+    }
+
+    .options-note__list {
+      gap: 0.875rem;
+    }
+
+    .options-note__list li {
+      font-size: var(--text-small);
+      line-height: 1.7;
+    }
+  }
+</style>

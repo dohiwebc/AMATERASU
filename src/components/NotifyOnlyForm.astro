@@ -1,0 +1,293 @@
+---
+import type { ParsedContactSettings } from '@/types/cms';
+import { withBase } from '@/lib/paths';
+
+interface Props {
+  contact: Pick<
+    ParsedContactSettings,
+    'formspreeEndpoint' | 'submitButtonText' | 'replyTime'
+  >;
+  replyText?: string;
+}
+
+const { contact, replyText = contact.replyTime } = Astro.props;
+const hasEndpoint = Boolean(contact.formspreeEndpoint);
+const submitLabel = hasEndpoint ? '登録する' : 'フォーム準備中';
+---
+
+<form
+  class="notify-form"
+  id="notify-interest-form"
+  action={contact.formspreeEndpoint}
+  method="post"
+  data-has-endpoint={hasEndpoint ? 'true' : 'false'}
+  novalidate
+>
+  <div class="notify-form__status notify-form__status--success" role="status" hidden>
+    <p class="notify-form__status-title">登録が完了しました</p>
+    <p class="notify-form__status-desc">
+      ありがとうございます。受付再開の際にご案内いたします。{replyText}
+    </p>
+  </div>
+
+  <div class="notify-form__status notify-form__status--error" role="alert" hidden>
+    <p class="notify-form__status-title">送信に失敗しました</p>
+    <p class="notify-form__status-desc" data-error-message>
+      時間をおいて再度お試しください。解決しない場合はメールでご連絡ください。
+    </p>
+  </div>
+
+  <div class="notify-form__fields" data-form-fields>
+    <input type="hidden" name="category" value="再開のお知らせ希望" />
+    <input type="hidden" name="_subject" value="【再開お知らせ希望】AMATERASU" />
+
+    <div class="notify-form__field">
+      <label class="notify-form__label" for="notify-name">
+        お名前 <span class="notify-form__required">必須</span>
+      </label>
+      <input
+        class="notify-form__input"
+        type="text"
+        id="notify-name"
+        name="name"
+        autocomplete="name"
+        required
+        placeholder="山田 太郎"
+      />
+    </div>
+
+    <div class="notify-form__field">
+      <label class="notify-form__label" for="notify-email">
+        メールアドレス <span class="notify-form__required">必須</span>
+      </label>
+      <input
+        class="notify-form__input"
+        type="email"
+        id="notify-email"
+        name="email"
+        autocomplete="email"
+        inputmode="email"
+        required
+        placeholder="example@email.com"
+      />
+    </div>
+
+    <div class="notify-form__field">
+      <label class="notify-form__label" for="notify-message">
+        メッセージ <span class="notify-form__optional">任意</span>
+      </label>
+      <textarea
+        class="notify-form__textarea"
+        id="notify-message"
+        name="message"
+        rows="4"
+        placeholder="ご要望があればご記入ください（任意）"
+      ></textarea>
+    </div>
+
+    <input type="text" name="_gotcha" class="notify-form__honeypot" tabindex="-1" autocomplete="off" />
+
+    <div class="notify-form__field notify-form__field--consent">
+      <label class="notify-form__consent">
+        <input
+          class="notify-form__checkbox"
+          type="checkbox"
+          id="notify-consent"
+          name="consent"
+          value="yes"
+          required
+        />
+        <span class="notify-form__consent-text">
+          <a href={withBase('/privacy/')} target="_blank" rel="noopener noreferrer">プライバシーポリシー</a>
+          に同意のうえ登録する <span class="notify-form__required">必須</span>
+        </span>
+      </label>
+    </div>
+
+    <button
+      class="btn btn--primary btn--lg btn--block notify-form__submit"
+      type="submit"
+      disabled={!hasEndpoint}
+    >
+      {submitLabel}
+    </button>
+  </div>
+</form>
+
+<script>
+  function initNotifyForm() {
+    const form = document.getElementById('notify-interest-form') as HTMLFormElement | null;
+    if (!form || form.dataset.notifyInit === 'true') return;
+    form.dataset.notifyInit = 'true';
+
+    const hasEndpoint = form.dataset.hasEndpoint === 'true';
+    const fields = form.querySelector<HTMLElement>('[data-form-fields]');
+    const success = form.querySelector<HTMLElement>('.notify-form__status--success');
+    const error = form.querySelector<HTMLElement>('.notify-form__status--error');
+    const errorMessage = form.querySelector<HTMLElement>('[data-error-message]');
+    const submitBtn = form.querySelector<HTMLButtonElement>('.notify-form__submit');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!hasEndpoint) return;
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const honeypot = form.querySelector<HTMLInputElement>('input[name="_gotcha"]');
+      if (honeypot?.value) return;
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = '送信中…';
+      }
+
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' },
+        });
+
+        if (!response.ok) throw new Error('送信に失敗しました');
+
+        fields?.setAttribute('hidden', '');
+        error?.setAttribute('hidden', '');
+        success?.removeAttribute('hidden');
+        success?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } catch {
+        if (errorMessage) {
+          errorMessage.textContent =
+            '時間をおいて再度お試しください。解決しない場合はメールでご連絡ください。';
+        }
+        error?.removeAttribute('hidden');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = '登録する';
+        }
+      }
+    });
+  }
+
+  initNotifyForm();
+  document.addEventListener('astro:page-load', initNotifyForm);
+</script>
+
+<style>
+  .notify-form {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .notify-form__status {
+    padding: var(--space-md);
+    border: 1px solid var(--color-border-light);
+    background-color: var(--color-bg-accent);
+  }
+
+  .notify-form__status--success {
+    border-color: var(--color-gold-line-soft);
+  }
+
+  .notify-form__status--error {
+    background-color: #faf4f2;
+    border-color: rgba(180, 90, 70, 0.25);
+  }
+
+  .notify-form__status-title {
+    font-family: var(--font-serif);
+    font-size: var(--text-body-lg);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .notify-form__status-desc {
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+  }
+
+  .notify-form__fields {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .notify-form__label {
+    display: block;
+    font-size: var(--text-small);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.5rem;
+  }
+
+  .notify-form__required {
+    color: var(--color-accent-dark);
+    font-size: 0.75em;
+    margin-left: 0.25rem;
+  }
+
+  .notify-form__optional {
+    color: var(--color-text-light);
+    font-size: 0.75em;
+    margin-left: 0.25rem;
+  }
+
+  .notify-form__input,
+  .notify-form__textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-white);
+    font: inherit;
+    color: var(--color-text);
+    line-height: 1.6;
+  }
+
+  .notify-form__input:focus,
+  .notify-form__textarea:focus {
+    outline: 2px solid var(--color-gold-line-soft);
+    outline-offset: 1px;
+  }
+
+  .notify-form__honeypot {
+    position: absolute;
+    left: -9999px;
+    opacity: 0;
+    height: 0;
+    width: 0;
+  }
+
+  .notify-form__consent {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    cursor: pointer;
+  }
+
+  .notify-form__checkbox {
+    margin-top: 0.2rem;
+    flex-shrink: 0;
+  }
+
+  .notify-form__consent-text {
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .notify-form__consent-text a {
+    color: var(--color-accent-dark);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  @media (max-width: 767px) {
+    .notify-form__label,
+    .notify-form__consent-text,
+    .notify-form__status-desc {
+      font-size: var(--text-caption);
+    }
+  }
+</style>

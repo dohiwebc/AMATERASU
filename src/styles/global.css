@@ -494,6 +494,7 @@ button {
   color: var(--color-text-muted);
   font-size: var(--text-body);
   line-height: var(--leading-body);
+  text-wrap: pretty;
 }
 
 .page-header--compact {
@@ -522,6 +523,7 @@ button {
   font-size: var(--text-body);
   color: var(--color-text-muted);
   line-height: var(--leading-body);
+  text-wrap: pretty;
 }
 
 .list-check li::before {

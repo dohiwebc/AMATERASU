@@ -16,7 +16,8 @@ const xHandle = getXHandle(settings.xUrl);
 const navItems = [
   { href: withBase('/news/'), label: 'お知らせ' },
   { href: withBase('/plans/'), label: '本格制作プラン' },
-  { href: withBase('/mini-plans/'), label: 'ミニ制作' },
+  { href: withBase('/mini-plans/'), label: 'ミニ制作プラン' },
+  { href: withBase('/options/'), label: 'オプション' },
   { href: withBase('/works/'), label: '実績' },
   { href: withBase('/faq/'), label: 'よくあるご質問' },
   { href: withBase('/contact/'), label: 'お問い合わせ' },
@@ -133,7 +134,7 @@ const navItems = [
 
   .footer__contact-item {
     display: grid;
-    grid-template-columns: minmax(5.25rem, 7.5rem) 1fr;
+    grid-template-columns: minmax(6.5rem, 9rem) 1fr;
     column-gap: var(--space-sm);
     align-items: baseline;
   }
@@ -143,6 +144,7 @@ const navItems = [
     font-weight: 500;
     letter-spacing: 0.12em;
     color: var(--color-text-light);
+    white-space: nowrap;
   }
 
   .footer__contact-value {

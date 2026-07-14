@@ -4,19 +4,23 @@ import SectionTitle from '@/components/SectionTitle.astro';
 const worries = [
   {
     title: '何を載せればいいかわからない',
-    description: '必要な情報の整理からお手伝いします。お店に合った構成を一緒に考えましょう。',
+    description:
+      '必要な情報の整理からお手伝いします。\nお店に合った構成を一緒に考えましょう。',
   },
   {
     title: '費用がどのくらいか不安',
-    description: 'プランごとに費用の目安を明示しています。ご予算に合わせたご提案も可能です。',
+    description:
+      'プランごとに費用の目安を明示しています。\nご予算に合わせたご提案も可能です。',
   },
   {
     title: '更新や運用が難しそう',
-    description: 'シンプルで管理しやすい構成を心がけています。更新のサポートもご相談ください。',
+    description:
+      'シンプルで管理しやすい構成を心がけています。\n更新のサポートもご相談ください。',
   },
   {
     title: 'デザインのセンスに自信がない',
-    description: 'お店の雰囲気や写真を活かした、上品で伝わるデザインをご提案します。',
+    description:
+      'お店の雰囲気や写真を活かした、\n上品で伝わるデザインをご提案します。',
   },
 ];
 ---
@@ -26,7 +30,7 @@ const worries = [
     <SectionTitle
       en="Concerns"
       ja="こんなお悩みはありませんか？"
-      description="ホームページ制作は初めて、という方も多くいらっしゃいます。一つずつ、丁寧にお答えします。"
+      description={'ホームページ制作は初めて、という方も多くいらっしゃいます。\n一つずつ、丁寧にお答えします。'}
       variant="editorial"
     />
 
@@ -85,9 +89,14 @@ const worries = [
     color: var(--color-text-muted);
     line-height: 1.85;
     max-width: 36em;
+    white-space: pre-line;
   }
 
   @media (min-width: 768px) {
+    .worries :global(.section-title__desc) {
+      white-space: pre-line;
+    }
+
     .worries__list {
       grid-template-columns: repeat(2, 1fr);
       column-gap: var(--space-xl);
@@ -120,6 +129,7 @@ const worries = [
       font-size: var(--text-caption);
       line-height: 1.55;
       text-wrap: pretty;
+      white-space: normal;
     }
 
     .worries__item {

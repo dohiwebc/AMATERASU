@@ -146,7 +146,7 @@ const newsDataMap = Object.fromEntries(
     position: relative;
     isolation: isolate;
     width: 100%;
-    max-width: 32rem;
+    max-width: min(48rem, calc(100vw - 2.5rem));
     max-height: min(84vh, 40rem);
     background-color: #f2eadc;
     border: 1px solid rgba(168, 150, 122, 0.28);
@@ -354,12 +354,6 @@ const newsDataMap = Object.fromEntries(
 
     .news-modal__body p + p {
       margin-top: 0.875rem;
-    }
-  }
-
-  @media (min-width: 640px) {
-    .modal-overlay.modal-overlay--news .modal.modal--news {
-      max-width: 34rem;
     }
   }
 

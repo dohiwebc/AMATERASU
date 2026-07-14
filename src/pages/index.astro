@@ -40,7 +40,7 @@ const workPlansMap = buildWorkPlansMap(allPlans);
       <SectionTitle
         en="Plans"
         ja="本格制作プラン"
-        description="お店や事業の規模に合わせて選べる、本格的なホームページ制作プランです。料金・内容を比較してお選びください。"
+        description={'お店や事業の規模に合わせて選べる、本格的なホームページ制作プランです。\n料金・内容を比較してお選びください。'}
         variant="editorial"
       />
       <div class="plans-showcase">
@@ -60,7 +60,7 @@ const workPlansMap = buildWorkPlansMap(allPlans);
       <SectionTitle
         en="Mini Plans"
         ja="ミニ制作プラン"
-        description="ミニ制作プランは、素材が揃ってから3日〜2週間程度が目安です。内容やCMS追加の有無によって前後します。"
+        description={'ミニ制作プランは、素材が揃ってから3日〜2週間程度が目安です。\n内容やCMS追加の有無によって前後します。'}
         variant="editorial"
       />
       <div class="mini-plans-grid">
@@ -80,7 +80,7 @@ const workPlansMap = buildWorkPlansMap(allPlans);
       <SectionTitle
         en="Works"
         ja="制作実績"
-        description="これまでの制作事例・サンプルサイトをご紹介します。実案件・自主制作・サンプルの区分で掲載しています。"
+        description={'これまでの制作事例・サンプルサイトをご紹介します。\n実案件・自主制作・サンプルの区分で掲載しています。'}
         variant="editorial"
       />
       <div class="works-gallery">
@@ -137,6 +137,12 @@ const workPlansMap = buildWorkPlansMap(allPlans);
   }
 
   @media (max-width: 767px) {
+    #plans :global(.section-title__desc),
+    #mini-plans :global(.section-title__desc),
+    #works :global(.section-title__desc) {
+      white-space: normal;
+    }
+
     #works :global(.section-title) {
       margin-bottom: var(--space-md);
     }
@@ -157,6 +163,12 @@ const workPlansMap = buildWorkPlansMap(allPlans);
   }
 
   @media (min-width: 768px) {
+    #plans :global(.section-title__desc),
+    #mini-plans :global(.section-title__desc),
+    #works :global(.section-title__desc) {
+      white-space: pre-line;
+    }
+
     .works-gallery__grid {
       grid-template-columns: repeat(2, 1fr);
     }

@@ -2,6 +2,7 @@
 import SiteLogo from '@/components/SiteLogo.astro';
 import type { SiteSettings } from '@/types/cms';
 import { withBase } from '@/lib/paths';
+import { getAcceptanceBadge } from '@/lib/acceptance-status';
 
 interface Props {
   settings: SiteSettings;
@@ -9,15 +10,16 @@ interface Props {
 }
 
 const { settings, currentPath } = Astro.props;
-const isAccepting = settings.isAcceptingOrders !== false;
-const statusLabel = isAccepting ? 'ご相談受付中' : 'ご相談一時休止';
+const acceptance = getAcceptanceBadge(settings);
+const statusLabel = acceptance.label;
 const statusLinePrimary = 'ご相談';
-const statusLineSecondary = isAccepting ? '受付中' : '一時休止';
+const statusLineSecondary = acceptance.shortLabel;
+const statusToneClass = `header__status--${acceptance.badgeTone}`;
 
 const navItems = [
   { href: withBase('/news/'), label: 'お知らせ', en: 'News' },
   { href: withBase('/plans/'), label: '本格制作プラン', en: 'Plans' },
-  { href: withBase('/mini-plans/'), label: 'ミニ制作', en: 'Mini' },
+  { href: withBase('/mini-plans/'), label: 'ミニ制作プラン', en: 'Mini' },
   { href: withBase('/works/'), label: '実績', en: 'Works' },
   { href: withBase('/contact/'), label: 'お問い合わせ', en: 'Contact' },
 ];
@@ -72,7 +74,7 @@ function isNavActive(pathname: string, href: string): boolean {
         <span
           class:list={[
             'header__status header__status--desktop',
-            isAccepting ? 'header__status--open' : 'header__status--closed',
+            statusToneClass,
           ]}
           aria-label={`現在の受付状況：${statusLabel}`}
         >
@@ -100,7 +102,7 @@ function isNavActive(pathname: string, href: string): boolean {
       <span
         class:list={[
           'header__status header__status--mobile',
-          isAccepting ? 'header__status--open' : 'header__status--closed',
+          statusToneClass,
         ]}
         aria-label={`現在の受付状況：${statusLabel}`}
       >
@@ -276,6 +278,7 @@ function isNavActive(pathname: string, href: string): boolean {
     font-weight: 500;
     letter-spacing: 0.04em;
     color: var(--color-text-muted);
+    white-space: nowrap;
     transition: color var(--transition);
   }
 
@@ -345,6 +348,7 @@ function isNavActive(pathname: string, href: string): boolean {
     display: block;
     line-height: 1.2;
     letter-spacing: 0.08em;
+    white-space: nowrap;
   }
 
   .header__status-dot {
@@ -362,6 +366,16 @@ function isNavActive(pathname: string, href: string): boolean {
 
   .header__status--open .header__status-dot {
     background-color: var(--color-status-open);
+  }
+
+  .header__status--limited {
+    color: var(--color-status-limited);
+    background-color: var(--color-status-limited-bg);
+    border-color: var(--color-status-limited-border);
+  }
+
+  .header__status--limited .header__status-dot {
+    background-color: var(--color-status-limited);
   }
 
   .header__status--closed {

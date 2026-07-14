@@ -8,6 +8,18 @@ export const SITE_TYPE = {
   MINI: 'ミニ制作',
 } as const satisfies Record<string, SiteType>;
 
+/** site-settings.acceptanceStatus の選択肢（microCMSの値と一致） */
+export const ACCEPTANCE_STATUS = {
+  OPEN: 'ご相談受付中',
+  SOFT_CLOSED: '着手一時休止',
+  NOTIFY_ONLY: '再開お知らせのみ',
+  HARD_CLOSED: '受付完全一時休止',
+} as const;
+
+export type AcceptanceStatus = (typeof ACCEPTANCE_STATUS)[keyof typeof ACCEPTANCE_STATUS];
+
+export const ACCEPTANCE_STATUS_VALUES = Object.values(ACCEPTANCE_STATUS);
+
 export interface SiteSettings {
   brandName: string;
   brandDisplay: string;
@@ -33,7 +45,14 @@ export interface SiteSettings {
   miniSystemScopeNote?: string;
   /** ミニプラン共通：ご確認ください（1行1項目のテキストエリア） */
   miniGeneralNotes?: string;
-  /** 新規受付の可否（false のとき受付停止中と表示） */
+  /**
+   * 受付状況（セレクト）
+   * microCMSは配列で返すことがある（例: ["ご相談受付中"]）
+   */
+  acceptanceStatus?: AcceptanceStatus | AcceptanceStatus[] | string | string[];
+  /**
+   * @deprecated acceptanceStatus を優先。未設定時のフォールバック用
+   */
   isAcceptingOrders?: boolean;
 }
 
@@ -119,10 +138,18 @@ export interface ContactSettings {
   submitButtonText: string;
   replyTime: string;
   studioNoteLead: string;
-  /** 受付停止中の説明文（テキストエリア） */
+  /** 受付完全一時休止の説明文（テキストエリア） */
   closedNoteLead?: string;
-  /** 受付停止中の返信目安（テキストエリア） */
+  /** 受付完全一時休止の返信目安（テキストエリア） */
   closedReplyTime?: string;
+  /** 着手一時休止の説明文（テキストエリア・任意） */
+  softClosedNoteLead?: string;
+  /** 着手一時休止の返信目安（テキストエリア・任意） */
+  softClosedReplyTime?: string;
+  /** 再開お知らせのみの説明文（テキストエリア・任意） */
+  notifyOnlyNoteLead?: string;
+  /** 再開お知らせのみの返信目安（テキストエリア・任意） */
+  notifyOnlyReplyTime?: string;
   tips: string;
   /** CTAセクション：見出し（テキストエリア） */
   ctaTitle?: string;
@@ -145,6 +172,10 @@ export interface ParsedContactSettings {
   studioNoteLead: string;
   closedNoteLead?: string;
   closedReplyTime?: string;
+  softClosedNoteLead?: string;
+  softClosedReplyTime?: string;
+  notifyOnlyNoteLead?: string;
+  notifyOnlyReplyTime?: string;
   tips: string[];
   ctaTitle?: string;
   ctaDescription?: string;

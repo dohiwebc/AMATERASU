@@ -24,7 +24,7 @@ const [settings, plans] = await Promise.all([
         <p class="page-header__label label-en">Mini Plans</p>
         <h1 class="page-header__title">ミニ制作プラン</h1>
         <p class="page-header__desc">
-          ミニ制作プランは、素材が揃ってから3日〜2週間程度が目安です。内容やCMS追加の有無によって前後します。
+          {'ミニ制作プランは、素材が揃ってから3日〜2週間程度が目安です。\n内容やCMS追加の有無によって前後します。'}
         </p>
       </div>
     </div>
@@ -51,3 +51,18 @@ const [settings, plans] = await Promise.all([
 
   <CTASection settings={settings} />
 </Layout>
+
+<style>
+  @media (min-width: 768px) {
+    .page-header__desc {
+      white-space: pre-line;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .page-header__desc {
+      white-space: normal;
+    }
+
+  }
+</style>

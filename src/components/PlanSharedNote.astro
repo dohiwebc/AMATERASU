@@ -1,5 +1,6 @@
 ---
 import SectionTitle from '@/components/SectionTitle.astro';
+import Button from '@/components/Button.astro';
 import { getPlanSharedContent, splitGeneralNotesByTopic, type PlanSharedNoteVariant } from '@/lib/plans';
 import type { SiteSettings } from '@/types/cms';
 
@@ -21,7 +22,7 @@ const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
 ---
 
 <section class="section plan-shared-notes">
-  <div class="container">
+  <div class="container container--plans">
     <SectionTitle en="Note" ja="ご確認ください" description={noteDescription} variant="editorial" />
 
     <div class="plan-shared-notes__content plan-shared-notes__content--desktop">
@@ -79,6 +80,12 @@ const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
           </div>
         </details>
       )}
+    </div>
+
+    <div class="plan-shared-notes__action">
+      <Button href="/options/" variant="outline" size="lg">
+        追加オプション・公開サポートを見る
+      </Button>
     </div>
   </div>
 </section>
@@ -139,6 +146,10 @@ const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
     height: 1px;
     margin-top: calc((var(--leading-body) * 1em - 1px) / 2);
     background-color: var(--color-accent);
+  }
+
+  .plan-shared-notes__action {
+    margin-top: var(--space-lg);
   }
 
   .plan-notes-accordion {
@@ -271,6 +282,18 @@ const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
 
     .plan-shared-notes__accordion--mobile {
       display: block;
+    }
+
+    .plan-shared-notes__action {
+      margin-top: var(--space-md);
+    }
+
+    .plan-shared-notes__action :global(.btn) {
+      width: 100%;
+      text-align: center;
+      white-space: normal;
+      height: auto;
+      line-height: 1.5;
     }
   }
 </style>

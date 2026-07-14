@@ -122,7 +122,7 @@ const { faqs } = Astro.props;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: clamp(1.5rem, 4vw, 3rem);
+    gap: 1.25rem;
     padding: 1.25rem 0;
     font-family: var(--font-serif);
     font-size: 1.0625rem;
@@ -149,7 +149,9 @@ const { faqs } = Astro.props;
 
   .faq-accordion__question-text {
     flex: 1;
+    min-width: 0;
     padding-block: 0.125rem;
+    text-wrap: pretty;
   }
 
   .faq-accordion__icon {
@@ -208,11 +210,13 @@ const { faqs } = Astro.props;
     .faq-accordion__question {
       gap: 0.875rem;
       padding: 0.875rem 0;
-      font-size: var(--text-small);
+      font-size: 0.9375rem;
+      line-height: 1.55;
     }
 
     .faq-accordion__question-text {
       padding-block: 0;
+      text-wrap: pretty;
     }
 
     .faq-accordion__icon {
@@ -232,7 +236,9 @@ const { faqs } = Astro.props;
     .faq-accordion__answer-inner {
       padding: 0 0.5rem 0.875rem 0;
       font-size: var(--text-small);
-      line-height: 1.55;
+      line-height: 1.7;
+      text-wrap: pretty;
+      white-space: normal;
     }
   }
 
@@ -243,7 +249,9 @@ const { faqs } = Astro.props;
     }
 
     .faq-accordion__answer-inner {
+      max-width: none;
       padding-bottom: 1.5rem;
+      white-space: pre-line;
     }
   }
 

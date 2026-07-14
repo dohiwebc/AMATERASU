@@ -664,7 +664,7 @@ const confirmFields = [
 
   .contact-form__confirm-item {
     display: grid;
-    grid-template-columns: minmax(0, 7.5rem) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 9rem) minmax(0, 1fr);
     gap: 0.75rem 1rem;
     padding: 0.75rem 0;
     border-bottom: 1px solid var(--color-border-light);
@@ -677,6 +677,7 @@ const confirmFields = [
     letter-spacing: 0.06em;
     color: var(--color-text-light);
     line-height: 1.5;
+    white-space: nowrap;
   }
 
   .contact-form__confirm-item dd {
@@ -813,6 +814,10 @@ const confirmFields = [
       grid-template-columns: 1fr;
       gap: 0.25rem;
       padding: 0.625rem 0;
+    }
+
+    .contact-form__confirm-item dt {
+      white-space: normal;
     }
 
     .contact-form__confirm-actions {

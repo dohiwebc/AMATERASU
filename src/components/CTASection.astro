@@ -9,11 +9,13 @@ interface Props {
   settings: SiteSettings;
   title?: string;
   description?: string;
+  buttonLabel?: string;
 }
 
 const DEFAULT_CTA_TITLE = 'まずはお気軽にご相談ください';
 const DEFAULT_CTA_DESCRIPTION =
   'ホームページのこと、費用のこと、何でも大丈夫です。お店の想いをじっくりお聞かせください。';
+const DEFAULT_CTA_BUTTON = 'お問い合わせはこちら';
 
 const contact = await getContactSettings();
 
@@ -21,6 +23,7 @@ const {
   settings,
   title = contact.ctaTitle?.trim() || DEFAULT_CTA_TITLE,
   description = contact.ctaDescription?.trim() || DEFAULT_CTA_DESCRIPTION,
+  buttonLabel = DEFAULT_CTA_BUTTON,
 } = Astro.props;
 
 const instagramHandle = getInstagramHandle(settings.instagramUrl);
@@ -43,7 +46,7 @@ const hasChannels = Boolean(settings.email) || hasSocialChannels;
 
       <div class="cta-section__contact">
         <Button href="/contact/" variant="primary" size="lg" class="cta-section__cta">
-          お問い合わせはこちら
+          {buttonLabel}
         </Button>
 
         {hasChannels && (
@@ -127,6 +130,7 @@ const hasChannels = Boolean(settings.email) || hasSocialChannels;
     margin-bottom: var(--space-md);
     max-width: none;
     color: var(--color-on-dark);
+    text-wrap: pretty;
   }
 
   .cta-section__desc {
@@ -135,6 +139,7 @@ const hasChannels = Boolean(settings.email) || hasSocialChannels;
     line-height: var(--leading-body);
     margin-bottom: var(--space-lg);
     max-width: none;
+    text-wrap: pretty;
   }
 
   .cta-section__contact {
@@ -161,7 +166,7 @@ const hasChannels = Boolean(settings.email) || hasSocialChannels;
 
   .cta-section__channel {
     display: grid;
-    grid-template-columns: minmax(5.25rem, 7.5rem) 1fr;
+    grid-template-columns: minmax(6.5rem, 9rem) 1fr;
     column-gap: var(--space-sm);
     align-items: start;
   }
@@ -183,6 +188,7 @@ const hasChannels = Boolean(settings.email) || hasSocialChannels;
     color: rgba(201, 168, 110, 0.7);
     font-size: 0.6875rem;
     letter-spacing: 0.14em;
+    white-space: nowrap;
   }
 
   .cta-section__channel-value {
@@ -212,6 +218,7 @@ const hasChannels = Boolean(settings.email) || hasSocialChannels;
     .cta-section__title {
       font-size: clamp(1.5rem, 5vw, 1.75rem);
       margin-bottom: var(--space-sm);
+      text-wrap: pretty;
     }
 
     .cta-section__desc {

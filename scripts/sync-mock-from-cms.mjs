@@ -103,6 +103,7 @@ function normalizeSiteSettings(raw) {
     miniSystemScopeNote: raw.miniSystemScopeNote,
     miniGeneralNotes: raw.miniGeneralNotes,
     isAcceptingOrders: raw.isAcceptingOrders ?? true,
+    acceptanceStatus: raw.acceptanceStatus,
   };
 }
 
@@ -122,6 +123,10 @@ function normalizeContactSettings(raw) {
     studioNoteLead: raw.studioNoteLead ?? DEFAULT_CONTACT_SETTINGS.studioNoteLead,
     closedNoteLead: raw.closedNoteLead ?? DEFAULT_CONTACT_SETTINGS.closedNoteLead,
     closedReplyTime: raw.closedReplyTime ?? DEFAULT_CONTACT_SETTINGS.closedReplyTime,
+    softClosedNoteLead: raw.softClosedNoteLead || undefined,
+    softClosedReplyTime: raw.softClosedReplyTime || undefined,
+    notifyOnlyNoteLead: raw.notifyOnlyNoteLead || undefined,
+    notifyOnlyReplyTime: raw.notifyOnlyReplyTime || undefined,
     tips: toMultilineText(raw.tips) || DEFAULT_CONTACT_SETTINGS.tips,
     ctaTitle: raw.ctaTitle || undefined,
     ctaDescription: raw.ctaDescription || undefined,

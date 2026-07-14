@@ -10,7 +10,8 @@ interface Props {
 
 const { settings } = Astro.props;
 const contact = await getContactSettings();
-const { isAccepting, leadText, replyText } = getAcceptanceStatus(settings, contact);
+const acceptance = getAcceptanceStatus(settings, contact);
+const badgeToneClass = `acceptance-status__badge--${acceptance.badgeTone}`;
 ---
 
 <section class="acceptance-status" aria-labelledby="acceptance-status-title">
@@ -20,23 +21,18 @@ const { isAccepting, leadText, replyText } = getAcceptanceStatus(settings, conta
         <p class="acceptance-status__label label-en">Status</p>
         <div class="acceptance-status__title-row">
           <h2 id="acceptance-status-title" class="acceptance-status__title">受付状況</h2>
-          <span
-            class:list={[
-              'acceptance-status__badge',
-              isAccepting ? 'acceptance-status__badge--open' : 'acceptance-status__badge--closed',
-            ]}
-          >
+          <span class:list={['acceptance-status__badge', badgeToneClass]}>
             <span class="acceptance-status__dot" aria-hidden="true"></span>
-            {isAccepting ? 'ご相談受付中' : 'ご相談一時休止'}
+            {acceptance.label}
           </span>
         </div>
       </div>
 
       <div class="acceptance-status__body">
-        <p class="acceptance-status__lead cms-text">{leadText}</p>
+        <p class="acceptance-status__lead cms-text">{acceptance.leadText}</p>
         <p class="acceptance-status__reply">
           <span class="acceptance-status__term">返信目安</span>
-          <span class="acceptance-status__desc cms-text">{replyText}</span>
+          <span class="acceptance-status__desc cms-text">{acceptance.replyText}</span>
         </p>
         <Button href="/contact/" variant="text" size="md" class="acceptance-status__link">
           お問い合わせはこちら
@@ -123,6 +119,12 @@ const { isAccepting, leadText, replyText } = getAcceptanceStatus(settings, conta
     border-color: var(--color-status-open-border);
   }
 
+  .acceptance-status__badge--limited {
+    color: var(--color-status-limited);
+    background-color: var(--color-status-limited-bg);
+    border-color: var(--color-status-limited-border);
+  }
+
   .acceptance-status__badge--closed {
     color: var(--color-status-closed);
     background-color: var(--color-status-closed-bg);
@@ -135,6 +137,7 @@ const { isAccepting, leadText, replyText } = getAcceptanceStatus(settings, conta
     color: var(--color-text);
     line-height: var(--leading-body);
     margin-bottom: var(--space-lg);
+    white-space: pre-line;
   }
 
   .acceptance-status__reply {

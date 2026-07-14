@@ -27,7 +27,7 @@ export const mockSiteSettings: SiteSettings = {
     "ミニ制作プランはHTML・CSS・画像ファイルの納品が基本です。\nサーバーへの公開作業、ドメイン設定、会員機能・決済・予約システムなどのシステム開発は含まれません。\n必要な場合は外部サービスへのリンク設置で対応します。",
   miniGeneralNotes:
     "表示価格は目安です。ページ数や掲載内容によって料金が変動する場合があります。\n制作したファイルはお客様にお渡しします。公開作業・サーバー・ドメイン設定は含まれません。\nドメイン・サーバー費用は別途必要です。\n写真撮影・ロゴ制作・文章の丸投げ作成は含まれません。文章の整理や見せ方の調整は対応可能です。\n納品後7日以内の軽微な修正は無料で対応します。大幅な内容変更や仕様変更は別途ご相談となります。\n制作実績への掲載は、お客様の許可をいただいた場合のみ行います。非公開での制作も可能です。\nまずはお気軽にご相談ください。ご予算に合わせたご提案も可能です。",
-  isAcceptingOrders: false,
+  acceptanceStatus: "ご相談受付中",
 };
 
 export const mockContactSettings: ContactSettings = {
@@ -35,7 +35,7 @@ export const mockContactSettings: ContactSettings = {
   description:
     "ホームページ制作のご相談、お見積りのご依頼など、お気軽にお問い合わせください。\n初めての方も大歓迎です。",
   emailDescription: "フォーム以外でもメールでお問い合わせいただけます。",
-  formDescription: "下記フォームよりお送りください。事業内容やご希望が分かると、より具体的なご提案ができます。",
+  formDescription: "下記フォームよりお送りください。\n事業内容やご希望が分かると、より具体的なご提案ができます。",
   formspreeEndpoint: "https://formspree.io/f/maqgrrbe",
   categoryOptions:
     "本格制作プラン\nミニ制作プラン\nリニューアル\n制作実績について\n料金・見積もり相談\nその他",
