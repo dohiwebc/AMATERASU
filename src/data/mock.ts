@@ -1,6 +1,6 @@
 import type { ContactSettings, NewsItem, Plan, SiteSettings, Work } from '@/types/cms';
 
-/** microCMS から同期（2026-07-13） */
+/** microCMS から同期（2026-07-14） */
 export const mockSiteSettings: SiteSettings = {
   brandName: "天照",
   brandDisplay: "AMATERASU Web Studio",
@@ -27,7 +27,7 @@ export const mockSiteSettings: SiteSettings = {
     "ミニ制作プランはHTML・CSS・画像ファイルの納品が基本です。\nサーバーへの公開作業、ドメイン設定、会員機能・決済・予約システムなどのシステム開発は含まれません。\n必要な場合は外部サービスへのリンク設置で対応します。",
   miniGeneralNotes:
     "表示価格は目安です。ページ数や掲載内容によって料金が変動する場合があります。\n制作したファイルはお客様にお渡しします。公開作業・サーバー・ドメイン設定は含まれません。\nドメイン・サーバー費用は別途必要です。\n写真撮影・ロゴ制作・文章の丸投げ作成は含まれません。文章の整理や見せ方の調整は対応可能です。\n納品後7日以内の軽微な修正は無料で対応します。大幅な内容変更や仕様変更は別途ご相談となります。\n制作実績への掲載は、お客様の許可をいただいた場合のみ行います。非公開での制作も可能です。\nまずはお気軽にご相談ください。ご予算に合わせたご提案も可能です。",
-  isAcceptingOrders: true,
+  isAcceptingOrders: false,
 };
 
 export const mockContactSettings: ContactSettings = {
@@ -38,7 +38,7 @@ export const mockContactSettings: ContactSettings = {
   formDescription: "下記フォームよりお送りください。事業内容やご希望が分かると、より具体的なご提案ができます。",
   formspreeEndpoint: "https://formspree.io/f/maqgrrbe",
   categoryOptions:
-    "新規ホームページ制作\nリニューアル\nミニ制作プラン\n制作実績について\n料金・見積もり相談\nその他",
+    "本格制作プラン\nミニ制作プラン\nリニューアル\n制作実績について\n料金・見積もり相談\nその他",
   planOptions:
     "未定・相談したい\nライトプラン\nスタンダードプラン\nプレミアムプラン\nプロフィールリンクページ\nWeb名刺プラン\nメニューWeb化プラン\nチーム・団体ページ\n期間限定キャンペーンページ\n",
   budgetOptions:

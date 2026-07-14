@@ -1,18 +1,11 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import Button from '@/components/Button.astro';
 import NewsList from '@/components/NewsList.astro';
 import NewsModal from '@/components/NewsModal.astro';
 import CTASection from '@/components/CTASection.astro';
-import { getContactSettings, getNews, getSiteSettings } from '@/lib/microcms';
-import { getAcceptanceStatus } from '@/lib/acceptance-status';
+import { getNews, getSiteSettings } from '@/lib/microcms';
 
-const [settings, contact, news] = await Promise.all([
-  getSiteSettings(),
-  getContactSettings(),
-  getNews(),
-]);
-const { isAccepting, leadText, replyText } = getAcceptanceStatus(settings, contact);
+const [settings, news] = await Promise.all([getSiteSettings(), getNews()]);
 ---
 
 <Layout
@@ -34,37 +27,7 @@ const { isAccepting, leadText, replyText } = getAcceptanceStatus(settings, conta
 
   <section class="section section--after-header section--white">
     <div class="container">
-      <div class="news-layout">
-        <div class="news-layout__main">
-          <NewsList items={news} compact />
-        </div>
-
-        <aside class="news-layout__aside">
-          <div class="news-studio-note">
-            <p class="news-studio-note__label label-en">Status</p>
-            <div class="news-studio-note__title-row">
-              <h2 class="news-studio-note__title">受付状況</h2>
-              <span
-                class:list={[
-                  'news-studio-note__badge',
-                  isAccepting ? 'news-studio-note__badge--open' : 'news-studio-note__badge--closed',
-                ]}
-              >
-                <span class="news-studio-note__dot" aria-hidden="true"></span>
-                {isAccepting ? '受付中' : '受付停止中'}
-              </span>
-            </div>
-            <p class="news-studio-note__lead cms-text">{leadText}</p>
-            <p class="news-studio-note__reply">
-              <span class="news-studio-note__term">返信目安</span>
-              <span class="news-studio-note__desc cms-text">{replyText}</span>
-            </p>
-            <Button href="/contact/" variant="text" size="sm" class="news-studio-note__link">
-              お問い合わせはこちら
-            </Button>
-          </div>
-        </aside>
-      </div>
+      <NewsList items={news} compact />
     </div>
   </section>
 
@@ -74,117 +37,6 @@ const { isAccepting, leadText, replyText } = getAcceptanceStatus(settings, conta
 </Layout>
 
 <style>
-  .news-layout {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-xl);
-    align-items: start;
-  }
-
-  @media (min-width: 900px) {
-    .news-layout {
-      grid-template-columns: minmax(0, 1fr) 20rem;
-      gap: clamp(2rem, 4vw, 3rem);
-    }
-
-    .news-layout__aside {
-      position: sticky;
-      top: calc(var(--header-height) + 1.5rem);
-      padding-left: clamp(1.5rem, 3vw, 2rem);
-      border-left: 1px solid var(--color-border-light);
-    }
-  }
-
-  .news-studio-note {
-    padding: var(--space-md) var(--space-lg);
-    background-color: var(--color-bg-accent);
-    border: 1px solid var(--color-accent-light);
-  }
-
-  .news-studio-note__label {
-    margin-bottom: var(--space-sm);
-  }
-
-  .news-studio-note__title {
-    font-family: var(--font-serif);
-    font-size: var(--text-body-lg);
-    font-weight: 500;
-    line-height: var(--leading-tight);
-    color: var(--color-text);
-    margin-bottom: 0;
-  }
-
-  .news-studio-note__title-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem 0.75rem;
-    margin-bottom: var(--space-sm);
-  }
-
-  .news-studio-note__badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.375rem;
-    padding: 0.25rem 0.625rem;
-    font-size: var(--text-caption);
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    border-radius: 999px;
-    border: 1px solid transparent;
-  }
-
-  .news-studio-note__dot {
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    background-color: currentColor;
-  }
-
-  .news-studio-note__badge--open {
-    color: var(--color-status-open);
-    background-color: var(--color-status-open-bg);
-    border-color: var(--color-status-open-border);
-  }
-
-  .news-studio-note__badge--closed {
-    color: var(--color-status-closed);
-    background-color: var(--color-status-closed-bg);
-    border-color: var(--color-status-closed-border);
-  }
-
-  .news-studio-note__lead {
-    font-size: var(--text-body);
-    font-weight: 500;
-    color: var(--color-text);
-    line-height: var(--leading-snug);
-    margin-bottom: var(--space-md);
-  }
-
-  .news-studio-note__reply {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    margin-bottom: var(--space-md);
-  }
-
-  .news-studio-note__term {
-    font-size: var(--text-caption);
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    color: var(--color-text-light);
-  }
-
-  .news-studio-note__desc {
-    font-size: var(--text-small);
-    color: var(--color-text-muted);
-    line-height: var(--leading-body);
-  }
-
-  .news-studio-note__link {
-    margin-top: 0.25rem;
-  }
-
   @media (max-width: 767px) {
     :global(.page-header) {
       padding-block: var(--space-md) var(--space-sm);
@@ -208,60 +60,6 @@ const { isAccepting, leadText, replyText } = getAcceptanceStatus(settings, conta
     :global(.section.section--after-header) {
       padding-top: var(--space-md);
       padding-bottom: var(--space-xl);
-    }
-
-    .news-layout {
-      gap: var(--space-md);
-    }
-
-    .news-studio-note {
-      padding: var(--space-sm) var(--space-md);
-    }
-
-    .news-studio-note__label {
-      margin-bottom: 0.375rem;
-    }
-
-    .news-studio-note__title-row {
-      margin-bottom: 0.375rem;
-    }
-
-    .news-studio-note__title {
-      font-size: var(--text-body);
-    }
-
-    .news-studio-note__badge {
-      padding: 0.2rem 0.5rem;
-      font-size: 0.6875rem;
-    }
-
-    .news-studio-note__dot {
-      width: 0.4375rem;
-      height: 0.4375rem;
-    }
-
-    .news-studio-note__lead {
-      font-size: var(--text-small);
-      line-height: 1.55;
-      margin-bottom: var(--space-sm);
-    }
-
-    .news-studio-note__reply {
-      gap: 0.125rem;
-      margin-bottom: var(--space-sm);
-    }
-
-    .news-studio-note__term {
-      font-size: 0.6875rem;
-    }
-
-    .news-studio-note__desc {
-      font-size: var(--text-caption);
-      line-height: 1.5;
-    }
-
-    .news-studio-note__link {
-      margin-top: 0;
     }
   }
 </style>

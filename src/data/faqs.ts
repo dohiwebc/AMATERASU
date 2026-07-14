@@ -96,9 +96,19 @@ export const staticFaqs: Faq[] = [
     id: 'faq-10',
     question: '支払いのタイミングはいつですか？',
     answer:
-      '着手前に着手金、完成・納品時に残金という形が基本です。詳細はご契約時にご案内いたします。',
+      '支払いは、制作開始前にお見積り金額の50％、完成後・公開前に残り50％をお支払いいただく形を基本としています。',
     category: 'price',
     sortOrder: 10,
+    isVisible: true,
+    isFeatured: false,
+  },
+  {
+    id: 'faq-16',
+    question: 'キャンセルについて教えてください。',
+    answer:
+      'キャンセルについては、制作着手前は無料、制作着手後はお見積り金額の50％、完成後は100％を目安としています。',
+    category: 'price',
+    sortOrder: 16,
     isVisible: true,
     isFeatured: false,
   },

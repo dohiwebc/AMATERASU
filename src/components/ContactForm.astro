@@ -1,6 +1,7 @@
 ---
 import type { ParsedContactSettings } from '@/types/cms';
 import { withBase } from '@/lib/paths';
+import '@/styles/contact-send-animation.css';
 
 interface Props {
   contact: Pick<
@@ -17,6 +18,34 @@ interface Props {
 const { contact } = Astro.props;
 const hasEndpoint = Boolean(contact.formspreeEndpoint);
 const submitLabel = hasEndpoint ? contact.submitButtonText : 'フォーム準備中';
+
+const standardPlanOptions = [
+  '未定・相談したい',
+  'ライトプラン',
+  'スタンダードプラン',
+  'プレミアムプラン',
+];
+const miniPlanOptions = [
+  '未定・相談したい',
+  'プロフィールリンクページ',
+  'Web名刺プラン',
+  'メニューWeb化プラン',
+  'チーム・団体ページ',
+  '期間限定キャンペーンページ',
+];
+const categoriesWithoutPlan = ['リニューアル', '制作実績について', '料金・見積もり相談', 'その他'];
+const categoriesWithStandardPlans = contact.categoryOptions.filter((option) => option.includes('本格制作'));
+const categoriesWithMiniPlans = contact.categoryOptions.filter((option) => option.includes('ミニ制作'));
+
+const confirmFields = [
+  { name: 'name', label: 'お名前' },
+  { name: 'company', label: '会社名・屋号', optional: true },
+  { name: 'email', label: 'メールアドレス' },
+  { name: 'category', label: 'ご相談内容' },
+  { name: 'plan', label: '希望プラン', optional: true },
+  { name: 'budget', label: 'ご予算', optional: true },
+  { name: 'message', label: 'お問い合わせ内容', optional: true },
+] as const;
 ---
 
 <form
@@ -26,6 +55,11 @@ const submitLabel = hasEndpoint ? contact.submitButtonText : 'フォーム準備
   method="post"
   data-has-endpoint={hasEndpoint ? 'true' : 'false'}
   data-submit-label={contact.submitButtonText}
+  data-standard-plans={JSON.stringify(standardPlanOptions)}
+  data-mini-plans={JSON.stringify(miniPlanOptions)}
+  data-categories-with-standard-plans={JSON.stringify(categoriesWithStandardPlans)}
+  data-categories-with-mini-plans={JSON.stringify(categoriesWithMiniPlans)}
+  data-categories-without-plan={JSON.stringify(categoriesWithoutPlan)}
   novalidate
 >
   <div class="contact-form__status contact-form__status--success" role="status" hidden>
@@ -33,6 +67,18 @@ const submitLabel = hasEndpoint ? contact.submitButtonText : 'フォーム準備
     <p class="contact-form__status-desc">
       お問い合わせありがとうございます。内容を確認のうえ、{contact.replyTime}
     </p>
+
+    <div class="contact-form__success-summary">
+      <p class="contact-form__success-summary-label">お送りいただいた内容</p>
+      <dl class="contact-form__confirm-list contact-form__success-list">
+        {confirmFields.map((field) => (
+          <div class="contact-form__confirm-item" data-success-field={field.name}>
+            <dt>{field.label}</dt>
+            <dd data-success-value={field.name}>—</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
   </div>
 
   <div class="contact-form__status contact-form__status--error" role="alert" hidden>
@@ -87,8 +133,10 @@ const submitLabel = hasEndpoint ? contact.submitButtonText : 'フォーム準備
     </div>
 
     <div class="contact-form__field">
-      <label class="contact-form__label" for="contact-category">ご相談内容カテゴリ</label>
-      <select class="contact-form__select" id="contact-category" name="category">
+      <label class="contact-form__label" for="contact-category">
+        ご相談内容 <span class="contact-form__required">必須</span>
+      </label>
+      <select class="contact-form__select" id="contact-category" name="category" required>
         <option value="">選択してください</option>
         {contact.categoryOptions.map((option) => (
           <option value={option}>{option}</option>
@@ -96,14 +144,12 @@ const submitLabel = hasEndpoint ? contact.submitButtonText : 'フォーム準備
       </select>
     </div>
 
-    <div class="contact-form__field">
+    <div class="contact-form__field" data-plan-field>
       <label class="contact-form__label" for="contact-plan">希望プラン</label>
-      <select class="contact-form__select" id="contact-plan" name="plan">
-        <option value="">選択してください</option>
-        {contact.planOptions.map((option) => (
-          <option value={option}>{option}</option>
-        ))}
+      <select class="contact-form__select" id="contact-plan" name="plan" disabled>
+        <option value="">先にご相談内容を選択してください</option>
       </select>
+      <p class="contact-form__hint" id="contact-plan-hint" hidden></p>
     </div>
 
     <div class="contact-form__field">
@@ -117,29 +163,15 @@ const submitLabel = hasEndpoint ? contact.submitButtonText : 'フォーム準備
     </div>
 
     <div class="contact-form__field">
-      <label class="contact-form__label" for="contact-reference-url">参考サイトURL</label>
-      <input
-        class="contact-form__input"
-        type="url"
-        id="contact-reference-url"
-        name="referenceUrl"
-        inputmode="url"
-        autocomplete="url"
-        placeholder="https://example.com"
-      />
-    </div>
-
-    <div class="contact-form__field">
       <label class="contact-form__label" for="contact-message">
-        お問い合わせ内容 <span class="contact-form__required">必須</span>
+        お問い合わせ内容 <span class="contact-form__optional">任意</span>
       </label>
       <textarea
         class="contact-form__textarea"
         id="contact-message"
         name="message"
         rows="7"
-        required
-        placeholder="ご相談内容、ご希望のスケジュールなどをご記入ください。"
+        placeholder="詳しいご希望やスケジュールがあればご記入ください（任意）"
       ></textarea>
     </div>
 
@@ -164,92 +196,311 @@ const submitLabel = hasEndpoint ? contact.submitButtonText : 'フォーム準備
 
     <button
       class="btn btn--primary btn--lg btn--block contact-form__submit"
-      type="submit"
+      type="button"
+      data-show-confirm
       disabled={!hasEndpoint}
     >
-      {submitLabel}
+      内容を確認する
     </button>
+  </div>
+
+  <div class="contact-form__confirm" data-form-confirm hidden>
+    <div class="contact-form__confirm-head">
+      <p class="contact-form__confirm-label label-en">Confirm</p>
+      <h2 class="contact-form__confirm-title">入力内容の確認</h2>
+      <p class="contact-form__confirm-desc">内容をご確認のうえ、送信してください。</p>
+    </div>
+
+    <dl class="contact-form__confirm-list" data-confirm-list>
+      {confirmFields.map((field) => (
+        <div class="contact-form__confirm-item" data-confirm-field={field.name}>
+          <dt>{field.label}</dt>
+          <dd data-confirm-value={field.name}>—</dd>
+        </div>
+      ))}
+    </dl>
+
+    <div class="contact-form__confirm-actions">
+      <button class="btn btn--outline btn--lg contact-form__confirm-back" type="button" data-confirm-back>
+        戻る
+      </button>
+      <button class="btn btn--primary btn--lg contact-form__confirm-send" type="button" data-confirm-send>
+        {submitLabel}
+      </button>
+    </div>
   </div>
 </form>
 
 <script>
+  import { playContactSendAnimation } from '@/lib/contact-send-animation';
+
+  const parsePlanDataset = (value: string | undefined): string[] => {
+    if (!value) return [];
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === 'string') : [];
+    } catch {
+      return [];
+    }
+  };
+
   const form = document.getElementById('contact-form') as HTMLFormElement | null;
 
   if (form) {
     const fields = form.querySelector('[data-form-fields]') as HTMLElement | null;
+    const confirm = form.querySelector('[data-form-confirm]') as HTMLElement | null;
     const success = form.querySelector('.contact-form__status--success') as HTMLElement | null;
     const error = form.querySelector('.contact-form__status--error') as HTMLElement | null;
     const errorMessage = form.querySelector('[data-error-message]') as HTMLElement | null;
-    const submitBtn = form.querySelector('.contact-form__submit') as HTMLButtonElement | null;
+    const showConfirmBtn = form.querySelector('[data-show-confirm]') as HTMLButtonElement | null;
+    const confirmBackBtn = form.querySelector('[data-confirm-back]') as HTMLButtonElement | null;
+    const confirmSendBtn = form.querySelector('[data-confirm-send]') as HTMLButtonElement | null;
+    const categorySelect = form.querySelector('#contact-category') as HTMLSelectElement | null;
+    const planSelect = form.querySelector('#contact-plan') as HTMLSelectElement | null;
+    const planHint = form.querySelector('#contact-plan-hint') as HTMLElement | null;
     const hasEndpoint = form.dataset.hasEndpoint === 'true';
     const submitLabel = form.dataset.submitLabel ?? '送信する';
+    const standardPlanOptions = parsePlanDataset(form.dataset.standardPlans);
+    const miniPlanOptions = parsePlanDataset(form.dataset.miniPlans);
+    const categoriesWithStandardPlans = parsePlanDataset(form.dataset.categoriesWithStandardPlans);
+    const categoriesWithMiniPlans = parsePlanDataset(form.dataset.categoriesWithMiniPlans);
+    const categoriesWithoutPlan = parsePlanDataset(form.dataset.categoriesWithoutPlan);
 
-    const showStatus = (type: 'success' | 'error', message?: string) => {
-      success?.toggleAttribute('hidden', type !== 'success');
-      error?.toggleAttribute('hidden', type !== 'error');
-      fields?.toggleAttribute('hidden', type === 'success');
-      if (message && errorMessage) errorMessage.textContent = message;
+    const optionalFields = new Set(['company', 'plan', 'budget', 'message']);
+    const categoriesWithStandardPlansSet = new Set(categoriesWithStandardPlans);
+    const categoriesWithMiniPlansSet = new Set(categoriesWithMiniPlans);
+    const categoriesWithoutPlanSet = new Set(categoriesWithoutPlan);
+
+    const getPlanOptionsForCategory = (category: string): string[] | null => {
+      if (!category) return null;
+      if (categoriesWithoutPlanSet.has(category)) return null;
+      if (categoriesWithMiniPlansSet.has(category)) return miniPlanOptions;
+      if (categoriesWithStandardPlansSet.has(category)) return standardPlanOptions;
+      return null;
     };
 
-    form.addEventListener('submit', async (event) => {
-      if (!hasEndpoint) {
-        event.preventDefault();
+    const isPlanSelectionAvailable = (category: string): boolean =>
+      getPlanOptionsForCategory(category) !== null;
+
+    const updatePlanSelect = (category: string) => {
+      if (!planSelect) return;
+
+      const planOptions = getPlanOptionsForCategory(category);
+      const previousValue = planSelect.value;
+
+      planSelect.innerHTML = '';
+      planHint?.setAttribute('hidden', '');
+      planHint && (planHint.textContent = '');
+
+      if (!category) {
+        planSelect.disabled = true;
+        planSelect.append(new Option('先にご相談内容を選択してください', '', true, true));
         return;
       }
 
-      event.preventDefault();
+      if (!planOptions) {
+        planSelect.disabled = true;
+        planSelect.append(new Option('このご相談内容では選択不要です', '', true, true));
+        planHint?.removeAttribute('hidden');
+        planHint && (planHint.textContent = 'プランの選択は不要です。');
+        return;
+      }
 
+      planSelect.disabled = false;
+      planSelect.append(new Option('選択してください', '', true, !previousValue));
+
+      for (const option of planOptions) {
+        const isSelected = option === previousValue;
+        planSelect.append(new Option(option, option, false, isSelected));
+      }
+
+      if (previousValue && !planOptions.includes(previousValue)) {
+        planSelect.value = '';
+      }
+    };
+
+    const getFieldValue = (name: string): string => {
+      const element = form.elements.namedItem(name);
+      if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
+        return element.value.trim();
+      }
+      if (element instanceof HTMLSelectElement) {
+        return element.value.trim();
+      }
+      if (element instanceof RadioNodeList) {
+        const checked = Array.from(element).find(
+          (item): item is HTMLInputElement => item instanceof HTMLInputElement && item.checked,
+        );
+        return checked?.value.trim() ?? '';
+      }
+      return '';
+    };
+
+    const formatConfirmValue = (name: string, value: string): string => {
+      if (!value) return optionalFields.has(name) ? '未入力' : '—';
+      return value;
+    };
+
+    const shouldHidePlanField = (): boolean => !isPlanSelectionAvailable(getFieldValue('category'));
+
+    const populateConfirm = () => {
+      confirm?.querySelectorAll('[data-confirm-value]').forEach((node) => {
+        const name = (node as HTMLElement).dataset.confirmValue;
+        if (!name) return;
+        const item = node.closest('[data-confirm-field]') as HTMLElement | null;
+
+        if (name === 'plan' && shouldHidePlanField()) {
+          item?.setAttribute('hidden', '');
+          return;
+        }
+
+        item?.removeAttribute('hidden');
+        const value = getFieldValue(name);
+        node.textContent = formatConfirmValue(name, value);
+
+        if (item && optionalFields.has(name) && !value) {
+          item.classList.add('contact-form__confirm-item--muted');
+        } else {
+          item?.classList.remove('contact-form__confirm-item--muted');
+        }
+      });
+    };
+
+    const populateSuccess = () => {
+      success?.querySelectorAll('[data-success-value]').forEach((node) => {
+        const name = (node as HTMLElement).dataset.successValue;
+        if (!name) return;
+        const value = getFieldValue(name);
+        const item = node.closest('[data-success-field]') as HTMLElement | null;
+
+        if (name === 'plan' && shouldHidePlanField()) {
+          item?.setAttribute('hidden', '');
+          return;
+        }
+
+        if (optionalFields.has(name) && !value) {
+          item?.setAttribute('hidden', '');
+          return;
+        }
+
+        item?.removeAttribute('hidden');
+        node.textContent = value;
+      });
+    };
+
+    const setView = (view: 'input' | 'confirm' | 'success' | 'error') => {
+      fields?.toggleAttribute('hidden', view !== 'input');
+      confirm?.toggleAttribute('hidden', view === 'input' || view === 'success');
+      success?.toggleAttribute('hidden', view !== 'success');
+      error?.toggleAttribute('hidden', view !== 'error');
+    };
+
+    const showError = (message?: string) => {
+      if (message && errorMessage) errorMessage.textContent = message;
+      setView('error');
+      confirm?.toggleAttribute('hidden', true);
+      fields?.toggleAttribute('hidden', false);
+    };
+
+    setView('input');
+    updatePlanSelect('');
+
+    categorySelect?.addEventListener('change', () => {
+      updatePlanSelect(categorySelect.value.trim());
+    });
+
+    const validateForm = (): boolean => {
       if (!form.checkValidity()) {
         form.reportValidity();
-        return;
+        return false;
       }
 
       const honeypot = form.querySelector<HTMLInputElement>('input[name="_gotcha"]');
-      if (honeypot?.value) return;
+      if (honeypot?.value) return false;
 
-      submitBtn?.setAttribute('disabled', 'true');
-      if (submitBtn) submitBtn.textContent = '送信中…';
+      return true;
+    };
+
+    showConfirmBtn?.addEventListener('click', () => {
+      if (!hasEndpoint || !validateForm()) return;
+      populateConfirm();
+      error?.setAttribute('hidden', '');
+      setView('confirm');
+      confirm?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+
+    confirmBackBtn?.addEventListener('click', () => {
+      setView('input');
+      error?.setAttribute('hidden', '');
+    });
+
+    confirmSendBtn?.addEventListener('click', async () => {
+      if (!hasEndpoint || !validateForm()) return;
+
+      confirmSendBtn.disabled = true;
+      confirmBackBtn?.setAttribute('disabled', 'true');
       error?.setAttribute('hidden', '');
 
+      const animation = playContactSendAnimation('送信中...');
+      const request = fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' },
+      });
+
       try {
-        const response = await fetch(form.action, {
-          method: 'POST',
-          body: new FormData(form),
-          headers: { Accept: 'application/json' },
-        });
+        const [response] = await Promise.all([request, animation]);
 
         if (!response.ok) {
           const data = (await response.json().catch(() => null)) as { error?: string } | null;
           throw new Error(data?.error ?? '送信に失敗しました');
         }
 
+        populateSuccess();
         form.reset();
-        showStatus('success');
+        updatePlanSelect('');
+        setView('success');
         success?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       } catch (err) {
         const message =
           err instanceof Error ? err.message : '送信に失敗しました。時間をおいて再度お試しください。';
-        showStatus('error', message);
+        if (errorMessage) errorMessage.textContent = message;
+        setView('error');
+        fields?.setAttribute('hidden', '');
+        confirm?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       } finally {
-        if (hasEndpoint) {
-          submitBtn?.removeAttribute('disabled');
-          if (submitBtn) submitBtn.textContent = submitLabel;
-        }
+        confirmSendBtn.disabled = false;
+        confirmBackBtn?.removeAttribute('disabled');
       }
+    });
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
     });
   }
 </script>
 
 <style>
   .contact-form {
+    position: relative;
     padding: var(--space-lg);
     background-color: var(--color-bg-white);
     border: 1px solid var(--color-border-light);
   }
 
-  .contact-form__fields {
+  .contact-form__fields,
+  .contact-form__confirm {
     display: flex;
     flex-direction: column;
+  }
+
+  .contact-form__fields[hidden],
+  .contact-form__confirm[hidden],
+  .contact-form__status[hidden] {
+    display: none !important;
+  }
+
+  .contact-form__fields {
     gap: var(--space-md);
   }
 
@@ -266,11 +517,32 @@ const submitLabel = hasEndpoint ? contact.submitButtonText : 'フォーム準備
     color: var(--color-text);
   }
 
-  .contact-form__required {
+  .contact-form__required,
+  .contact-form__optional {
     font-size: var(--text-caption);
-    color: var(--color-gold);
     letter-spacing: 0.08em;
     margin-left: 0.25rem;
+  }
+
+  .contact-form__required {
+    color: var(--color-gold);
+  }
+
+  .contact-form__optional {
+    color: var(--color-text-light);
+  }
+
+  .contact-form__hint {
+    margin: 0;
+    font-size: var(--text-caption);
+    color: var(--color-text-light);
+    line-height: 1.5;
+  }
+
+  .contact-form__select:disabled {
+    color: var(--color-text-light);
+    background-color: var(--color-bg-accent);
+    cursor: not-allowed;
   }
 
   .contact-form__input,
@@ -350,9 +622,84 @@ const submitLabel = hasEndpoint ? contact.submitButtonText : 'フォーム準備
     margin-top: var(--space-xs);
   }
 
-  .contact-form__submit:disabled {
+  .contact-form__submit:disabled,
+  .contact-form__confirm-send:disabled,
+  .contact-form__confirm-back:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+  }
+
+  .contact-form__confirm-head {
+    margin-bottom: var(--space-md);
+  }
+
+  .contact-form__confirm-label {
+    margin-bottom: 0.375rem;
+    color: var(--color-text-light);
+  }
+
+  .contact-form__confirm-title {
+    font-family: var(--font-serif);
+    font-size: var(--text-body-lg);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--color-text);
+    margin-bottom: 0.375rem;
+  }
+
+  .contact-form__confirm-desc {
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+  }
+
+  .contact-form__confirm-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 0 0 var(--space-lg);
+    padding: 0;
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .contact-form__confirm-item {
+    display: grid;
+    grid-template-columns: minmax(0, 7.5rem) minmax(0, 1fr);
+    gap: 0.75rem 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .contact-form__confirm-item dt {
+    margin: 0;
+    font-size: var(--text-caption);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--color-text-light);
+    line-height: 1.5;
+  }
+
+  .contact-form__confirm-item dd {
+    margin: 0;
+    font-size: var(--text-small);
+    color: var(--color-text);
+    line-height: 1.6;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .contact-form__confirm-item--muted dd {
+    color: var(--color-text-light);
+  }
+
+  .contact-form__confirm-list .contact-form__confirm-item[hidden] {
+    display: none;
+  }
+
+  .contact-form__confirm-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: 0.75rem;
   }
 
   .contact-form__status {
@@ -381,6 +728,28 @@ const submitLabel = hasEndpoint ? contact.submitButtonText : 'フォーム準備
     font-size: var(--text-small);
     color: var(--color-text-muted);
     line-height: var(--leading-body);
+  }
+
+  .contact-form__success-summary {
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .contact-form__success-summary-label {
+    margin-bottom: var(--space-sm);
+    font-size: var(--text-caption);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--color-text-light);
+  }
+
+  .contact-form__success-list {
+    margin-bottom: 0;
+  }
+
+  .contact-form__success-list .contact-form__confirm-item[hidden] {
+    display: none;
   }
 
   @media (max-width: 767px) {
@@ -429,10 +798,25 @@ const submitLabel = hasEndpoint ? contact.submitButtonText : 'フォーム準備
       line-height: 1.5;
     }
 
-    .contact-form__submit {
-      margin-top: 0.25rem;
+    .contact-form__submit,
+    .contact-form__confirm-send,
+    .contact-form__confirm-back {
       padding: 0.75rem 1rem;
       font-size: var(--text-small);
+    }
+
+    .contact-form__submit {
+      margin-top: 0.25rem;
+    }
+
+    .contact-form__confirm-item {
+      grid-template-columns: 1fr;
+      gap: 0.25rem;
+      padding: 0.625rem 0;
+    }
+
+    .contact-form__confirm-actions {
+      grid-template-columns: 1fr;
     }
 
     .contact-form__status {
@@ -447,6 +831,22 @@ const submitLabel = hasEndpoint ? contact.submitButtonText : 'フォーム準備
     .contact-form__status-desc {
       font-size: var(--text-caption);
       line-height: 1.55;
+    }
+
+    .contact-form__success-summary {
+      margin-top: var(--space-sm);
+      padding-top: var(--space-sm);
+    }
+
+    .contact-form__success-summary-label {
+      margin-bottom: 0.375rem;
+      font-size: 0.6875rem;
+    }
+
+    .contact-form__success-list .contact-form__confirm-item {
+      grid-template-columns: 1fr;
+      gap: 0.25rem;
+      padding: 0.625rem 0;
     }
   }
 </style>

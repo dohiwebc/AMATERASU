@@ -15,7 +15,6 @@ const workPlansMap = buildWorkPlansMap(plans);
 const planCounts = countWorksByPlanSlug(works, workPlansMap);
 const filterPlans = plans.filter((plan) => (planCounts[plan.slug] ?? 0) > 0);
 const planSlugs = filterPlans.map((plan) => plan.slug);
-const hasWorks = works.length > 0;
 ---
 
 <Layout
@@ -37,7 +36,7 @@ const hasWorks = works.length > 0;
 
   <section class="section section--after-header">
     <div class="container">
-      <div class="works-index" id="works-index" data-plan-slugs={planSlugs.join(',')}>
+      <div class="works-index" id="works-index" data-valid-plan-slugs={planSlugs.join(',')}>
         {filterPlans.length > 0 && (
           <div class="works-filter">
             <label class="works-filter__label" for="works-plan-filter">プランで絞り込む</label>
@@ -63,7 +62,7 @@ const hasWorks = works.length > 0;
           ))}
         </div>
 
-        <p class="works-empty" data-works-empty hidden={hasWorks}>
+        <p class="works-empty" data-works-empty hidden>
           該当する実績はありません。
         </p>
       </div>
@@ -79,12 +78,21 @@ const hasWorks = works.length > 0;
   const root = document.getElementById('works-index');
   if (root) {
     const planSelect = root.querySelector<HTMLSelectElement>('[data-works-plan-filter]');
-    const cards = root.querySelectorAll<HTMLElement>('[data-works-grid] [data-plan-slugs]');
-    const empty = root.querySelector<HTMLElement>('[data-works-empty]');
     const grid = root.querySelector<HTMLElement>('[data-works-grid]');
-    const validPlanSlugs = (root.dataset.planSlugs ?? '').split(',').filter(Boolean);
+    const cards = grid?.querySelectorAll<HTMLElement>('.work-card') ?? [];
+    const empty = root.querySelector<HTMLElement>('[data-works-empty]');
+    const validPlanSlugs = (root.dataset.validPlanSlugs ?? '').split(',').filter(Boolean);
 
     let currentPlan = 'all';
+
+    const setEmptyVisible = (visible: boolean) => {
+      if (!empty) return;
+      if (visible) {
+        empty.removeAttribute('hidden');
+      } else {
+        empty.setAttribute('hidden', '');
+      }
+    };
 
     const applyFilter = (updateUrl = true) => {
       let visibleCount = 0;
@@ -97,8 +105,7 @@ const hasWorks = works.length > 0;
       });
 
       if (planSelect) planSelect.value = currentPlan;
-      // 選択中フィルターで0件のときだけ空メッセージを表示
-      empty?.toggleAttribute('hidden', visibleCount > 0);
+      setEmptyVisible(visibleCount === 0);
       grid?.toggleAttribute('hidden', visibleCount === 0);
 
       if (updateUrl) {
@@ -194,6 +201,14 @@ const hasWorks = works.length > 0;
     text-align: center;
     font-size: var(--text-body);
     color: var(--color-text-muted);
+  }
+
+  .works-empty[hidden] {
+    display: none !important;
+  }
+
+  .works-grid[hidden] {
+    display: none !important;
   }
 
   @media (max-width: 767px) {
