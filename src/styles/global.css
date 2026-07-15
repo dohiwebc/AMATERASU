@@ -52,6 +52,31 @@ button {
   background: none;
 }
 
+/* キーボード操作時のフォーカス表示（マウスクリックでは出さない） */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 1px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+.btn:focus-visible {
+  outline: 1px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+/* フォーム入力は既存の枠線スタイルを優先し、二重線にならないようにする */
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none;
+}
+
 /* CMSテキストエリア：改行をそのまま表示 */
 .cms-text {
   white-space: pre-line;

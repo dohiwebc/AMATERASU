@@ -146,38 +146,60 @@ function isNavActive(pathname: string, href: string): boolean {
 
 <script>
   const DESKTOP_MQ = window.matchMedia('(min-width: 768px)');
+  const CLOSE_MS = 380;
   const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
   const nav = document.querySelector<HTMLElement>('[data-nav]');
 
   const isDesktop = () => DESKTOP_MQ.matches;
+  let closeTimer: ReturnType<typeof setTimeout> | undefined;
 
-  const setOpen = (isOpen: boolean) => {
-    if (isDesktop()) {
-      nav?.classList.remove('is-open');
-      nav?.setAttribute('hidden', '');
-      toggle?.classList.remove('is-open');
-      toggle?.setAttribute('aria-expanded', 'false');
-      toggle?.setAttribute('aria-label', 'メニューを開く');
-      document.body.classList.remove('is-nav-open');
-      return;
-    }
-
-    nav?.classList.toggle('is-open', isOpen);
+  const syncToggle = (isOpen: boolean) => {
     toggle?.classList.toggle('is-open', isOpen);
-    if (isOpen) {
-      nav?.removeAttribute('hidden');
-    } else {
-      nav?.setAttribute('hidden', '');
-    }
     toggle?.setAttribute('aria-expanded', String(isOpen));
     toggle?.setAttribute('aria-label', isOpen ? 'メニューを閉じる' : 'メニューを開く');
     document.body.classList.toggle('is-nav-open', isOpen);
+  };
+
+  const setOpen = (isOpen: boolean) => {
+    if (isDesktop()) {
+      window.clearTimeout(closeTimer);
+      nav?.classList.remove('is-open');
+      nav?.setAttribute('hidden', '');
+      syncToggle(false);
+      return;
+    }
+
+    window.clearTimeout(closeTimer);
+
+    if (isOpen) {
+      nav?.removeAttribute('hidden');
+      // display 直後にクラスを付けると transition が走らないため1フレーム待つ
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          nav?.classList.add('is-open');
+          syncToggle(true);
+        });
+      });
+      return;
+    }
+
+    nav?.classList.remove('is-open');
+    syncToggle(false);
+    closeTimer = setTimeout(() => {
+      if (!nav?.classList.contains('is-open')) {
+        nav?.setAttribute('hidden', '');
+      }
+    }, CLOSE_MS);
   };
 
   toggle?.addEventListener('click', (event) => {
     event.stopPropagation();
     if (isDesktop()) return;
     setOpen(!nav?.classList.contains('is-open'));
+  });
+
+  nav?.addEventListener('click', (event) => {
+    event.stopPropagation();
   });
 
   nav?.querySelectorAll('a').forEach((link) => {
@@ -425,15 +447,19 @@ function isNavActive(pathname: string, href: string): boolean {
       linear-gradient(180deg, var(--color-bg-white) 0%, var(--color-bg) 100%);
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
+    transform: translate3d(0, -0.625rem, 0);
     transition:
-      opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-      visibility 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      opacity 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .header__nav--mobile.is-open {
-    display: block;
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
+    transform: translate3d(0, 0, 0);
   }
 
   .header__nav-mobile-inner {
@@ -454,11 +480,11 @@ function isNavActive(pathname: string, href: string): boolean {
   .header__nav-list--mobile li {
     border-bottom: 1px solid var(--color-border-light);
     opacity: 0;
-    transform: translateY(0.75rem);
+    transform: translate3d(0, 0.5rem, 0);
     transition:
-      opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-    transition-delay: calc(80ms + var(--nav-i, 0) * 55ms);
+      opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: 0ms;
   }
 
   .header__nav-mobile-cta {
@@ -472,7 +498,8 @@ function isNavActive(pathname: string, href: string): boolean {
 
   .header__nav--mobile.is-open .header__nav-list--mobile li {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
+    transition-delay: calc(70ms + var(--nav-i, 0) * 45ms);
   }
 
   .header__nav-link--mobile {
@@ -529,6 +556,10 @@ function isNavActive(pathname: string, href: string): boolean {
 
   /* モバイルメニュー・トグルは 768px 未満のみ表示 */
   @media (max-width: 767px) {
+    .header__nav--mobile {
+      display: block;
+    }
+
     .header__toggle {
       padding: 6px;
     }

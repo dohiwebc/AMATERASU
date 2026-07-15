@@ -27,82 +27,14 @@ const { faqs } = Astro.props;
 )}
 
 <script>
+  import { initHeightAccordion } from '@/scripts/init-height-accordion';
+
   function initFaqAccordion() {
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    document.querySelectorAll<HTMLDetailsElement>('.faq-accordion__item').forEach((details) => {
-      if (details.dataset.accordionInit === 'true') return;
-      details.dataset.accordionInit = 'true';
-
-      const summary = details.querySelector('summary');
-      const answer = details.querySelector<HTMLElement>('.faq-accordion__answer');
-      const inner = details.querySelector<HTMLElement>('.faq-accordion__answer-inner');
-      if (!summary || !answer || !inner) return;
-
-      const measureHeight = () => inner.scrollHeight;
-
-      const finishOpen = () => {
-        if (details.open) answer.style.height = 'auto';
-      };
-
-      const finishClose = () => {
-        details.open = false;
-        answer.style.height = '0px';
-      };
-
-      const openAnswer = () => {
-        details.open = true;
-
-        if (reducedMotion) {
-          answer.style.height = 'auto';
-          return;
-        }
-
-        answer.style.height = '0px';
-        requestAnimationFrame(() => {
-          answer.style.height = `${measureHeight()}px`;
-        });
-
-        answer.addEventListener('transitionend', function onEnd(event) {
-          if (event.propertyName !== 'height') return;
-          answer.removeEventListener('transitionend', onEnd);
-          finishOpen();
-        });
-      };
-
-      const closeAnswer = () => {
-        if (reducedMotion) {
-          finishClose();
-          return;
-        }
-
-        answer.style.height = `${measureHeight()}px`;
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            answer.style.height = '0px';
-          });
-        });
-
-        answer.addEventListener('transitionend', function onEnd(event) {
-          if (event.propertyName !== 'height') return;
-          answer.removeEventListener('transitionend', onEnd);
-          finishClose();
-        });
-      };
-
-      summary.addEventListener('click', (event) => {
-        event.preventDefault();
-        if (details.open) {
-          closeAnswer();
-        } else {
-          openAnswer();
-        }
-      });
-
-      if (!details.open) {
-        answer.style.height = '0px';
-      }
-    });
+    initHeightAccordion(
+      '.faq-accordion__item',
+      '.faq-accordion__answer',
+      '.faq-accordion__answer-inner',
+    );
   }
 
   initFaqAccordion();

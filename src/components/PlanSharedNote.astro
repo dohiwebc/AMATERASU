@@ -45,7 +45,9 @@ const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
           <span class="plan-notes-accordion__icon" aria-hidden="true"></span>
         </summary>
         <div class="plan-notes-accordion__panel">
-          <p class="plan-notes-accordion__text cms-text">{systemScopeNote}</p>
+          <div class="plan-notes-accordion__panel-inner">
+            <p class="plan-notes-accordion__text cms-text">{systemScopeNote}</p>
+          </div>
         </div>
       </details>
 
@@ -56,11 +58,13 @@ const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
             <span class="plan-notes-accordion__icon" aria-hidden="true"></span>
           </summary>
           <div class="plan-notes-accordion__panel">
-            <ul class="plan-notes-accordion__list">
-              {confirmNotes.map((note) => (
-                <li class="cms-text">{note}</li>
-              ))}
-            </ul>
+            <div class="plan-notes-accordion__panel-inner">
+              <ul class="plan-notes-accordion__list">
+                {confirmNotes.map((note) => (
+                  <li class="cms-text">{note}</li>
+                ))}
+              </ul>
+            </div>
           </div>
         </details>
       )}
@@ -72,11 +76,13 @@ const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
             <span class="plan-notes-accordion__icon" aria-hidden="true"></span>
           </summary>
           <div class="plan-notes-accordion__panel">
-            <ul class="plan-notes-accordion__list">
-              {priceNotes.map((note) => (
-                <li class="cms-text">{note}</li>
-              ))}
-            </ul>
+            <div class="plan-notes-accordion__panel-inner">
+              <ul class="plan-notes-accordion__list">
+                {priceNotes.map((note) => (
+                  <li class="cms-text">{note}</li>
+                ))}
+              </ul>
+            </div>
           </div>
         </details>
       )}
@@ -89,6 +95,21 @@ const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
     </div>
   </div>
 </section>
+
+<script>
+  import { initHeightAccordion } from '@/scripts/init-height-accordion';
+
+  function initPlanNotesAccordion() {
+    initHeightAccordion(
+      '.plan-notes-accordion__item',
+      '.plan-notes-accordion__panel',
+      '.plan-notes-accordion__panel-inner',
+    );
+  }
+
+  initPlanNotesAccordion();
+  document.addEventListener('astro:page-load', initPlanNotesAccordion);
+</script>
 
 <style>
   .plan-shared-notes__content {
@@ -210,7 +231,7 @@ const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
     left: 50%;
     background-color: var(--color-gold);
     transform: translate(-50%, -50%);
-    transition: transform 0.25s ease;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .plan-notes-accordion__icon::before {
@@ -221,13 +242,20 @@ const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
   .plan-notes-accordion__icon::after {
     width: 1px;
     height: 0.5rem;
+    transform: translate(-50%, -50%) rotate(0deg);
   }
 
   .plan-notes-accordion__item[open] .plan-notes-accordion__icon::after {
-    transform: translate(-50%, -50%) scaleY(0);
+    transform: translate(-50%, -50%) rotate(90deg);
   }
 
   .plan-notes-accordion__panel {
+    overflow: hidden;
+    height: 0;
+    transition: height 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .plan-notes-accordion__panel-inner {
     padding: 0 0 0.875rem;
   }
 
@@ -294,6 +322,17 @@ const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
       white-space: normal;
       height: auto;
       line-height: 1.5;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .plan-notes-accordion__panel {
+      transition: none;
+    }
+
+    .plan-notes-accordion__icon::before,
+    .plan-notes-accordion__icon::after {
+      transition: none;
     }
   }
 </style>
