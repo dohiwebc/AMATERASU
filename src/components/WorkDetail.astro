@@ -642,7 +642,11 @@ const hasDetails =
       font-size: var(--text-small);
       line-height: 1.6;
       gap: 0.625rem;
-      text-wrap: pretty;
+    }
+
+    /* スマホは幅に応じて自動折り返し（CMSの途中改行で右余白が出ないようにする） */
+    .work-detail__story-body .cms-text {
+      white-space: normal;
     }
 
     .work-detail__specs {

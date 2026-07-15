@@ -1,6 +1,6 @@
 import type { ContactSettings, NewsItem, Plan, SiteSettings, Work } from '@/types/cms';
 
-/** microCMS から同期（2026-07-14） */
+/** microCMS から同期（2026-07-15） */
 export const mockSiteSettings: SiteSettings = {
   brandName: "天照",
   brandDisplay: "AMATERASU Web Studio",
@@ -381,7 +381,7 @@ export const mockPlans: Plan[] = [
     ],
     order: 10,
     isFeatured: false,
-    relatedWorks: [mockWorks[8]],
+    relatedWorks: [],
   },
   {
     id: "ifn_9rtxb",
