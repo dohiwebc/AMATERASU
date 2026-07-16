@@ -8,6 +8,23 @@ interface Props {
 }
 
 const { settings } = Astro.props;
+
+/** PCでは各文を1行ずつ表示するための分割（改行優先、なければ句点で分割） */
+const heroDescLines = (() => {
+  const byNewline = settings.heroDescription
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  if (byNewline.length >= 2) return byNewline;
+
+  const bySentence = settings.heroDescription
+    .match(/[^。]+。?/g)
+    ?.map((line) => line.trim())
+    .filter(Boolean);
+
+  return bySentence && bySentence.length > 0 ? bySentence : [settings.heroDescription.trim()];
+})();
 ---
 
 <section class="hero">
@@ -27,10 +44,17 @@ const { settings } = Astro.props;
     </header>
 
     <div class="hero__content">
-      <p class="hero__catch cms-text">{settings.catchCopy}</p>
+      <p class="hero__catch">{settings.catchCopy}</p>
 
       <div class="hero__copy">
-        <p class="hero__desc cms-text">{settings.heroDescription}</p>
+        <p class="hero__desc">
+          {heroDescLines.map((line, index) => (
+            <>
+              {index > 0 && <span class="hero__desc-gap"> </span>}
+              <span class="hero__desc-line">{line}</span>
+            </>
+          ))}
+        </p>
         <p class="hero__note">個人店・小規模事業者の方も、お気軽にご相談ください。</p>
       </div>
 
@@ -49,7 +73,8 @@ const { settings } = Astro.props;
     display: flex;
     align-items: flex-end;
     padding-bottom: clamp(3rem, 8vw, 5rem);
-    overflow: hidden;
+    /* 装飾以外はクリップしない（ロゴ・文字の途切れ防止） */
+    overflow: visible;
   }
 
   .hero__wash {
@@ -123,58 +148,92 @@ const { settings } = Astro.props;
 
   .hero__inner {
     position: relative;
+    z-index: 1;
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: clamp(1.75rem, 5vw, 2.5rem);
     padding-top: clamp(3rem, 10vw, 6rem);
   }
 
+  .hero__brand {
+    min-width: 0;
+    max-width: 100%;
+  }
+
   .hero__eyebrow {
-    margin-bottom: clamp(2rem, 5vw, 3.5rem);
-    font-size: 0.8125rem;
+    margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+    font-size: 0.75rem;
     letter-spacing: 0.14em;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   .hero__title {
-    margin-bottom: clamp(1rem, 3vw, 1.75rem);
+    margin-bottom: clamp(0.75rem, 2.5vw, 1.25rem);
     line-height: 0;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .hero__title :global(.site-logo--hero) {
+    width: 100%;
+    max-width: min(100%, 15rem);
+    height: auto;
   }
 
   .hero__content {
     display: flex;
     flex-direction: column;
-    gap: var(--space-md);
+    gap: var(--space-sm);
+    min-width: 0;
+    max-width: 100%;
   }
 
   .hero__catch {
     font-family: var(--font-serif);
-    font-size: var(--text-subheading);
+    font-size: clamp(1.125rem, 3.5vw, 1.3125rem);
     font-weight: 500;
     line-height: var(--leading-snug);
     letter-spacing: 0.04em;
     color: var(--color-text);
-    max-width: 18em;
+    max-width: 100%;
+    overflow-wrap: anywhere;
   }
 
   .hero__copy {
     display: flex;
     flex-direction: column;
-    gap: var(--space-sm);
+    gap: var(--space-xs);
+    min-width: 0;
+    max-width: 100%;
   }
 
   .hero__desc {
-    font-size: 1.0625rem;
+    font-size: var(--text-body);
     color: var(--color-text);
-    line-height: 1.9;
-    max-width: 32em;
+    line-height: 1.85;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  /* スマホ・狭い幅：文がつながって自然に折り返し */
+  .hero__desc-line {
+    display: inline;
+  }
+
+  .hero__desc-gap {
+    display: inline;
   }
 
   .hero__note {
-    font-size: var(--text-body);
+    font-size: var(--text-small);
     font-weight: 500;
     color: var(--color-accent-dark);
     line-height: var(--leading-body);
+    overflow-wrap: anywhere;
   }
 
   .hero__actions {
@@ -183,20 +242,49 @@ const { settings } = Astro.props;
     align-items: flex-start;
     gap: var(--space-md);
     margin-top: var(--space-sm);
+    max-width: 100%;
+  }
+
+  .hero__actions :global(.hero__btn) {
+    max-width: 100%;
+    white-space: normal;
+    height: auto;
+    line-height: 1.5;
   }
 
   @media (max-width: 767px) {
+    .hero {
+      min-height: 0;
+      padding-bottom: clamp(2.5rem, 8vw, 4rem);
+    }
+
     .hero__title {
       display: flex;
       justify-content: center;
+    }
+
+    .hero__title :global(.site-logo--hero) {
+      max-width: min(100%, 13.5rem);
     }
   }
 
   @media (min-width: 480px) {
     .hero__actions {
       flex-direction: row;
+      flex-wrap: wrap;
       align-items: center;
-      gap: var(--space-xl);
+      gap: var(--space-lg);
+    }
+  }
+
+  /* PC：指定どおり「。で1行」ずつ表示 */
+  @media (min-width: 768px) {
+    .hero__desc-line {
+      display: block;
+    }
+
+    .hero__desc-gap {
+      display: none;
     }
   }
 
@@ -256,16 +344,17 @@ const { settings } = Astro.props;
 
     .hero__inner {
       display: grid;
-      grid-template-columns: minmax(0, 26rem) minmax(0, 1fr);
-      gap: clamp(2rem, 3.5vw, 3.5rem);
+      grid-template-columns: minmax(0, 18rem) minmax(0, 1fr);
+      gap: clamp(1.25rem, 2vw, 2rem);
       align-items: end;
-      transform: translateX(-1.5rem);
       padding-top: 0;
       width: 100%;
-      max-width: var(--container-extra-wide);
+      max-width: var(--container-wide);
       margin-inline: auto;
-      padding-left: clamp(0.5rem, 1.5vw, 1rem);
-      padding-right: clamp(1.25rem, 3vw, 2rem);
+    }
+
+    .hero__title :global(.site-logo--hero) {
+      max-width: min(100%, 18rem);
     }
 
     .hero__brand {
@@ -273,92 +362,104 @@ const { settings } = Astro.props;
     }
 
     .hero__eyebrow {
-      margin-bottom: var(--space-xl);
-      font-size: clamp(0.875rem, 1.1vw, 1rem);
-      letter-spacing: 0.16em;
+      margin-bottom: var(--space-lg);
+      font-size: clamp(0.75rem, 0.95vw, 0.875rem);
+      letter-spacing: 0.14em;
     }
 
     .hero__title {
-      margin-bottom: var(--space-lg);
+      margin-bottom: var(--space-md);
     }
 
     .hero__content {
-      gap: var(--space-xl);
+      gap: var(--space-md);
       width: 100%;
       min-width: 0;
-      max-width: none;
-      padding-bottom: 0.35rem;
+      max-width: 100%;
+      padding-bottom: 0.25rem;
       border-left: 1px solid var(--color-accent-light);
-      padding-left: clamp(1rem, 1.75vw, 1.5rem);
-      margin-left: -1.75rem;
+      padding-left: clamp(0.875rem, 1.5vw, 1.25rem);
     }
 
     .hero__catch {
-      font-size: clamp(1.625rem, 2.5vw, 2.125rem);
-      max-width: none;
+      font-size: clamp(1.25rem, 1.7vw, 1.5rem);
       line-height: 1.45;
-      letter-spacing: 0.05em;
-    }
-
-    .hero__copy {
-      max-width: none;
+      letter-spacing: 0.04em;
     }
 
     .hero__desc {
-      font-size: clamp(1.125rem, 1.45vw, 1.3125rem);
-      line-height: 1.95;
-      max-width: none;
+      /* 長い1文が途中改行されにくいよう、幅に合わせて縮める */
+      font-size: clamp(0.8125rem, 1.05vw, 1rem);
+      line-height: 1.9;
     }
 
     .hero__note {
-      font-size: clamp(1.0625rem, 1.2vw, 1.1875rem);
-      line-height: 1.85;
-      max-width: none;
+      font-size: clamp(0.8125rem, 1vw, 0.9375rem);
+      line-height: 1.8;
     }
 
     .hero__actions {
-      margin-top: var(--space-lg);
-      gap: var(--space-xl);
+      margin-top: var(--space-sm);
+      gap: var(--space-lg);
     }
 
     .hero__actions :global(.hero__btn.btn--lg) {
-      padding: 1.125rem 2.375rem;
-      font-size: 1.0625rem;
+      padding: 0.875rem 1.75rem;
+      font-size: var(--text-small);
       letter-spacing: 0.1em;
     }
 
     .hero__actions :global(.hero__btn.btn--text) {
-      font-size: 1.0625rem;
+      font-size: var(--text-small);
       letter-spacing: 0.08em;
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .hero__inner {
+      grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+      gap: clamp(1.75rem, 2.5vw, 2.5rem);
+    }
+
+    .hero__title :global(.site-logo--hero) {
+      max-width: min(100%, 20rem);
+    }
+
+    .hero__desc {
+      font-size: clamp(0.9375rem, 1.1vw, 1.0625rem);
     }
   }
 
   @media (min-width: 1200px) {
     .hero__inner {
-      grid-template-columns: minmax(0, 32rem) minmax(0, 1fr);
-      gap: clamp(2.5rem, 4vw, 4rem);
+      grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
+      gap: clamp(2rem, 3vw, 3rem);
+    }
+
+    .hero__title :global(.site-logo--hero) {
+      max-width: min(100%, 22rem);
     }
 
     .hero__eyebrow {
-      font-size: 1.0625rem;
-      letter-spacing: 0.18em;
+      font-size: 0.875rem;
+      letter-spacing: 0.16em;
     }
 
     .hero__catch {
-      font-size: 2.125rem;
+      font-size: 1.625rem;
     }
 
     .hero__desc {
-      font-size: 1.3125rem;
+      font-size: 1.0625rem;
     }
 
     .hero__actions :global(.hero__btn.btn--lg) {
-      padding: 1.25rem 2.625rem;
-      font-size: 1.125rem;
+      padding: 1rem 2rem;
+      font-size: 1rem;
     }
 
     .hero__actions :global(.hero__btn.btn--text) {
-      font-size: 1.125rem;
+      font-size: 1rem;
     }
   }
 </style>
