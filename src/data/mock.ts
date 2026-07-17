@@ -332,6 +332,68 @@ export const mockWorks: Work[] = [
     isFeatured: true,
     sortOrder: 300,
     year: "2026年",
+  },
+  {
+    id: "uje65-7_3thx",
+    title: "KOMOREBI CAFE MENU",
+    slug: "komorebi-cafe-menu",
+    workType: "自主制作",
+    siteType: "ミニ制作",
+    category: "",
+    shortDescription: "木漏れ日が差し込むカフェのメニューを、スマホで見やすくまとめたサンプルサイト。",
+    description:
+      "KOMOREBI CAFEのドリンク、フード、スイーツを写真付きで掲載したカフェメニューサイトです。\nカテゴリ別のメニュー表示、価格、説明文、写真プレビューを備え、スマートフォンでも内容を確認しやすい構成にしています。",
+    purpose: "カフェのメニューをWeb化し、来店前や店内でスマートフォンから見やすく確認できるようにすること。",
+    technologies:
+      "HTML\nCSS\nJavaScript",
+    highlights:
+      "スマートフォンで見やすいメニュー構成\n写真付きの商品一覧\nカテゴリ別の固定ナビゲーション\n商品写真の拡大プレビュー\nスクロール時の表示アニメーション\nレスポンシブ対応",
+    thumbnail: "https://images.microcms-assets.io/assets/8c0a3a945f2d49b9a5f0ea2c26212fd4/18f25a2c86424918a95d0eabcbe719af/komorebi-hero-desktop.webp",
+    url: "https://dohiwebc.github.io/komorebicafe/",
+    isVisible: true,
+    isFeatured: true,
+    sortOrder: 300,
+    year: "2026年",
+  },
+  {
+    id: "pqkk02k3duh",
+    title: "AOBA BASKETBALL CLUB",
+    slug: "aoba-basketball-club",
+    workType: "自主制作",
+    siteType: "ミニ制作",
+    category: "",
+    shortDescription: "岡山・倉敷の社会人バスケットボールクラブの体験参加・メンバー募集向けサイト",
+    description: "岡山・倉敷を拠点に活動する男女混合の社会人バスケットボールクラブとして、活動内容、練習日程、募集条件、活動実績、お問い合わせフォームを1ページで見られる構成にしたサンプルサイト。",
+    purpose: "クラブの雰囲気や活動内容を伝え、体験参加・見学・練習試合のお問い合わせにつなげるため。",
+    technologies:
+      "HTML\nCSS\nJavaScript",
+    highlights: "フルブリードのメインビジュアル、写真を活かしたセクション構成、活動情報のティッカー、スマホ対応ナビゲーション、フォームの入力チェック",
+    thumbnail: "https://images.microcms-assets.io/assets/8c0a3a945f2d49b9a5f0ea2c26212fd4/d4c1ec69a2af49da86b3b9229ca94b07/aoba-hero-desktop.webp",
+    url: "https://dohiwebc.github.io/AOBABASKETBALLCLUB/",
+    isVisible: true,
+    isFeatured: true,
+    sortOrder: 350,
+    year: "2026年",
+  },
+  {
+    id: "0f0xbv6ay_6f",
+    title: "NAMI GELATO SUMMER FAIR",
+    slug: "nami-gelato-summer-fair",
+    workType: "自主制作",
+    siteType: "ミニ制作",
+    category: "",
+    shortDescription: "海辺のジェラートショップ「NAMI GELATO」の夏限定フェアページです。",
+    description: "夏限定フレーバー3種、ダブル注文特典、Instagramフォロー割、店舗情報、アクセス導線、お問い合わせフォームを掲載した1ページ構成のキャンペーンサイトです。",
+    purpose: "2026年夏限定フェアの告知、限定商品の紹介、来店促進、SNSフォローと問い合わせ導線の設置",
+    technologies:
+      "HTML\nCSS\nJavaScript",
+    highlights: "季節感のあるビジュアル、レスポンシブ対応、画像プレビュー、スマホ固定CTA、フォームのデモ送信表示、スクロール時の表示アニメーション",
+    thumbnail: "https://images.microcms-assets.io/assets/8c0a3a945f2d49b9a5f0ea2c26212fd4/3b4ba5efdecf44528ca56f9289761466/nami-hero-desktop.webp",
+    url: "https://dohiwebc.github.io/NAMIGELATOSUMMERFAIR/",
+    isVisible: true,
+    isFeatured: true,
+    sortOrder: 400,
+    year: "2026年",
   }
 ];
 
@@ -660,7 +722,7 @@ export const mockPlans: Plan[] = [
     ],
     order: 110,
     isFeatured: false,
-    relatedWorks: [],
+    relatedWorks: [mockWorks[10]],
   },
   {
     id: "ql_optcz-3",
@@ -738,7 +800,7 @@ export const mockPlans: Plan[] = [
     ],
     order: 120,
     isFeatured: false,
-    relatedWorks: [],
+    relatedWorks: [mockWorks[9]],
   },
   {
     id: "nnhws6k54",
@@ -817,7 +879,7 @@ export const mockPlans: Plan[] = [
     ],
     order: 130,
     isFeatured: false,
-    relatedWorks: [],
+    relatedWorks: [mockWorks[11]],
   },
   {
     id: "6-jjmjhjrnvw",
@@ -905,7 +967,7 @@ export const mockPlans: Plan[] = [
     ],
     order: 140,
     isFeatured: false,
-    relatedWorks: [],
+    relatedWorks: [mockWorks[12]],
   },
   {
     id: "otsnjl8r32g",
@@ -994,6 +1056,6 @@ export const mockPlans: Plan[] = [
     ],
     order: 150,
     isFeatured: false,
-    relatedWorks: [],
+    relatedWorks: [mockWorks[13]],
   }
 ];
