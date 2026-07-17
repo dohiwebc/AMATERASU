@@ -147,30 +147,10 @@ function normalizePlanRelatedWorks(
     .sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
-function resolveRelatedWorksFromPlans(
-  plan: Plan,
-  allWorks: RawWork[],
-): Work[] {
-  return allWorks
-    .filter((raw) =>
-      (raw.relatedPlans ?? []).some(
-        (relatedPlan) =>
-          relatedPlan.id === plan.id || relatedPlan.slug === plan.slug,
-      ),
-    )
-    .map((raw) => normalizeWork(raw))
-    .filter((work) => work.isVisible)
-    .sort((a, b) => a.sortOrder - b.sortOrder);
-}
-
 function attachRelatedWorks(plans: Plan[], rawPlans: RawPlan[], allWorks: RawWork[]): Plan[] {
   return plans.map((plan, index) => {
-    const fromPlanField = normalizePlanRelatedWorks(rawPlans[index]?.relatedWorks, allWorks);
-    const relatedWorks =
-      fromPlanField.length > 0
-        ? fromPlanField
-        : resolveRelatedWorksFromPlans(plan, allWorks);
-
+    // 制作プランの「複数コンテンツ参照（制作実績）」に登録したものだけを表示
+    const relatedWorks = normalizePlanRelatedWorks(rawPlans[index]?.relatedWorks, allWorks);
     return { ...plan, relatedWorks };
   });
 }
@@ -354,6 +334,7 @@ export async function getWorks(): Promise<Work[]> {
       queries: {
         filters: 'isVisible[equals]true',
         orders: 'sortOrder',
+        limit: 100,
       },
     });
     return sortWorks(data.contents.map((work) => normalizeWork(work)));

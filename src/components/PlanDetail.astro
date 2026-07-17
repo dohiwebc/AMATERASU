@@ -32,13 +32,26 @@ const hasContent =
   plan.recommendedFor.length > 0 ||
   detailSections.length > 0;
 
+/**
+ * microCMSの改行を整理する。
+ * - 文末（。！？など）のあとの改行・空行は残す（意図した改行）
+ * - それ以外の途中改行は削除し、画面幅での自動折り返しに任せる
+ */
+function normalizeCmsNewlines(text: string): string {
+  return text
+    .replace(/\r\n/g, '\n')
+    .replace(/([^\n。．！？!?])\n(?!\n)/g, '$1')
+    .replace(/\n{3,}/g, '\n\n');
+}
+
 function toDescriptionParagraphs(text?: string): string[] {
   if (!text?.trim()) return [];
-  const blocks = text
+  const normalized = normalizeCmsNewlines(text);
+  const blocks = normalized
     .split(/\n{2,}/)
     .map((part) => part.trim())
     .filter(Boolean);
-  return blocks.length > 0 ? blocks : [text.trim()];
+  return blocks.length > 0 ? blocks : [normalized.trim()];
 }
 
 function splitFactValue(text?: string): { primary: string; notes: string[] } {
@@ -556,8 +569,7 @@ const deliveryFact = splitFactValue(plan.deliveryFormat);
     .plan-detail__prose {
       font-size: var(--text-small);
       line-height: 1.65;
-      text-wrap: pretty;
-      overflow-wrap: break-word;
+      overflow-wrap: anywhere;
       padding: 1rem 1.125rem;
       background-color: var(--color-bg-accent);
       border: 1px solid var(--color-border-light);
@@ -566,6 +578,11 @@ const deliveryFact = splitFactValue(plan.deliveryFormat);
     .plan-detail__prose p {
       font-size: inherit;
       line-height: inherit;
+    }
+
+    /* 文末の CMS 改行は pre-line で保持し、幅いっぱいに自動折り返し */
+    .plan-detail__prose .cms-text {
+      white-space: pre-line;
     }
 
     .plan-detail__list--cols {

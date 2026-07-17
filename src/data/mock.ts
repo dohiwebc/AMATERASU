@@ -1,6 +1,6 @@
 import type { ContactSettings, NewsItem, Plan, SiteSettings, Work } from '@/types/cms';
 
-/** microCMS から同期（2026-07-15） */
+/** microCMS から同期（2026-07-17） */
 export const mockSiteSettings: SiteSettings = {
   brandName: "天照",
   brandDisplay: "AMATERASU Web Studio",
@@ -72,17 +72,6 @@ export const mockNews: NewsItem[] = [
     isFeatured: true,
     isVisible: true,
     sortOrder: 1,
-  },
-  {
-    id: "k3ldik7b7c_h",
-    title: "gdg",
-    slug: "ahihfi",
-    body: "あhfっへp",
-    date: "2026-07-16",
-    category: "info",
-    isFeatured: true,
-    isVisible: true,
-    sortOrder: 10,
   }
 ];
 
@@ -303,6 +292,46 @@ export const mockWorks: Work[] = [
     isFeatured: true,
     sortOrder: 100,
     year: "2026年",
+  },
+  {
+    id: "6nmnd5jyud",
+    title: "MIO PHOTO WORKS",
+    slug: "mio-photo-works",
+    workType: "自主制作",
+    siteType: "ミニ制作",
+    category: "",
+    shortDescription: "大阪を拠点に活動するフォトグラファー MIO のWeb名刺ページ。",
+    description:
+      "プロフィール撮影・家族写真・店舗撮影・SNS用写真に対応する架空のフォトグラファーのWeb名刺ページです。\nファーストビュー、プロフィール、サービス紹介、リンク集、お問い合わせフォームを1ページにまとめています。",
+    purpose: "フォトグラファーの雰囲気や撮影内容を伝え、作例閲覧や撮影相談につなげること。",
+    technologies:
+      "HTML\nCSS\nJavaScript",
+    highlights: "写真を主役にしたヒーロー、落ち着いた配色、紙のような質感、細い罫線、控えめな表示アニメーション、レスポンシブ対応。",
+    thumbnail: "https://images.microcms-assets.io/assets/8c0a3a945f2d49b9a5f0ea2c26212fd4/f9119f4ecd494265ae05fbb10075c1de/mio-hero-desktop.webp",
+    url: "https://dohiwebc.github.io/MIOPHOTOWORKS/",
+    isVisible: true,
+    isFeatured: true,
+    sortOrder: 250,
+    year: "2026年",
+  },
+  {
+    id: "9uanqgmiaxfs",
+    title: "RINA NAIL LINKS",
+    slug: "rina-nail-links",
+    workType: "自主制作",
+    siteType: "ミニ制作",
+    category: "",
+    shortDescription: "予約・メニュー・SNS・お問い合わせを1ページにまとめた、ネイリスト向けプロフィールリンクページです。",
+    description: "福岡のネイリストを想定し、予約導線、料金メニュー、Instagram、LINE、お問い合わせへのリンクを1ページに整理したプロフィールリンクページです。スマートフォンから見たときに必要な情報へ迷わず移動できる構成にしています。",
+    purpose: "SNSプロフィールから予約・メニュー確認・相談・お問い合わせまでの導線をわかりやすくまとめるため。",
+    technologies: "HTML　CSS　JavaScript",
+    highlights: "スマートフォンで見たときの使いやすさを重視し、予約・メニュー・SNS・お問い合わせへの導線を縦に整理しました。写真と余白を活かし、ネイルサロンらしい上品でやわらかい印象になるようにデザインしています。",
+    thumbnail: "https://images.microcms-assets.io/assets/8c0a3a945f2d49b9a5f0ea2c26212fd4/21bcd161cfb24ad6993165755e70cac4/linanaillinks.png",
+    url: "https://dohiwebc.github.io/RINANAILLINKS/",
+    isVisible: true,
+    isFeatured: true,
+    sortOrder: 300,
+    year: "2026年",
   }
 ];
 
@@ -469,7 +498,7 @@ export const mockPlans: Plan[] = [
     ],
     order: 20,
     isFeatured: true,
-    relatedWorks: [],
+    relatedWorks: [mockWorks[0]],
   },
   {
     id: "cbt6vaxgqxx0",
@@ -558,7 +587,7 @@ export const mockPlans: Plan[] = [
     ],
     order: 30,
     isFeatured: false,
-    relatedWorks: [],
+    relatedWorks: [mockWorks[2], mockWorks[6], mockWorks[5], mockWorks[3], mockWorks[1]],
   },
   {
     id: "w0k8egct18pv",
