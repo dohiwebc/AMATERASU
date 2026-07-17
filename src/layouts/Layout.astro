@@ -33,9 +33,9 @@ const canonicalUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).href :
     {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
     {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
     {ogImageUrl && <meta name="twitter:card" content="summary_large_image" />}
-    <link rel="icon" type="image/png" href={withBase('/favicon.png')} />
-    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
-    <link rel="apple-touch-icon" href={withBase('/apple-touch-icon.png')} />
+    <link rel="icon" href={withBase('/images/logo-amaterasu.png')} type="image/png" sizes="any" />
+    <link rel="shortcut icon" href={withBase('/images/logo-amaterasu.png')} type="image/png" />
+    <link rel="apple-touch-icon" href={withBase('/images/logo-amaterasu.png')} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
