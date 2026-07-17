@@ -19,8 +19,14 @@ const pageTitle = title ? `${title} | ${settings.brandDisplay}` : settings.seoTi
 const pageDescription = description ?? settings.seoDescription;
 const ogImageUrl = ogImage ?? settings.ogImage;
 const canonicalUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
-/** favicon キャッシュ破棄用（アセット差し替え時に更新） */
-const faviconVersion = '3';
+/**
+ * favicon は未キャッシュのパスを優先する。
+ * `/` と `/works/` などはブラウザが古いアイコンを強く保持しやすい。
+ */
+const icon32 = withBase('/icons/amaterasu-32.png');
+const icon16 = withBase('/icons/amaterasu-16.png');
+const iconIco = withBase('/icons/amaterasu.ico');
+const iconApple = withBase('/icons/amaterasu-apple-touch.png');
 ---
 
 <!doctype html>
@@ -35,23 +41,14 @@ const faviconVersion = '3';
     {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
     {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
     {ogImageUrl && <meta name="twitter:card" content="summary_large_image" />}
-    <link rel="icon" href={`${withBase('/favicon.ico')}?v=${faviconVersion}`} sizes="any" />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href={`${withBase('/favicon-32x32.png')}?v=${faviconVersion}`}
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href={`${withBase('/favicon-16x16.png')}?v=${faviconVersion}`}
-    />
-    <link
-      rel="apple-touch-icon"
-      href={`${withBase('/apple-touch-icon.png')}?v=${faviconVersion}`}
-    />
+    {/* PNG を先に指定（Chrome 等が優先しやすい） */}
+    <link rel="icon" type="image/png" sizes="32x32" href={icon32} />
+    <link rel="icon" type="image/png" sizes="16x16" href={icon16} />
+    <link rel="icon" href={iconIco} sizes="any" />
+    <link rel="shortcut icon" href={iconIco} />
+    {/* ルートの /favicon.ico 自動取得にも対応 */}
+    <link rel="icon" href={withBase('/favicon.ico')} sizes="48x48" />
+    <link rel="apple-touch-icon" sizes="180x180" href={iconApple} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

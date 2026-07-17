@@ -101,13 +101,32 @@ def main() -> None:
     icon48 = resize_mark(mark, 48)
     apple = resize_mark(mark, 180, bg=(244, 240, 232, 255))
 
+    icons_dir = PUBLIC / 'icons'
+    icons_dir.mkdir(exist_ok=True)
+
     icon16.save(PUBLIC / 'favicon-16x16.png', optimize=True)
     icon32.save(PUBLIC / 'favicon-32x32.png', optimize=True)
     apple.save(PUBLIC / 'apple-touch-icon.png', optimize=True)
     write_ico(PUBLIC / 'favicon.ico', [icon16, icon32, icon48])
 
+    # Layout が参照する未キャッシュ用パス（ホーム・実績などの強いキャッシュ対策）
+    icon16.save(icons_dir / 'amaterasu-16.png', optimize=True)
+    icon32.save(icons_dir / 'amaterasu-32.png', optimize=True)
+    apple.save(icons_dir / 'amaterasu-apple-touch.png', optimize=True)
+    write_ico(icons_dir / 'amaterasu.ico', [icon16, icon32, icon48])
+
     print('generated:')
-    for name in ('favicon.ico', 'favicon-16x16.png', 'favicon-32x32.png', 'apple-touch-icon.png'):
+    names = (
+        'favicon.ico',
+        'favicon-16x16.png',
+        'favicon-32x32.png',
+        'apple-touch-icon.png',
+        'icons/amaterasu.ico',
+        'icons/amaterasu-16.png',
+        'icons/amaterasu-32.png',
+        'icons/amaterasu-apple-touch.png',
+    )
+    for name in names:
         path = PUBLIC / name
         im = Image.open(path)
         print(f'  {name}: {im.size[0]}x{im.size[1]} ({path.stat().st_size} bytes)')
