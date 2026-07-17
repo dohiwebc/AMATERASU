@@ -2,13 +2,15 @@
 import WorkVisual from '@/components/WorkVisual.astro';
 import { getSiteTypeLabel, getWorkTypeLabel } from '@/types/cms';
 import type { Work } from '@/types/cms';
+import type { WorkRelatedPlan } from '@/lib/works';
 import { withBase } from '@/lib/paths';
 
 interface Props {
   work: Work;
+  relatedPlans?: WorkRelatedPlan[];
 }
 
-const { work } = Astro.props;
+const { work, relatedPlans = [] } = Astro.props;
 const typeLabel = getWorkTypeLabel(work.workType);
 const siteTypeLabel = getSiteTypeLabel(work.siteType);
 const hasExternalUrl = Boolean(work.url && work.url !== '#');
@@ -68,6 +70,9 @@ const hasDetails =
         <div class="work-detail__badges">
           {typeLabel && <span class="work-detail__type">{typeLabel}</span>}
           {siteTypeLabel && <span class="work-detail__site-type">{siteTypeLabel}</span>}
+          {relatedPlans.map((plan) => (
+            <span class="work-detail__plan">{plan.title}</span>
+          ))}
         </div>
         {(work.category || work.year) && (
           <div class="work-detail__facts">
@@ -241,6 +246,15 @@ const hasDetails =
     letter-spacing: 0.08em;
     color: var(--color-text-muted);
     background-color: var(--color-bg-accent);
+    border: 1px solid var(--color-border-light);
+    line-height: 1.3;
+  }
+
+  .work-detail__plan {
+    padding: 0.35rem 0.75rem;
+    font-size: var(--text-small);
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
     border: 1px solid var(--color-border-light);
     line-height: 1.3;
   }
@@ -556,7 +570,8 @@ const hasDetails =
     }
 
     .work-detail__type,
-    .work-detail__site-type {
+    .work-detail__site-type,
+    .work-detail__plan {
       padding: 0.1rem 0.45rem;
       font-size: 0.625rem;
       letter-spacing: 0.06em;

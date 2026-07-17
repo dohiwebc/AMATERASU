@@ -2,22 +2,30 @@
 import Layout from '@/layouts/Layout.astro';
 import WorkDetail from '@/components/WorkDetail.astro';
 import CTASection from '@/components/CTASection.astro';
-import { getSiteSettings, getWorks } from '@/lib/microcms';
+import { getPlans, getSiteSettings, getWorks } from '@/lib/microcms';
 import { toMetaDescription } from '@/lib/text';
+import { buildWorkPlansMap, type WorkRelatedPlan } from '@/lib/works';
+import type { Work } from '@/types/cms';
 
 export async function getStaticPaths() {
-  const works = await getWorks();
+  const [works, plans] = await Promise.all([getWorks(), getPlans()]);
+  const workPlansMap = buildWorkPlansMap(plans);
+
   return works.map((work) => ({
     params: { slug: work.slug },
-    props: { work },
+    props: {
+      work,
+      relatedPlans: workPlansMap.get(work.id) ?? [],
+    },
   }));
 }
 
 interface Props {
-  work: import('@/types/cms').Work;
+  work: Work;
+  relatedPlans: WorkRelatedPlan[];
 }
 
-const { work } = Astro.props;
+const { work, relatedPlans } = Astro.props;
 const settings = await getSiteSettings();
 const pageDescription = toMetaDescription(work.shortDescription, work.description);
 ---
@@ -38,7 +46,7 @@ const pageDescription = toMetaDescription(work.shortDescription, work.descriptio
 
   <section class="section section--after-header section--white work-detail-page">
     <div class="container container--wide">
-      <WorkDetail work={work} />
+      <WorkDetail work={work} relatedPlans={relatedPlans} />
     </div>
   </section>
 
