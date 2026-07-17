@@ -191,7 +191,7 @@ const deliveryFact = splitFactValue(plan.deliveryFormat);
     </div>
   )}
 
-  <PlanRelatedWorks works={plan.relatedWorks} />
+  <PlanRelatedWorks works={plan.relatedWorks} planTitle={plan.title} />
 
   <footer class="plan-detail__footer">
     <a href={withBase(backHref)} class="plan-detail__compare-link">{compareLabel}</a>
