@@ -26,7 +26,7 @@ export const staticFaqs: Faq[] = [
     id: 'faq-3',
     question: '表示されている料金以外にかかる費用はありますか？',
     answer:
-      'ドメイン・サーバー費用は別途必要です。\n写真撮影や文章作成、ロゴ制作などはプランに含まれない場合がありますので、事前にご案内いたします。',
+      'ドメイン・サーバー費用、外部サービス利用料は別途です。\nCMS・予約フォーム・決済機能などはオプションです。写真撮影や文章作成、ロゴ制作などはプランに含まれない場合がありますので、事前にご案内いたします。',
     category: 'price',
     sortOrder: 3,
     isVisible: true,
@@ -36,7 +36,7 @@ export const staticFaqs: Faq[] = [
     id: 'faq-4',
     question: '制作期間はどのくらいですか？',
     answer:
-      'プランや内容により異なりますが、本格制作プランはおおむね1〜2ヶ月が目安です。\nミニ制作プランは、素材が揃ってから3日〜2週間程度が目安です。内容やCMS追加の有無によって前後します。',
+      'プランや内容により異なりますが、本格制作プランはおおむね1〜2ヶ月が目安です。\nミニ制作プランは、素材が揃ってから3日〜2週間程度が目安です。内容やページ量、オプション追加の有無によって前後します。',
     category: 'delivery',
     sortOrder: 4,
     isVisible: true,
@@ -49,6 +49,16 @@ export const staticFaqs: Faq[] = [
       'ページ数や掲載したい情報量で選びやすくなっています。\n初めての方やお店の魅力をしっかり伝えたい方には、スタンダードプランがおすすめです。',
     category: 'normal',
     sortOrder: 5,
+    isVisible: true,
+    isFeatured: false,
+  },
+  {
+    id: 'faq-cms',
+    question: 'お知らせやメニューを自分で更新できますか？',
+    answer:
+      'CMS更新機能はオプションです。\nお知らせ・メニュー・商品情報などを管理画面から更新できる形にできます。microCMSなどのヘッドレスCMSを使い、運用しやすい方法をご提案します。更新したい内容や項目数に応じてお見積もりします。',
+    category: 'price',
+    sortOrder: 17,
     isVisible: true,
     isFeatured: false,
   },

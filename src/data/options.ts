@@ -8,15 +8,17 @@ export interface OptionItem {
 export interface OptionGroup {
   title: string;
   items: OptionItem[];
+  /** グループ見出し下の補足説明 */
+  description?: string;
 }
 
 export const optionGroups: OptionGroup[] = [
   {
     title: '公開・初期設定',
     items: [
-      { label: '公開作業サポート', price: '5,000円〜' },
-      { label: 'ドメイン設定サポート', price: '5,000円〜' },
-      { label: 'サーバー・ドメイン初期設定サポート（公開作業込み）', price: '10,000円〜' },
+      { label: '公開作業サポート', price: '8,000円〜' },
+      { label: 'ドメイン設定サポート', price: '8,000円〜' },
+      { label: 'サーバー・ドメイン初期設定サポート（公開作業込み）', price: '15,000円〜' },
       { label: 'Google Search Console設定', price: '5,000円〜' },
       { label: 'Google Analytics設定', price: '5,000円〜' },
     ],
@@ -24,32 +26,39 @@ export const optionGroups: OptionGroup[] = [
   {
     title: 'ページ追加',
     items: [
-      { label: '追加ページ制作', price: '10,000円〜 / 1ページ' },
-      { label: '簡易下層ページ追加', price: '5,000円〜' },
+      { label: '追加ページ制作', price: '15,000円〜 / 1ページ' },
+      { label: '簡易下層ページ追加', price: '8,000円〜' },
     ],
   },
   {
     title: 'CMS・更新機能',
+    description:
+      'お知らせ・メニュー・商品情報などを、管理画面から更新できるようにします。microCMSなどのヘッドレスCMSを使い、店舗側で更新しやすい形をご提案します（構成や運用に応じて最適な方法をご相談ください）。更新したい内容や項目数に応じて、料金は変動します。',
     items: [
-      { label: 'CMS機能追加（お知らせなど1種類）', price: '15,000円〜' },
-      { label: 'ブログ機能追加', price: '20,000円〜' },
-      { label: 'メニュー更新機能追加', price: '15,000円〜' },
-      { label: 'CMS管理項目追加', price: '内容に応じてお見積り' },
+      { label: 'CMS更新機能（お知らせなど簡単な更新）', price: '30,000円〜' },
+      { label: 'メニュー・料金表の更新機能', price: '40,000円〜60,000円' },
+      { label: '商品一覧・季節商品の更新機能', price: '70,000円〜120,000円' },
+      { label: 'メニュー＋コース＋テイクアウトなど複数管理', price: '120,000円〜200,000円' },
+      { label: 'ブログ機能追加', price: '30,000円〜' },
+      { label: '複数CMS・複雑な管理項目', price: '別途お見積もり' },
     ],
   },
   {
     title: 'フォーム・問い合わせ',
+    description:
+      '通常のお問い合わせフォームは各プランに含まれます。予約・注文・複数項目のフォームは、内容に応じてオプション対応となります。Formspree等を使った、スパム対策込みの簡易フォームとして設置します。',
     items: [
-      { label: '予約リクエストフォーム追加', price: '5,000円〜' },
-      { label: 'フォーム項目追加', price: '内容に応じてお見積り' },
+      { label: '予約リクエストフォーム追加', price: '10,000円〜30,000円' },
+      { label: 'テイクアウト注文フォーム追加', price: '30,000円〜60,000円' },
+      { label: 'フォーム項目追加', price: '内容に応じてお見積もり' },
+      { label: '複雑な予約管理・決済・在庫管理', price: '非対応／別途相談' },
     ],
   },
   {
     title: '埋め込み・外部サービス',
     items: [
-      { label: 'Instagramグリッド埋め込み', price: '5,000円〜' },
-      { label: 'YouTube埋め込み', price: '3,000円〜' },
-      { label: 'Googleフォーム埋め込み', price: '3,000円〜' },
+      { label: 'Instagram埋め込み', price: '5,000円〜' },
+      { label: 'YouTube / Googleフォーム埋め込み', price: '3,000円〜' },
       { label: 'Googleマップ埋め込み', price: '無料〜（初回設置）' },
       { label: '外部予約サービスリンク設置', price: '無料〜（初回設置）' },
       { label: 'LINE導線設置', price: '無料〜（初回設置）' },
@@ -87,7 +96,10 @@ export const optionGroups: OptionGroup[] = [
 ];
 
 export const optionNotes: string[] = [
-  '表示価格は目安です。内容量や必要な作業によって料金が変動する場合があります。',
+  '表示価格は目安です。内容やページ数、必要な機能によってお見積もりします。',
+  'CMS・予約フォーム・決済機能などはオプションです。内容に応じてお見積もりします。',
+  '写真・原稿の量、修正内容によって料金が変わる場合があります。',
+  'ドメイン・サーバー費用、外部サービス利用料は別途です。',
   '制作プランやサイトの状態によって、対応可否が変わる場合があります。',
   '「無料〜」は初回の簡単な設置が目安です。デザイン調整や仕様変更は別途ご相談となります。',
   '掲載文章の整理・リライトは、軽い調整は基本無料です。文量が多い場合は別途お見積りします。',

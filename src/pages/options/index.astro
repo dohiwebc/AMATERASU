@@ -32,7 +32,7 @@ const pageDescription =
       <SectionTitle
         en="Menu"
         ja="オプション一覧"
-        description="制作プランに追加できるサポートです。表示価格は目安です。"
+        description="制作プランに追加できるサポートです。表示価格は目安です。内容やページ数、必要な機能によってお見積もりします。"
         variant="editorial"
       />
 
@@ -45,6 +45,7 @@ const pageDescription =
               </span>
               <h3 class="options-group__title">{group.title}</h3>
             </header>
+            {group.description && <p class="options-group__desc">{group.description}</p>}
             <ul class="options-rows">
               {group.items.map((item) => (
                 <li class="options-row">
@@ -131,6 +132,15 @@ const pageDescription =
     letter-spacing: 0.08em;
     color: var(--color-text);
     line-height: var(--leading-tight);
+    text-wrap: pretty;
+  }
+
+  .options-group__desc {
+    margin: 0 0 0.75rem;
+    max-width: 48rem;
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
     text-wrap: pretty;
   }
 
@@ -258,6 +268,12 @@ const pageDescription =
     .options-group__title {
       font-size: 1.25rem;
     }
+
+    .options-group__desc {
+      margin-bottom: 1rem;
+      font-size: var(--text-body);
+      line-height: 1.85;
+    }
   }
 
   /* スマホ */
@@ -316,6 +332,12 @@ const pageDescription =
     .options-group__title {
       font-size: var(--text-body);
       letter-spacing: 0.05em;
+    }
+
+    .options-group__desc {
+      margin-bottom: 0.5rem;
+      font-size: var(--text-small);
+      line-height: 1.7;
     }
 
     .options-row {

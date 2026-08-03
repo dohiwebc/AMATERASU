@@ -277,7 +277,23 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 
   try {
     const data = await client.get({ endpoint: 'site-settings' });
-    return { ...mockSiteSettings, ...data } as SiteSettings;
+    const raw = data as Record<string, unknown>;
+    return {
+      ...mockSiteSettings,
+      ...data,
+      systemScopeNote:
+        (raw.planSystemScopeNote as string | undefined) ??
+        (raw.systemScopeNote as string | undefined) ??
+        mockSiteSettings.systemScopeNote,
+      generalNotes:
+        (raw.planGeneralNotes as string | undefined) ??
+        (raw.generalNotes as string | undefined) ??
+        mockSiteSettings.generalNotes,
+      miniSystemScopeNote:
+        (raw.miniSystemScopeNote as string | undefined) ?? mockSiteSettings.miniSystemScopeNote,
+      miniGeneralNotes:
+        (raw.miniGeneralNotes as string | undefined) ?? mockSiteSettings.miniGeneralNotes,
+    } as SiteSettings;
   } catch {
     console.warn('[microCMS] site-settings の取得に失敗しました。モックデータを使用します。');
     return mockSiteSettings;
