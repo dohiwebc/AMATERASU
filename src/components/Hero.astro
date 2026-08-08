@@ -200,6 +200,8 @@ const heroDescLines = (() => {
     letter-spacing: 0.04em;
     color: var(--color-text);
     max-width: 100%;
+    word-break: keep-all;
+    line-break: strict;
     overflow-wrap: anywhere;
   }
 
@@ -215,7 +217,9 @@ const heroDescLines = (() => {
     font-size: var(--text-body);
     color: var(--color-text);
     line-height: 1.85;
-    max-width: 100%;
+    max-width: min(100%, var(--measure-prose));
+    word-break: keep-all;
+    line-break: strict;
     overflow-wrap: anywhere;
   }
 

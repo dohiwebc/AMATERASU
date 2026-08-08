@@ -29,10 +29,10 @@ const badgeToneClass = `acceptance-status__badge--${acceptance.badgeTone}`;
       </div>
 
       <div class="acceptance-status__body">
-        <p class="acceptance-status__lead cms-text">{acceptance.leadText}</p>
+        <p class="acceptance-status__lead cms-text cms-text--break">{acceptance.leadText}</p>
         <p class="acceptance-status__reply">
           <span class="acceptance-status__term">返信目安</span>
-          <span class="acceptance-status__desc cms-text">{acceptance.replyText}</span>
+          <span class="acceptance-status__desc cms-text cms-text--break">{acceptance.replyText}</span>
         </p>
         <Button href="/contact/" variant="text" size="md" class="acceptance-status__link">
           お問い合わせはこちら
@@ -63,6 +63,11 @@ const badgeToneClass = `acceptance-status__badge--${acceptance.badgeTone}`;
       gap: clamp(2.5rem, 5vw, 4rem);
       text-align: left;
       align-items: start;
+    }
+
+    .acceptance-status__lead,
+    .acceptance-status__desc {
+      margin-inline: 0;
     }
   }
 
@@ -137,7 +142,9 @@ const badgeToneClass = `acceptance-status__badge--${acceptance.badgeTone}`;
     color: var(--color-text);
     line-height: var(--leading-body);
     margin-bottom: var(--space-lg);
-    white-space: pre-line;
+    max-width: var(--measure-prose);
+    margin-inline: auto;
+    overflow-wrap: break-word;
   }
 
   .acceptance-status__reply {
@@ -158,6 +165,9 @@ const badgeToneClass = `acceptance-status__badge--${acceptance.badgeTone}`;
     font-size: var(--text-body);
     color: var(--color-text-muted);
     line-height: var(--leading-body);
+    max-width: var(--measure-prose);
+    margin-inline: auto;
+    overflow-wrap: break-word;
   }
 
   .acceptance-status__link {
@@ -213,7 +223,6 @@ const badgeToneClass = `acceptance-status__badge--${acceptance.badgeTone}`;
       font-size: var(--text-small);
       line-height: 1.55;
       margin-bottom: var(--space-sm);
-      text-wrap: pretty;
     }
 
     .acceptance-status__reply {
@@ -231,7 +240,6 @@ const badgeToneClass = `acceptance-status__badge--${acceptance.badgeTone}`;
     .acceptance-status__desc {
       font-size: var(--text-small);
       line-height: 1.55;
-      text-wrap: pretty;
     }
 
     .acceptance-status__link {

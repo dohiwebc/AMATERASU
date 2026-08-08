@@ -61,13 +61,13 @@ const settings = await getSiteSettings();
     font-size: var(--text-small);
     color: var(--color-text-muted);
     line-height: var(--leading-body);
-    text-wrap: pretty;
+    max-width: var(--measure-prose);
+    overflow-wrap: break-word;
   }
 
   @media (min-width: 768px) {
     .faq-options-link__text {
       font-size: var(--text-body);
-      max-width: 42rem;
     }
   }
 

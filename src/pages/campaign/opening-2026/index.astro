@@ -1,0 +1,2817 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import SectionTitle from '@/components/SectionTitle.astro';
+import Button from '@/components/Button.astro';
+import FaqAccordion from '@/components/FaqAccordion.astro';
+import CTASection from '@/components/CTASection.astro';
+import CampaignApplyForm from '@/components/CampaignApplyForm.astro';
+import { getSiteSettings, getContactSettings } from '@/lib/microcms';
+import { withBase } from '@/lib/paths';
+import {
+  opening2026Campaign,
+  opening2026Faqs,
+  opening2026FaqOpenIds,
+  getCampaignApplyLabel,
+  isCampaignApplicationOpen,
+} from '@/data/campaigns/opening-2026';
+
+const settings = await getSiteSettings();
+const contact = await getContactSettings();
+const campaign = opening2026Campaign;
+const applicationOpen = isCampaignApplicationOpen(campaign.applicationOpensOn);
+const applyLabel = getCampaignApplyLabel(campaign);
+const applyHref = '#apply';
+
+const recommend = [
+  '初めて公式サイトを作りたい',
+  'SNSだけで発信している',
+  '店舗サイトを新しくしたい',
+  '古いサイトをリニューアルしたい',
+  '活動内容をまとめたい',
+  'チーム・団体の公式ページがほしい',
+];
+
+const audiences = [
+  '店舗',
+  '法人',
+  '個人事業主',
+  'フリーランス',
+  'YouTuber / 配信者',
+  'クリエイター',
+  'チーム / 団体',
+  'ブランド',
+];
+
+const conditions = [
+  { num: '01', text: '完成サイトを制作実績として掲載' },
+  { num: '02', text: 'サイトのスクリーンショット等を掲載' },
+  { num: '03', text: '制作事例として紹介' },
+  { num: '04', text: 'お客様の声アンケートへ回答' },
+  { num: '05', text: '氏名・店名・屋号・活動名等を掲載' },
+];
+
+const conditionNotes = [
+  '依頼者自身のSNSでの紹介は任意',
+  '実績ページは公開前に内容確認',
+  '後から実績掲載の削除を希望する場合は通常料金との差額が必要',
+];
+
+const flowSteps = [
+  { number: '01', title: 'お申し込み・内容確認' },
+  { number: '02', title: 'ヒアリング・仮受付' },
+  { number: '03', title: '契約・着手金50％' },
+  { number: '04', title: '素材提出・制作開始' },
+  { number: '05', title: '確認・修正' },
+  { number: '06', title: '残金支払い・公開' },
+];
+
+const materials = [
+  'ロゴ',
+  '写真',
+  '商品 / サービス情報',
+  '料金',
+  'プロフィール',
+  '住所 / 営業時間',
+  'SNS / 問い合わせ先',
+];
+
+const outOfScope = [
+  'ECサイト・オンラインショップ',
+  '独自システム開発',
+  '大規模・複雑な予約システム',
+  '会員機能 / 独自決済',
+  'Webサービス・アプリ開発',
+  '必要素材がほとんど準備できない案件',
+];
+---
+
+<Layout
+  title={campaign.seo.title}
+  description={campaign.seo.description}
+  settings={settings}
+  showAcceptanceStatus={false}
+>
+  <div class="campaign-page">
+    <!-- 1. FV -->
+    <header class="campaign-hero">
+      <div class="container">
+        <div class="campaign-hero__inner">
+          <p class="campaign-hero__label label-en">Campaign</p>
+          <p class="campaign-hero__eyebrow">{campaign.hero.label}</p>
+          <h1 class="campaign-hero__title">
+            <span class="campaign-hero__title-line">Webサイト制作</span><br class="sp-only" /><span class="campaign-hero__title-line">モニター</span>
+          </h1>
+
+          <p class="campaign-hero__limit" aria-label="募集枠">
+            <span class="nowrap">
+              <span class="campaign-hero__limit-num">9</span>
+              <span class="campaign-hero__limit-text">組限定</span>
+            </span>
+          </p>
+
+          <div class="campaign-hero__price-block">
+            <p class="campaign-hero__usual">
+              通常 <span class="nowrap">{campaign.hero.usualFrom}</span>
+              <span class="campaign-hero__arrow" aria-hidden="true">→</span>
+              モニター特別価格
+            </p>
+            <p class="campaign-hero__price-value">
+              <span class="nowrap">{campaign.hero.price}</span>
+            </p>
+          </div>
+
+          <p class="campaign-hero__opens">{campaign.hero.opensLabel}</p>
+
+          <ul class="campaign-hero__facts">
+            <li>{campaign.hero.scheduleHint}</li>
+            <li>各制作枠、定員に達し次第受付終了</li>
+          </ul>
+
+          <div class="campaign-hero__actions">
+            <Button href={applyHref} variant="primary" size="lg">{applyLabel}</Button>
+            <Button href="#plans" variant="outline" size="md">プランを見る</Button>
+          </div>
+
+          {!applicationOpen && (
+            <p class="campaign-hero__cta-note">受付開始前でも、内容のご確認は可能です。</p>
+          )}
+        </div>
+      </div>
+    </header>
+
+    <!-- 2. 概要＋おすすめ＋プラン（白〜暖色グループ） -->
+    <div class="campaign-block campaign-block--warm">
+      <section class="campaign-section campaign-section--tight campaign-section--about">
+        <div class="container container--narrow">
+          <SectionTitle en="About" ja="キャンペーンについて" variant="editorial" />
+          <p class="campaign-about">
+            開業を記念し、制作実績への掲載等にご協力いただける方を対象に、9組限定の特別価格でWebサイトを制作します。
+          </p>
+        </div>
+      </section>
+
+      <section class="campaign-section campaign-section--tight">
+        <div class="container container--narrow">
+          <SectionTitle en="For You" ja="こんな方におすすめ" variant="editorial" />
+          <ul class="campaign-recommend">
+            {recommend.map((item, i) => (
+              <li>
+                <span class="campaign-recommend__mark" aria-hidden="true">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span class="campaign-recommend__text">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section class="campaign-section" id="plans">
+        <div class="container">
+          <SectionTitle
+            en="Plans"
+            ja="モニタープラン"
+            description={`${campaign.summary.totalSlots}。${campaign.summary.standardCap}。`}
+            variant="editorial"
+          />
+
+          <div class="campaign-plans">
+            {
+              campaign.plans.map((plan) => (
+                <article class:list={['campaign-plan', plan.id === 'standard' && 'campaign-plan--featured']}>
+                  {plan.id === 'light' && (
+                    <p class="campaign-plan__cap"><span class="nowrap">最大6組</span></p>
+                  )}
+                  {plan.id === 'standard' && (
+                    <p class="campaign-plan__cap"><span class="nowrap">最大3組</span></p>
+                  )}
+                  <h3 class="campaign-plan__name">{plan.name}</h3>
+                  <p class="campaign-plan__price"><span class="nowrap">{plan.price}</span></p>
+                  <p class="campaign-plan__usual">通常 <span class="nowrap">{plan.usualPrice}</span></p>
+                  <p class="campaign-plan__pages">{plan.pages}</p>
+                  <p class="campaign-plan__suited">{plan.suitedFor}</p>
+
+                  <p class="campaign-plan__subhead">主な内容</p>
+                  <ul class="campaign-plan-checks">
+                    {plan.highlights.map((item) => (
+                      <li>
+                        <span class="campaign-plan-checks__mark" aria-hidden="true">–</span>
+                        <span class="campaign-plan-checks__text">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <details class="campaign-plan__more">
+                    <summary>含まれるものをすべて見る</summary>
+                    <ul class="campaign-plan-checks">
+                      {plan.included.map((item) => (
+                        <li>
+                          <span class="campaign-plan-checks__mark" aria-hidden="true">–</span>
+                          <span class="campaign-plan-checks__text">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+
+                  <p class="campaign-plan__meta">制作期間の目安：{plan.period} ／ {plan.revisions}</p>
+                  {'note' in plan && plan.note && <p class="campaign-plan__note">{plan.note}</p>}
+                  <p class="campaign-plan__link">
+                    <a href={withBase(plan.usualHref)}>{plan.usualLabel}</a>
+                  </p>
+                </article>
+              ))
+            }
+          </div>
+
+          <div class="campaign-inline-cta">
+            <Button href={applyHref} variant="outline" size="md">{applyLabel}</Button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 3. 特典＋対象 -->
+    <div class="campaign-block campaign-block--white">
+      <section class="campaign-section" id="benefit">
+        <div class="container container--narrow">
+          <SectionTitle en="Benefit" ja="キャンペーン限定特典" variant="editorial" />
+          <div class="campaign-benefit">
+            <p class="campaign-benefit__main">
+              <span class="campaign-benefit__label">初回公開設定</span>
+              <span class="campaign-benefit__value"><span class="nowrap">0円</span></span>
+            </p>
+            <ul class="campaign-benefit__list">
+              <li>
+                <span class="campaign-benefit__mark" aria-hidden="true">–</span>
+                <span>独自ドメイン接続</span>
+              </li>
+              <li>
+                <span class="campaign-benefit__mark" aria-hidden="true">–</span>
+                <span>SSL設定</span>
+              </li>
+              <li>
+                <span class="campaign-benefit__mark" aria-hidden="true">–</span>
+                <span>問い合わせフォーム等の動作確認</span>
+              </li>
+            </ul>
+            <p class="campaign-benefit__note">
+              ドメイン代・サーバー料金などの実費は依頼者負担です。継続保守は別料金です。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="campaign-section campaign-section--tight">
+        <div class="container">
+          <SectionTitle en="Eligibility" ja="対象となる方" variant="editorial" />
+          <ul class="campaign-tags">
+            {audiences.map((item) => <li>{item}</li>)}
+          </ul>
+          <p class="campaign-compact-note">
+            実店舗の有無は問いません。実際に事業・活動を行っている方が対象です。
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <!-- 4. 条件＋制作枠 -->
+    <div class="campaign-block campaign-block--warm">
+      <section class="campaign-section" id="conditions">
+        <div class="container container--narrow">
+          <SectionTitle
+            en="Conditions"
+            ja="モニター条件"
+            description="特別価格は、制作実績へのご協力が条件です。"
+            variant="editorial"
+          />
+          <ol class="campaign-conditions">
+            {conditions.map((item) => (
+              <li>
+                <span class="campaign-conditions__num">{item.num}</span>
+                <span class="campaign-conditions__text">{item.text}</span>
+              </li>
+            ))}
+          </ol>
+          <ul class="campaign-points campaign-points--soft">
+            {conditionNotes.map((item) => (
+              <li>
+                <span class="campaign-points__mark" aria-hidden="true">–</span>
+                <span class="campaign-points__text">{item}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="campaign-inline-link">
+            <a href={withBase(campaign.termsPath)}>利用条件・特約</a>
+          </p>
+        </div>
+      </section>
+
+      <section class="campaign-section" id="schedule">
+        <div class="container">
+          <SectionTitle
+            en="Schedule"
+            ja="制作枠・スケジュール"
+            description="制作開始月ごとに締切があります。定員に達し次第終了します。"
+            variant="editorial"
+          />
+
+          <div class="campaign-slots">
+            {
+              campaign.slots.map((slot) => {
+                const monthNum = slot.start.match(/^(\d+)/)?.[1] ?? '';
+                return (
+                  <article class:list={['campaign-slot', `campaign-slot--${slot.status}`]}>
+                    <div class="campaign-slot__head">
+                      <p class="campaign-slot__month" aria-hidden="true">
+                        <span class="campaign-slot__month-num">{monthNum}</span>
+                        <span class="campaign-slot__month-unit">月</span>
+                      </p>
+                      <div class="campaign-slot__heading">
+                        <h3 class="campaign-slot__label">{slot.label}</h3>
+                        <span class="campaign-slot__status"><span class="nowrap">{slot.statusLabel}</span></span>
+                      </div>
+                    </div>
+                    <ul class="campaign-slot__meta">
+                      <li>
+                        <span class="campaign-slot__meta-label">制作開始</span>
+                        <span class="campaign-slot__meta-value"><span class="nowrap">{slot.start}</span></span>
+                      </li>
+                      <li>
+                        <span class="campaign-slot__meta-label">受付締切</span>
+                        <span class="campaign-slot__meta-value"><span class="nowrap">{slot.deadline}</span></span>
+                      </li>
+                      <li>
+                        <span class="campaign-slot__meta-label">定員</span>
+                        <span class="campaign-slot__meta-value"><span class="nowrap">{slot.capacity}</span></span>
+                      </li>
+                    </ul>
+                  </article>
+                );
+              })
+            }
+          </div>
+
+          <p class="campaign-compact-note campaign-compact-note--wide">
+            {campaign.summary.totalSlots}。{campaign.summary.standardCap}。<br class="sp-only" />制作開始月は希望を確認のうえ最終調整します。
+          </p>
+
+          <div class="campaign-inline-cta">
+            <Button href={applyHref} variant="primary" size="md">{applyLabel}</Button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 5. 流れ・素材・支払い・公開後・対象外 -->
+    <div class="campaign-block campaign-block--white">
+      <section class="campaign-section campaign-section--tight">
+        <div class="container campaign-flow-section">
+          <SectionTitle
+            en="Flow"
+            ja="制作の流れ"
+            description="内容確認が完了した順にご案内します。先着順ではありません。"
+            variant="editorial"
+          />
+          <ol class="campaign-flow">
+            {
+              flowSteps.map((step) => (
+                <li>
+                  <span class="campaign-flow__num">{step.number}</span>
+                  <span class="campaign-flow__title">{step.title}</span>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+        <div class="container campaign-flow-note">
+          <p class="campaign-compact-note campaign-compact-note--flow">
+            公開後：お客様の声アンケート → 制作実績掲載。仮受付後7日以内に契約・着手金をお願いします。
+          </p>
+        </div>
+      </section>
+
+      <section class="campaign-section campaign-section--tight">
+        <div class="container container--narrow">
+          <SectionTitle en="Materials" ja="素材について" variant="editorial" />
+          <p class="campaign-callout">制作開始日までに必要素材をご提出ください。</p>
+          <ul class="campaign-materials">
+            {materials.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+          <div class="campaign-caution">
+            <div>
+              <p class="campaign-caution__title">素材提出が遅れた場合</p>
+              <p class="campaign-caution__text">その分、納品時期も後ろ倒しになります。</p>
+            </div>
+            <div>
+              <p class="campaign-caution__title">制作開始予定日から7日を過ぎても揃わない場合</p>
+              <p class="campaign-caution__text">制作中止・契約終了となる場合があります。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="campaign-section campaign-section--tight" id="payment">
+        <div class="container container--narrow">
+          <SectionTitle en="Payment" ja="お支払いについて" variant="editorial" />
+          <div class="campaign-pay-steps">
+            <div class="campaign-pay-steps__item">
+              <p class="campaign-pay-steps__label">契約・制作枠確定時</p>
+              <p class="campaign-pay-steps__value"><span class="nowrap">50％</span></p>
+            </div>
+            <div class="campaign-pay-steps__item">
+              <p class="campaign-pay-steps__label">公開・納品前</p>
+              <p class="campaign-pay-steps__value"><span class="nowrap">50％</span></p>
+            </div>
+          </div>
+          <ul class="campaign-points campaign-points--soft">
+            <li>
+              <span class="campaign-points__mark" aria-hidden="true">–</span>
+              <span class="campaign-points__text">仮受付の案内日から7日以内に、契約手続きと着手金支払いが必要です</span>
+            </li>
+            <li>
+              <span class="campaign-points__mark" aria-hidden="true">–</span>
+              <span class="campaign-points__text">追加ページ・追加機能などは通常オプション料金です</span>
+            </li>
+            <li>
+              <span class="campaign-points__mark" aria-hidden="true">–</span>
+              <span class="campaign-points__text">他キャンペーンとの併用はできません</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="campaign-section campaign-section--tight">
+        <div class="container container--narrow">
+          <SectionTitle
+            en="After Launch"
+            ja="公開後について"
+            description="初回公開設定は含まれます。継続保守は別です。"
+            variant="editorial"
+          />
+          <div class="campaign-maint">
+            {
+              campaign.maintenance.plans.map((plan) => (
+                <div class="campaign-maint__card">
+                  <p class="campaign-maint__price"><span class="nowrap">{plan.price}</span></p>
+                  <p class="campaign-maint__label">{plan.label}</p>
+                </div>
+              ))
+            }
+          </div>
+          <div class="campaign-maint-lists">
+            <div>
+              <p class="campaign-lead">軽微更新に含まれるもの</p>
+              <ul class="campaign-points campaign-points--soft">
+                {campaign.maintenance.lightUpdates.map((item) => (
+                  <li>
+                    <span class="campaign-points__mark" aria-hidden="true">–</span>
+                    <span class="campaign-points__text">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <p class="campaign-lead">別途オプション</p>
+              <ul class="campaign-points campaign-points--soft">
+                {campaign.maintenance.optionUpdates.map((item) => (
+                  <li>
+                    <span class="campaign-points__mark" aria-hidden="true">–</span>
+                    <span class="campaign-points__text">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <p class="campaign-compact-note">
+            保守契約なしでも単発更新は可能です。<br class="sp-only" />詳細は
+            <a href={withBase(campaign.maintenance.optionsHref)}>オプションページ</a>
+            へ。
+          </p>
+        </div>
+      </section>
+
+      <section class="campaign-section campaign-section--tight">
+        <div class="container container--narrow">
+          <SectionTitle en="Out of Scope" ja="キャンペーン対象外" variant="editorial" />
+          <ul class="campaign-tags campaign-tags--muted">
+            {outOfScope.map((item) => <li>{item}</li>)}
+          </ul>
+          <p class="campaign-compact-note">他キャンペーン・割引・特典との併用はできません。</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- 6. FAQ -->
+    <div class="campaign-block campaign-block--warm">
+      <section class="campaign-section campaign-faq" id="faq">
+        <div class="container">
+          <SectionTitle en="FAQ" ja="よくあるご質問" variant="editorial" />
+          <FaqAccordion faqs={opening2026Faqs} openIds={[...opening2026FaqOpenIds]} />
+        </div>
+      </section>
+    </div>
+
+    <!-- 7. 最終CTA＋キャンペーン専用フォーム -->
+    <section class="campaign-final-section" id="apply">
+      <div class="container">
+        <div class="campaign-final">
+          <p class="campaign-final__label label-en">Apply</p>
+          <h2 class="campaign-final__title">
+            <span class="campaign-final__title-line">Webサイト制作</span><br class="sp-only" /><span class="campaign-final__title-line">モニター</span>
+          </h2>
+          <p class="campaign-final__limit">
+            <span class="nowrap">
+              <span class="campaign-final__limit-num">9</span>
+              <span>組限定</span>
+            </span>
+          </p>
+          <p class="campaign-final__price">
+            <span class="nowrap">{campaign.hero.price}</span>
+          </p>
+          <p class="campaign-final__end">枠が埋まり次第終了</p>
+          <p class="campaign-final__note campaign-final__note--before-form">
+            お申し込み内容を確認後、対応可能な場合に仮受付をご案内します。<br class="pc-only" />
+            お申し込み時点では制作枠は確定しません。
+          </p>
+
+          <div class="campaign-final__form">
+            <CampaignApplyForm
+              formspreeEndpoint={contact.formspreeEndpoint}
+              replyTime={contact.replyTime}
+              applicationOpen={applicationOpen}
+              opensLabel={campaign.applyLabelBefore}
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="campaign-consult">
+      <CTASection
+        settings={settings}
+        description="通常プランでの制作相談や、まずは話を聞きたい場合もお問い合わせください。"
+        buttonLabel="まずは相談する"
+      >
+        <span slot="title">キャンペーン対象かわからない場合も、<br class="sp-only" />お気軽にご相談ください。</span>
+      </CTASection>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  /* PC / SP 改行制御（デフォルトはPC表示、sp-onlyは非表示） */
+  .sp-only {
+    display: none;
+  }
+
+  .nowrap {
+    white-space: nowrap;
+  }
+
+  /* —— Layout density —— */
+  .campaign-page :global(.section-title) {
+    margin-bottom: clamp(1.25rem, 3vw, 1.875rem);
+  }
+
+  .campaign-block--warm {
+    background: var(--color-bg-warm);
+  }
+
+  .campaign-block--white {
+    background: var(--color-bg-white);
+  }
+
+  .campaign-section {
+    padding-block: clamp(2.25rem, 5vw, 3.5rem);
+  }
+
+  .campaign-section--tight {
+    padding-block: clamp(1.75rem, 4vw, 2.5rem);
+  }
+
+  .campaign-section--about {
+    padding-block: clamp(1.5rem, 3.5vw, 2rem);
+  }
+
+  .campaign-block--warm > .campaign-section--about:first-child {
+    padding-top: clamp(2rem, 4.5vw, 2.75rem);
+  }
+
+  .campaign-block--warm > .campaign-section:first-child,
+  .campaign-block--white > .campaign-section:first-child {
+    padding-top: clamp(2.25rem, 5vw, 3.25rem);
+  }
+
+  .campaign-block--warm > .campaign-section:last-child,
+  .campaign-block--white > .campaign-section:last-child {
+    padding-bottom: clamp(2.25rem, 5vw, 3.25rem);
+  }
+
+  /* —— Hero —— */
+  .campaign-hero {
+    padding-block: clamp(2rem, 4.5vw, 2.75rem) clamp(1.75rem, 4vw, 2.5rem);
+    border-bottom: 1px solid var(--color-border-light);
+    background: linear-gradient(180deg, var(--color-bg-white) 0%, var(--color-bg) 100%);
+  }
+
+  .campaign-hero__inner {
+    max-width: min(100%, 42rem);
+  }
+
+  .campaign-hero__label {
+    margin-bottom: 0.35rem;
+  }
+
+  .campaign-hero__eyebrow {
+    margin: 0 0 0.5rem;
+    font-size: var(--text-small);
+    letter-spacing: 0.12em;
+    color: var(--color-gold);
+    word-break: keep-all;
+  }
+
+  .campaign-hero__title {
+    margin: 0 0 1rem;
+    font-family: var(--font-serif);
+    font-size: clamp(1.75rem, 4.8vw, 2.5rem);
+    font-weight: 500;
+    line-height: var(--leading-tight);
+    letter-spacing: 0.03em;
+    word-break: keep-all;
+    line-break: strict;
+    overflow-wrap: anywhere;
+  }
+
+  .campaign-hero__limit {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    margin: 0 0 0.875rem;
+    padding: 0.55rem 1.15rem;
+    border: 1.5px solid var(--color-gold-line);
+    background: var(--color-bg-accent);
+    color: var(--color-accent-dark);
+    letter-spacing: 0.08em;
+    word-break: keep-all;
+  }
+
+  .campaign-hero__limit-num {
+    font-family: var(--font-serif);
+    font-size: 1.875rem;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--color-accent-dark);
+  }
+
+  .campaign-hero__limit-text {
+    font-size: 1.0625rem;
+    font-weight: 500;
+  }
+
+  .campaign-hero__price-block {
+    margin-bottom: 0.875rem;
+    padding: 1rem 1.125rem;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-white);
+    max-width: 28rem;
+  }
+
+  .campaign-hero__usual {
+    margin: 0 0 0.35rem;
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    letter-spacing: 0.04em;
+    word-break: keep-all;
+  }
+
+  .campaign-hero__usual span:first-child {
+    text-decoration: line-through;
+    text-decoration-color: rgba(131, 123, 110, 0.5);
+  }
+
+  .campaign-hero__arrow {
+    margin-inline: 0.35rem;
+    text-decoration: none;
+  }
+
+  .campaign-hero__price-value {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: clamp(1.625rem, 4.2vw, 2rem);
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    color: var(--color-accent-dark);
+    word-break: keep-all;
+  }
+
+  .campaign-hero__opens {
+    margin: 0 0 0.65rem;
+    font-size: var(--text-body);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--color-text);
+    word-break: keep-all;
+  }
+
+  .campaign-hero__facts {
+    margin: 0 0 1.125rem;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .campaign-hero__facts li {
+    position: relative;
+    padding-left: 0.9rem;
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    line-height: 1.55;
+    word-break: keep-all;
+  }
+
+  .campaign-hero__facts li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--color-gold);
+    font-size: 0.7rem;
+  }
+
+  .campaign-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem 0.875rem;
+  }
+
+  .campaign-hero__cta-note {
+    margin: 0.75rem 0 0;
+    font-size: var(--text-caption);
+    color: var(--color-text-light);
+  }
+
+  .campaign-about {
+    margin: 0;
+    max-width: var(--measure-prose);
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    line-height: 1.75;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+
+  /* —— Shared —— */
+  .campaign-lead {
+    margin: 0 0 0.4rem;
+    font-size: var(--text-caption);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--color-text-light);
+  }
+
+  .campaign-points {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    max-width: var(--measure-prose);
+  }
+
+  .campaign-points li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+
+  .campaign-points__mark {
+    flex: 0 0 auto;
+    font-size: 0.85em;
+    line-height: inherit;
+    color: var(--color-gold);
+  }
+
+  .campaign-points__text {
+    flex: 1 1 auto;
+    min-width: 0;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+
+  .campaign-points--soft li {
+    font-size: var(--text-small);
+  }
+
+  .campaign-compact-note {
+    margin: 0.75rem 0 0;
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    line-height: 1.7;
+    max-width: var(--measure-prose);
+  }
+
+  .campaign-compact-note--wide {
+    max-width: none;
+  }
+
+  .campaign-flow-note {
+    max-width: 880px;
+  }
+
+  .campaign-compact-note--flow {
+    max-width: none;
+    margin-top: 1rem;
+    padding: 0.75rem 0.9rem;
+    border-left: 2px solid var(--color-gold-line-soft);
+    background: var(--color-bg);
+  }
+
+  .campaign-compact-note a,
+  .campaign-plan__link a,
+  .campaign-inline-link a {
+    color: var(--color-accent-dark);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .campaign-inline-link {
+    margin: 0.75rem 0 0;
+    font-size: var(--text-small);
+  }
+
+  .campaign-inline-cta {
+    margin-top: 1.25rem;
+    display: flex;
+  }
+
+  .campaign-callout {
+    margin: 0 0 0.875rem;
+    padding: 0.75rem 0.9rem;
+    border-left: 2px solid var(--color-gold-line-soft);
+    background: var(--color-bg);
+    font-size: var(--text-body);
+    color: var(--color-text);
+    line-height: 1.65;
+    word-break: keep-all;
+  }
+
+  /* —— Recommend —— */
+  .campaign-recommend {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
+  }
+
+  .campaign-recommend li {
+    display: grid;
+    grid-template-columns: 2.25rem 1fr;
+    gap: 0.65rem;
+    align-items: baseline;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid var(--color-border-light);
+    background: var(--color-bg-white);
+  }
+
+  .campaign-recommend__mark {
+    font-family: var(--font-serif);
+    font-size: var(--text-small);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--color-accent-dark);
+  }
+
+  .campaign-recommend__text {
+    font-size: var(--text-small);
+    color: var(--color-text);
+    letter-spacing: 0.03em;
+    line-height: 1.55;
+    word-break: keep-all;
+  }
+
+  /* —— Plans —— */
+  .campaign-plans {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .campaign-plan {
+    padding: 1.125rem 1rem 1.25rem;
+    border: 1px solid var(--color-border-light);
+    background: var(--color-bg-white);
+  }
+
+  .campaign-plan--featured {
+    border-color: var(--color-gold-line-soft);
+    background: linear-gradient(180deg, var(--color-bg-accent) 0%, var(--color-bg-white) 42%);
+  }
+
+  .campaign-plan__cap {
+    margin: 0 0 0.65rem;
+    display: inline-block;
+    padding: 0.25rem 0.65rem;
+    border: 1px solid var(--color-gold-line);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: var(--color-accent-dark);
+    word-break: keep-all;
+  }
+
+  .campaign-plan__name {
+    margin: 0 0 0.35rem;
+    font-family: var(--font-serif);
+    font-size: var(--text-body);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    word-break: keep-all;
+  }
+
+  .campaign-plan__price {
+    margin: 0.15rem 0 0.25rem;
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 3.8vw, 1.75rem);
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    color: var(--color-accent-dark);
+    word-break: keep-all;
+  }
+
+  .campaign-plan__usual {
+    margin: 0 0 0.65rem;
+    font-size: var(--text-caption);
+    color: var(--color-text-light);
+  }
+
+  .campaign-plan__usual span {
+    text-decoration: line-through;
+    text-decoration-color: rgba(131, 123, 110, 0.45);
+  }
+
+  .campaign-plan__pages {
+    margin: 0 0 0.35rem;
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  .campaign-plan__suited {
+    margin: 0 0 0.5rem;
+    font-size: var(--text-small);
+    color: var(--color-text);
+    line-height: 1.55;
+    word-break: keep-all;
+  }
+
+  .campaign-plan__slots {
+    margin: 0 0 0.875rem;
+    font-size: var(--text-caption);
+    color: var(--color-text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  .campaign-plan__subhead {
+    margin: 0 0 0.35rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    color: var(--color-text-light);
+  }
+
+  .campaign-plan-checks {
+    margin: 0 0 0.5rem;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .campaign-plan-checks li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.45rem;
+  }
+
+  .campaign-plan-checks__mark {
+    flex: 0 0 auto;
+    font-size: 0.85em;
+    line-height: inherit;
+    color: var(--color-accent);
+  }
+
+  .campaign-plan-checks__text {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    line-height: 1.7;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+
+  .campaign-plan__more {
+    margin: 0 0 0.65rem;
+  }
+
+  .campaign-plan__more summary {
+    cursor: pointer;
+    font-size: var(--text-caption);
+    color: var(--color-accent-dark);
+    list-style: none;
+  }
+
+  .campaign-plan__more summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .campaign-plan__more[open] summary {
+    margin-bottom: 0.4rem;
+  }
+
+  .campaign-plan__meta,
+  .campaign-plan__note {
+    margin: 0 0 0.25rem;
+    font-size: var(--text-caption);
+    color: var(--color-text-muted);
+    line-height: 1.55;
+  }
+
+  .campaign-plan__link {
+    margin: 0.5rem 0 0;
+    font-size: var(--text-caption);
+  }
+
+  .campaign-plans-foot {
+    margin: 0.875rem 0 0;
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+  }
+
+  /* —— Benefit —— */
+  .campaign-benefit {
+    padding: 1.125rem 1.125rem 1.25rem;
+    border: 1px solid var(--color-border-light);
+    background: var(--color-bg);
+  }
+
+  .campaign-benefit__main {
+    margin: 0 0 0.875rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    padding-bottom: 0.875rem;
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .campaign-benefit__label {
+    font-family: var(--font-serif);
+    font-size: var(--text-body-lg);
+    letter-spacing: 0.06em;
+    word-break: keep-all;
+  }
+
+  .campaign-benefit__value {
+    font-family: var(--font-serif);
+    font-size: clamp(1.75rem, 4vw, 2.125rem);
+    font-weight: 500;
+    color: var(--color-accent-dark);
+    letter-spacing: 0.04em;
+  }
+
+  .campaign-benefit__list {
+    margin: 0 0 0.75rem;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .campaign-benefit__list li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+
+  .campaign-benefit__mark {
+    flex: 0 0 auto;
+    font-size: 0.85em;
+    line-height: inherit;
+    color: var(--color-gold);
+  }
+
+  .campaign-benefit__list li > span:last-child {
+    flex: 1 1 auto;
+    min-width: 0;
+    word-break: keep-all;
+  }
+
+  .campaign-benefit__note {
+    margin: 0;
+    font-size: var(--text-caption);
+    color: var(--color-text-light);
+    line-height: 1.6;
+  }
+
+  /* —— Tags —— */
+  .campaign-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.55rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-width: none;
+  }
+
+  .campaign-tags li {
+    padding: 0.45rem 0.95rem;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-white);
+    font-size: var(--text-small);
+    color: var(--color-text);
+    letter-spacing: 0.04em;
+    word-break: keep-all;
+  }
+
+  .campaign-tags--muted li {
+    background: transparent;
+    border-color: var(--color-border-light);
+    color: var(--color-text-muted);
+    font-size: var(--text-caption);
+    padding: 0.35rem 0.7rem;
+  }
+
+  /* —— Conditions —— */
+  .campaign-conditions {
+    margin: 0 0 0.875rem;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .campaign-conditions li {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: 0.75rem;
+    align-items: baseline;
+    padding: 0.95rem 0;
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .campaign-conditions__num {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    font-weight: 500;
+    color: var(--color-accent-dark);
+    letter-spacing: 0.06em;
+  }
+
+  .campaign-conditions__text {
+    font-size: var(--text-body);
+    color: var(--color-text);
+    line-height: 1.55;
+    word-break: keep-all;
+  }
+
+  /* —— Slots —— */
+  .campaign-slots {
+    display: grid;
+    gap: 0.875rem;
+    margin-bottom: 0.875rem;
+  }
+
+  .campaign-slot {
+    padding: 0;
+    border: 1px solid var(--color-border-light);
+    background: var(--color-bg-white);
+    overflow: hidden;
+  }
+
+  .campaign-slot--open {
+    border-color: var(--color-status-open-border);
+  }
+
+  .campaign-slot--limited {
+    border-color: var(--color-status-limited-border);
+  }
+
+  .campaign-slot--closed {
+    opacity: 0.72;
+  }
+
+  .campaign-slot__head {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem 1rem;
+    padding: 1rem 1.05rem 0.9rem;
+    background: linear-gradient(180deg, var(--color-bg-accent) 0%, var(--color-bg-white) 100%);
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .campaign-slot__month {
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 0.1rem;
+    flex-shrink: 0;
+    min-width: 3.25rem;
+    color: var(--color-accent-dark);
+  }
+
+  .campaign-slot__month-num {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 5vw, 2.375rem);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+
+  .campaign-slot__month-unit {
+    font-family: var(--font-serif);
+    font-size: 0.875rem;
+    letter-spacing: 0.08em;
+  }
+
+  .campaign-slot__heading {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    min-width: 0;
+  }
+
+  .campaign-slot__label {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: var(--text-body);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    word-break: keep-all;
+  }
+
+  .campaign-slot__status {
+    display: inline-flex;
+    padding: 0.22rem 0.55rem;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-white);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--color-text-muted);
+    word-break: keep-all;
+  }
+
+  .campaign-slot--upcoming .campaign-slot__status {
+    border-color: var(--color-border);
+    color: var(--color-text-muted);
+  }
+
+  .campaign-slot--open .campaign-slot__head {
+    background: linear-gradient(180deg, var(--color-status-open-bg) 0%, var(--color-bg-white) 100%);
+  }
+
+  .campaign-slot--open .campaign-slot__status {
+    border-color: var(--color-status-open-border);
+    color: var(--color-status-open);
+  }
+
+  .campaign-slot--limited .campaign-slot__head {
+    background: linear-gradient(180deg, var(--color-status-limited-bg) 0%, var(--color-bg-white) 100%);
+  }
+
+  .campaign-slot--limited .campaign-slot__status {
+    border-color: var(--color-status-limited-border);
+    color: var(--color-status-limited);
+  }
+
+  .campaign-slot--closed .campaign-slot__status {
+    border-color: var(--color-status-closed-border);
+    color: var(--color-status-closed);
+  }
+
+  .campaign-slot__meta {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .campaign-slot__meta li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.65rem 1.05rem;
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .campaign-slot__meta li:last-child {
+    border-bottom: none;
+  }
+
+  .campaign-slot__meta-label {
+    font-size: var(--text-caption);
+    color: var(--color-text-light);
+    letter-spacing: 0.06em;
+    word-break: keep-all;
+  }
+
+  .campaign-slot__meta-value {
+    font-size: var(--text-body);
+    color: var(--color-text);
+    letter-spacing: 0.03em;
+    word-break: keep-all;
+    text-align: right;
+  }
+
+  /* —— Flow —— */
+  .campaign-flow-section {
+    max-width: var(--container-narrow);
+  }
+
+  .campaign-flow {
+    margin: 0 0 0.75rem;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .campaign-flow li {
+    display: grid;
+    grid-template-columns: 2.25rem 1fr;
+    gap: 0.5rem 0.75rem;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .campaign-flow__num {
+    font-family: var(--font-serif);
+    font-size: var(--text-small);
+    color: var(--color-accent);
+  }
+
+  .campaign-flow__title {
+    font-size: var(--text-body);
+    color: var(--color-text);
+    letter-spacing: 0.03em;
+    word-break: keep-all;
+  }
+
+  /* —— Materials —— */
+  .campaign-materials {
+    margin: 0 0 0.875rem;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr;
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .campaign-materials li {
+    position: relative;
+    padding: 0.7rem 0 0.7rem 1rem;
+    border-bottom: 1px solid var(--color-border-light);
+    font-size: var(--text-body);
+    color: var(--color-text);
+    letter-spacing: 0.03em;
+    word-break: keep-all;
+  }
+
+  .campaign-materials li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 0.35rem;
+    height: 0.35rem;
+    border-radius: 50%;
+    background: var(--color-gold);
+    transform: translateY(-50%);
+    opacity: 0.85;
+  }
+
+  /* —— Caution（素材の注意） —— */
+  .campaign-caution {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--color-border);
+    border-left: 2px solid var(--color-gold-line);
+    background: var(--color-bg);
+  }
+
+  .campaign-caution__title {
+    margin: 0 0 0.2rem;
+    font-size: var(--text-caption);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--color-text);
+  }
+
+  .campaign-caution__text {
+    margin: 0;
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    word-break: keep-all;
+  }
+
+  /* —— Payment steps —— */
+  .campaign-pay-steps {
+    display: grid;
+    gap: 0.65rem;
+    margin: 0 0 0.875rem;
+  }
+
+  .campaign-pay-steps__item {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+    background: transparent;
+  }
+
+  .campaign-pay-steps__label {
+    margin: 0;
+    font-size: var(--text-small);
+    color: var(--color-text);
+    letter-spacing: 0.04em;
+    word-break: keep-all;
+  }
+
+  .campaign-pay-steps__value {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: clamp(1.375rem, 3.5vw, 1.625rem);
+    font-weight: 500;
+    color: var(--color-accent-dark);
+    letter-spacing: 0.04em;
+    word-break: keep-all;
+  }
+
+  /* —— Maintenance —— */
+  .campaign-maint {
+    display: grid;
+    gap: 0.65rem;
+    margin-bottom: 0.875rem;
+  }
+
+  .campaign-maint__card {
+    padding: 1rem 1.05rem;
+    border: 1px solid var(--color-border-light);
+    background: var(--color-bg);
+  }
+
+  .campaign-maint__card:first-child {
+    border-color: var(--color-border);
+  }
+
+  .campaign-maint__card:last-child {
+    border-color: var(--color-gold-line-soft);
+    background: linear-gradient(180deg, var(--color-bg-accent) 0%, var(--color-bg) 70%);
+  }
+
+  .campaign-maint__price {
+    margin: 0 0 0.35rem;
+    font-family: var(--font-serif);
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+    font-weight: 500;
+    color: var(--color-accent-dark);
+    letter-spacing: 0.03em;
+    word-break: keep-all;
+  }
+
+  .campaign-maint__label {
+    margin: 0;
+    font-size: var(--text-small);
+    color: var(--color-text);
+    letter-spacing: 0.03em;
+  }
+
+  .campaign-maint-lists {
+    display: grid;
+    gap: 0.875rem;
+    margin-bottom: 0.25rem;
+  }
+
+  /* —— FAQ denser —— */
+  .campaign-faq :global(.faq-accordion__question) {
+    padding: 0.85rem 0;
+    font-size: 1rem;
+  }
+
+  .campaign-faq :global(.faq-accordion__answer-inner) {
+    padding-bottom: 0.85rem;
+  }
+
+  @media (min-width: 768px) {
+    .campaign-faq :global(.faq-accordion__question) {
+      padding: 0.95rem 0;
+      font-size: 1.0625rem;
+    }
+  }
+
+  /* —— Final CTA —— */
+  .campaign-final-section {
+    padding-block: clamp(2.75rem, 6.5vw, 4rem);
+    background: var(--color-bg-accent);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .campaign-final {
+    text-align: center;
+    max-width: 56rem;
+    margin-inline: auto;
+    padding: clamp(2rem, 4.5vw, 2.75rem) clamp(2rem, 6vw, 4rem);
+    border: 1px solid var(--color-gold-line-soft);
+    background: var(--color-bg-white);
+  }
+
+  .campaign-final__label {
+    margin-bottom: 0.4rem;
+  }
+
+  .campaign-final__title {
+    margin: 0 0 0.875rem;
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 3.8vw, 1.9375rem);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    line-height: var(--leading-tight);
+    word-break: keep-all;
+  }
+
+  .campaign-final__limit {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.35rem;
+    margin: 0 0 0.85rem;
+    padding: 0.4rem 0.95rem;
+    border: 1.5px solid var(--color-gold-line);
+    background: var(--color-bg-accent);
+    font-size: var(--text-body);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--color-accent-dark);
+    word-break: keep-all;
+  }
+
+  .campaign-final__limit-num {
+    font-family: var(--font-serif);
+    font-size: 1.375rem;
+    line-height: 1;
+  }
+
+  .campaign-final__price {
+    margin: 0 0 0.4rem;
+    font-family: var(--font-serif);
+    font-size: clamp(1.6875rem, 4.2vw, 2.125rem);
+    font-weight: 500;
+    color: var(--color-accent-dark);
+    letter-spacing: 0.03em;
+    word-break: keep-all;
+  }
+
+  .campaign-final__end {
+    margin: 0 0 0.85rem;
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    letter-spacing: 0.03em;
+  }
+
+  .campaign-final__action {
+    display: flex;
+    justify-content: center;
+  }
+
+  .campaign-final__note {
+    max-width: 36rem;
+    margin: 0 auto;
+    font-size: var(--text-caption);
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+
+  .campaign-final__note--before-form {
+    margin-bottom: 1.5rem;
+  }
+
+  .campaign-final__form {
+    max-width: 36rem;
+    margin-inline: auto;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--color-border-light);
+    text-align: left;
+  }
+
+  /* 黒相談セクション：キャンペーンCTAと役割を分離 */
+  .campaign-consult :global(.cta-section) {
+    padding-block: clamp(2.5rem, 5.5vw, 3.75rem);
+  }
+
+  .campaign-consult :global(.cta-section__title) {
+    font-size: clamp(1.25rem, 3.2vw, 1.625rem) !important;
+    max-width: min(100%, 36rem);
+  }
+
+  .campaign-consult :global(.cta-section__label) {
+    margin-bottom: 0.5rem;
+  }
+
+  .campaign-consult :global(.cta-section__desc) {
+    font-size: var(--text-body) !important;
+    margin-bottom: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .campaign-recommend {
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
+    }
+
+    .campaign-plans {
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      align-items: stretch;
+    }
+
+    .campaign-slots {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.875rem;
+    }
+
+    .campaign-materials {
+      grid-template-columns: 1fr 1fr;
+      column-gap: 1.75rem;
+      border-top: none;
+    }
+
+    .campaign-materials li {
+      border-top: 1px solid var(--color-border-light);
+      border-bottom: none;
+    }
+
+    .campaign-materials li:nth-child(-n + 2) {
+      border-top: 1px solid var(--color-border-light);
+    }
+
+    .campaign-pay-steps {
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+
+    .campaign-pay-steps__item {
+      padding: 1rem 1.125rem;
+    }
+
+    .campaign-pay-steps__item + .campaign-pay-steps__item {
+      border-left: 1px solid var(--color-border-light);
+    }
+
+    .campaign-maint {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .campaign-maint-lists {
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+
+    .campaign-inline-cta {
+      justify-content: center;
+    }
+  }
+
+  /* PC：上品な横タイムライン（矢印文字は使わない） */
+  @media (min-width: 1024px) {
+    .campaign-flow-section {
+      max-width: var(--container-max);
+    }
+
+    .campaign-flow {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 0;
+      border-top: none;
+      margin: 0.25rem 0 0;
+      padding: 0;
+      position: relative;
+    }
+
+    .campaign-flow::before {
+      content: '';
+      position: absolute;
+      top: 0.9rem;
+      left: 8.33%;
+      right: 8.33%;
+      height: 1px;
+      background: var(--color-gold-line-soft);
+      pointer-events: none;
+    }
+
+    .campaign-flow li {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0 0.4rem;
+      border: none;
+      background: transparent;
+      text-align: center;
+    }
+
+    .campaign-flow__num {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.8rem;
+      height: 1.8rem;
+      border: 1px solid var(--color-gold-line);
+      border-radius: 50%;
+      background: var(--color-bg-white);
+      font-size: 0.6875rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: var(--color-accent-dark);
+      box-shadow: 0 0 0 4px var(--color-bg-white);
+    }
+
+    .campaign-flow__title {
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      color: var(--color-text);
+      max-width: 7.5rem;
+    }
+  }
+
+  /* スマートフォン専用（PC・タブレット 768px以上は一切変更しない） */
+  @media (max-width: 767px) {
+    .campaign-page {
+      overflow-x: clip;
+      width: 100%;
+    }
+
+    /* PC専用改行を隠し、SP専用改行を有効化 */
+    .pc-only {
+      display: none !important;
+    }
+
+    br.sp-only {
+      display: inline;
+    }
+
+    /* —— 横方向バランス：左右余白を均等に（20px） —— */
+    .campaign-page {
+      word-break: normal;
+      overflow-wrap: break-word;
+      line-break: strict;
+    }
+
+    .campaign-page :global(.container) {
+      width: 100%;
+      max-width: none !important;
+      margin-inline: auto;
+      padding-inline: 1.25rem; /* 20px */
+      box-sizing: border-box;
+    }
+
+    .campaign-page :global(.container--narrow),
+    .campaign-flow-section,
+    .campaign-flow-note {
+      width: 100%;
+      max-width: none !important;
+      margin-inline: auto;
+      padding-inline: 1.25rem;
+      box-sizing: border-box;
+    }
+
+    /* ヘッダー／フッターも同じ左右余白に揃える */
+    :global(body:has(.campaign-page) .header .container),
+    :global(body:has(.campaign-page) .footer .container) {
+      padding-inline: 1.25rem;
+    }
+
+    .campaign-page :global(.section-title),
+    .campaign-page :global(.section-title__ja),
+    .campaign-page :global(.section-title__desc) {
+      width: 100%;
+      max-width: none !important;
+      margin-inline: 0;
+      box-sizing: border-box;
+    }
+
+    .campaign-page :global(.section-title) {
+      margin-bottom: 1.15rem;
+    }
+
+    /* 後半（素材〜FAQ）：見出しと本文の間隔だけ少し広げる */
+    .campaign-flow-section :global(.section-title),
+    #payment :global(.section-title),
+    .campaign-faq :global(.section-title),
+    .campaign-block--white .campaign-section--tight :global(.section-title) {
+      margin-bottom: 1.4rem;
+    }
+
+    .campaign-page :global(.section-title__ja) {
+      font-size: clamp(1.375rem, 6vw, 1.625rem);
+      line-height: 1.35;
+      letter-spacing: 0.01em;
+      word-break: normal;
+      overflow-wrap: break-word;
+      line-break: strict;
+      text-wrap: balance;
+      text-align: left;
+    }
+
+    .campaign-page :global(.section-title__desc) {
+      font-size: 0.9375rem;
+      line-height: 1.75;
+      letter-spacing: 0.01em;
+      word-break: normal;
+      overflow-wrap: break-word;
+      line-break: strict;
+      text-wrap: pretty;
+      text-align: left;
+    }
+
+    /* 主要ブロックを親幅いっぱいに（左寄せの狭い箱を作らない） */
+    .campaign-hero__inner,
+    .campaign-about,
+    .campaign-recommend,
+    .campaign-plans,
+    .campaign-plan,
+    .campaign-benefit,
+    .campaign-tags,
+    .campaign-conditions,
+    .campaign-points,
+    .campaign-compact-note,
+    .campaign-slots,
+    .campaign-slot,
+    .campaign-caution,
+    .campaign-pay-steps,
+    .campaign-maint,
+    .campaign-maint-lists,
+    .campaign-materials,
+    .campaign-final,
+    .campaign-final__form,
+    .campaign-final__note,
+    .campaign-final__note--before-form,
+    .campaign-inline-cta,
+    .campaign-callout {
+      width: 100%;
+      max-width: none;
+      margin-left: 0;
+      margin-right: 0;
+      box-sizing: border-box;
+    }
+
+    .campaign-plan,
+    .campaign-benefit,
+    .campaign-slot,
+    .campaign-final,
+    .campaign-caution,
+    .campaign-recommend li {
+      margin-inline: 0;
+    }
+
+    /* カード内paddingを約20pxに統一 */
+    .campaign-plan,
+    .campaign-benefit,
+    .campaign-caution,
+    .campaign-final {
+      padding-inline: 1.25rem;
+    }
+
+    .campaign-section {
+      padding-block: 3.5rem;
+    }
+
+    .campaign-section--tight {
+      padding-block: 3rem;
+    }
+
+    .campaign-section--about {
+      padding-block: 2.75rem;
+    }
+
+    .campaign-block--warm > .campaign-section:first-child,
+    .campaign-block--white > .campaign-section:first-child,
+    .campaign-block--warm > .campaign-section--about:first-child {
+      padding-top: 3.25rem;
+    }
+
+    .campaign-block--warm > .campaign-section:last-child,
+    .campaign-block--white > .campaign-section:last-child {
+      padding-bottom: 3.25rem;
+    }
+
+    /* —— Hero —— */
+    .campaign-hero {
+      padding-block: 2rem 1.75rem;
+    }
+
+    .campaign-hero__inner {
+      width: 100%;
+      max-width: none;
+      margin-inline: 0;
+    }
+
+    .campaign-hero__label {
+      margin-bottom: 0.5rem;
+    }
+
+    .campaign-hero__eyebrow {
+      font-size: 0.875rem;
+      margin-bottom: 0.7rem;
+      letter-spacing: 0.06em;
+      word-break: normal;
+    }
+
+    .campaign-hero__title {
+      margin: 0 0 1.1rem;
+      font-size: clamp(1.625rem, 7vw, 1.875rem);
+      line-height: 1.3;
+      letter-spacing: 0.01em;
+      word-break: normal;
+      overflow-wrap: anywhere;
+      line-break: strict;
+      text-wrap: balance;
+    }
+
+    .campaign-hero__title-line {
+      display: inline;
+    }
+
+    .campaign-hero__limit {
+      display: flex;
+      width: fit-content;
+      max-width: 100%;
+      margin: 0 0 1.1rem;
+      padding: 0.7rem 1.25rem;
+      gap: 0.4rem;
+      letter-spacing: 0.05em;
+      border-width: 1.5px;
+    }
+
+    .campaign-hero__limit .nowrap {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0.4rem;
+      white-space: nowrap;
+    }
+
+    .campaign-hero__limit-num {
+      font-size: 2.25rem;
+      font-weight: 500;
+    }
+
+    .campaign-hero__limit-text {
+      font-size: 1.1875rem;
+      font-weight: 500;
+    }
+
+    .campaign-hero__price-block {
+      margin-bottom: 1.15rem;
+      padding: 1.2rem 1.25rem;
+      width: 100%;
+      max-width: none;
+      margin-inline: 0;
+      box-sizing: border-box;
+    }
+
+    .campaign-hero__usual {
+      font-size: 0.8125rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .campaign-hero__price-value {
+      font-size: clamp(1.75rem, 7.8vw, 2rem);
+      font-weight: 500;
+      line-height: 1.25;
+      letter-spacing: 0.02em;
+      word-break: normal;
+    }
+
+    .campaign-hero__opens {
+      margin: 0 0 0.85rem;
+      font-size: 1.0625rem;
+      letter-spacing: 0.03em;
+      word-break: normal;
+    }
+
+    .campaign-hero__facts {
+      margin: 0 0 1.35rem;
+      gap: 0.45rem;
+    }
+
+    .campaign-hero__facts li {
+      font-size: 0.875rem;
+      line-height: 1.7;
+      letter-spacing: 0.01em;
+      word-break: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .campaign-hero__actions {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.75rem;
+    }
+
+    .campaign-hero__actions :global(.btn),
+    .campaign-inline-cta :global(.btn),
+    .campaign-final__form :global(.btn),
+    .campaign-consult :global(.cta-section__cta) {
+      width: 100%;
+      max-width: none;
+      min-height: 3.125rem;
+      padding-block: 0.9rem;
+      padding-inline: 1.25rem;
+      white-space: nowrap;
+    }
+
+    .campaign-hero__cta-note {
+      font-size: 0.8125rem;
+      line-height: 1.6;
+    }
+
+    /* —— About / Recommend（チェックリスト縦積み） —— */
+    .campaign-about {
+      font-size: 0.9375rem;
+      line-height: 1.85;
+      width: 100%;
+      max-width: none;
+      margin-inline: 0;
+      letter-spacing: 0.01em;
+      word-break: normal;
+      overflow-wrap: anywhere;
+      line-break: strict;
+      text-wrap: pretty;
+      text-align: left;
+    }
+
+    .campaign-recommend {
+      grid-template-columns: 1fr;
+      gap: 0.55rem;
+    }
+
+    .campaign-recommend li {
+      grid-template-columns: 1.5rem minmax(0, 1fr);
+      align-items: center;
+      padding: 1rem 1.05rem;
+      gap: 0.65rem;
+    }
+
+    .campaign-recommend__mark {
+      position: relative;
+      font-size: 0;
+      color: transparent;
+      letter-spacing: 0;
+    }
+
+    .campaign-recommend__mark::before {
+      content: '✓';
+      font-family: var(--font-sans);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--color-accent-dark);
+      letter-spacing: 0;
+    }
+
+    .campaign-recommend__text {
+      font-size: 0.9375rem;
+      line-height: 1.7;
+      letter-spacing: 0.01em;
+      word-break: normal;
+      overflow-wrap: anywhere;
+    }
+
+    /* —— Plans（完全1カラム） —— */
+    .campaign-plans {
+      grid-template-columns: 1fr;
+      gap: 1.1rem;
+    }
+
+    .campaign-plan {
+      width: 100%;
+      max-width: none;
+      margin-inline: 0;
+      padding: 1.35rem 1.25rem 1.45rem;
+      box-sizing: border-box;
+    }
+
+    .campaign-plan__cap {
+      margin: 0 0 0.85rem;
+      font-size: 0.8125rem;
+      padding: 0.35rem 0.75rem;
+    }
+
+    .campaign-plan--featured .campaign-plan__cap {
+      font-size: 0.875rem;
+      padding: 0.4rem 0.85rem;
+      border-color: var(--color-gold-line);
+      background: var(--color-bg-accent);
+    }
+
+    .campaign-plan__name {
+      font-size: 1.1875rem;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.02em;
+      word-break: normal;
+    }
+
+    .campaign-plan__price {
+      font-size: clamp(1.625rem, 7.5vw, 1.875rem);
+      margin: 0.15rem 0 0.4rem;
+      line-height: 1.25;
+      letter-spacing: 0.01em;
+      word-break: normal;
+    }
+
+    .campaign-plan__usual {
+      font-size: 0.8125rem;
+      margin-bottom: 0.9rem;
+      letter-spacing: 0.01em;
+      word-break: normal;
+    }
+
+    .campaign-plan__pages {
+      font-size: 0.9375rem;
+      margin-bottom: 0.4rem;
+      line-height: 1.65;
+      letter-spacing: 0.01em;
+      word-break: normal;
+    }
+
+    .campaign-plan__suited {
+      font-size: 0.9375rem;
+      margin-bottom: 0.85rem;
+      line-height: 1.7;
+      letter-spacing: 0.01em;
+      word-break: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .campaign-plan__subhead {
+      font-size: 0.75rem;
+      margin-bottom: 0.45rem;
+    }
+
+    .campaign-plan-checks {
+      gap: 0.65rem;
+    }
+
+    .campaign-plan-checks__text {
+      font-size: 0.9375rem;
+      line-height: 1.75;
+      letter-spacing: 0.01em;
+      word-break: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .campaign-plan__more summary {
+      font-size: 0.875rem;
+      padding-block: 0.35rem;
+    }
+
+    .campaign-plan__meta,
+    .campaign-plan__note,
+    .campaign-plan__link {
+      font-size: 0.8125rem;
+      line-height: 1.65;
+    }
+
+    /* —— Benefit —— */
+    .campaign-benefit {
+      width: 100%;
+      max-width: none;
+      margin-inline: 0;
+      padding: 1.35rem 1.25rem 1.45rem;
+      box-sizing: border-box;
+    }
+
+    .campaign-benefit__main {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.35rem;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+    }
+
+    .campaign-benefit__label {
+      font-size: 1.125rem;
+      letter-spacing: 0.02em;
+      word-break: normal;
+    }
+
+    .campaign-benefit__value {
+      font-size: 2.125rem;
+      line-height: 1.1;
+      letter-spacing: 0.02em;
+    }
+
+    .campaign-benefit__list {
+      gap: 0.7rem;
+    }
+
+    .campaign-benefit__list li {
+      font-size: 0.9375rem;
+      line-height: 1.7;
+      letter-spacing: 0.01em;
+      word-break: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .campaign-benefit__note {
+      font-size: 0.8125rem;
+      line-height: 1.65;
+    }
+
+    /* —— Tags —— */
+    .campaign-tags {
+      gap: 0.55rem;
+      overflow-x: visible;
+    }
+
+    .campaign-tags li {
+      padding: 0.5rem 0.9rem;
+      font-size: 0.875rem;
+      line-height: 1.4;
+      letter-spacing: 0.02em;
+      word-break: normal;
+    }
+
+    .campaign-tags--muted li {
+      font-size: 0.8125rem;
+      padding: 0.45rem 0.8rem;
+    }
+
+    /* —— Conditions —— */
+    .campaign-conditions {
+      gap: 0;
+    }
+
+    .campaign-conditions li {
+      grid-template-columns: 2.25rem minmax(0, 1fr);
+      gap: 0.85rem;
+      padding: 1.25rem 0;
+    }
+
+    .campaign-conditions__num {
+      font-size: 1.125rem;
+      letter-spacing: 0.04em;
+    }
+
+    .campaign-conditions__text {
+      min-width: 0;
+      font-size: 1rem;
+      line-height: 1.7;
+      letter-spacing: 0.01em;
+      word-break: normal;
+      overflow-wrap: anywhere;
+      line-break: strict;
+      text-wrap: pretty;
+    }
+
+    .campaign-points {
+      max-width: none;
+      gap: 0.7rem;
+      margin-top: 1rem;
+    }
+
+    .campaign-points li,
+    .campaign-points--soft li {
+      font-size: 0.875rem;
+      line-height: 1.75;
+      letter-spacing: 0.01em;
+      word-break: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .campaign-points__text {
+      word-break: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .campaign-compact-note,
+    .campaign-compact-note--flow {
+      font-size: 0.875rem;
+      line-height: 1.75;
+      max-width: none;
+      letter-spacing: 0.01em;
+      word-break: normal;
+      overflow-wrap: anywhere;
+      text-wrap: pretty;
+    }
+
+    .campaign-callout {
+      font-size: 0.9375rem;
+      font-weight: 500;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.1rem;
+      letter-spacing: 0.01em;
+      word-break: normal;
+      overflow-wrap: break-word;
+      line-break: strict;
+      text-wrap: pretty;
+    }
+
+    /* —— Slots（縦積み・情報を縦に読みやすく） —— */
+    .campaign-slots {
+      grid-template-columns: 1fr;
+      gap: 0.95rem;
+    }
+
+    .campaign-slot {
+      width: 100%;
+    }
+
+    .campaign-slot__head {
+      display: flex;
+      align-items: center;
+      padding: 1.15rem 1.25rem 1.05rem;
+      gap: 0.85rem;
+    }
+
+    .campaign-slot__month-num {
+      font-size: 2.375rem;
+    }
+
+    .campaign-slot__heading {
+      flex: 1 1 auto;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .campaign-slot__label {
+      font-size: 1.0625rem;
+      letter-spacing: 0.03em;
+      word-break: normal;
+    }
+
+    .campaign-slot__status {
+      font-size: 0.8125rem;
+      padding: 0.35rem 0.7rem;
+      letter-spacing: 0.06em;
+    }
+
+    .campaign-slot__meta li {
+      display: flex;
+      flex-direction: row;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 0.85rem 1.25rem;
+      gap: 1rem;
+    }
+
+    .campaign-slot__meta-label {
+      flex: 0 0 auto;
+      font-size: 0.8125rem;
+      letter-spacing: 0.04em;
+    }
+
+    .campaign-slot__meta-value {
+      flex: 0 0 auto;
+      font-size: 1rem;
+      letter-spacing: 0.02em;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    /* —— Flow：縦型タイムライン（左右位置はコンテナに揃える） —— */
+    .campaign-flow {
+      border-top: none;
+      margin: 0.25rem 0 0;
+      padding: 0;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      width: 100%;
+      max-width: none;
+      box-sizing: border-box;
+    }
+
+    .campaign-flow::before {
+      content: '';
+      position: absolute;
+      top: 0.9rem;
+      bottom: 0.9rem;
+      left: 0.9rem;
+      width: 1px;
+      background: var(--color-gold-line-soft);
+      pointer-events: none;
+    }
+
+    .campaign-flow li {
+      position: relative;
+      display: grid;
+      grid-template-columns: 2.1rem 1fr;
+      gap: 0.85rem;
+      align-items: start;
+      padding: 0.9rem 0;
+      border-bottom: none;
+      text-align: left;
+    }
+
+    .campaign-flow__num {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.85rem;
+      height: 1.85rem;
+      border: 1px solid var(--color-gold-line);
+      border-radius: 50%;
+      background: var(--color-bg-white);
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--color-accent-dark);
+      box-shadow: 0 0 0 3px var(--color-bg-white);
+    }
+
+    .campaign-flow__title {
+      padding-top: 0.3rem;
+      font-size: 1rem;
+      line-height: 1.55;
+      max-width: none;
+      letter-spacing: 0.01em;
+      word-break: normal;
+      overflow-wrap: anywhere;
+    }
+
+    /* —— Materials（縦リスト） —— */
+    /* —— Materials：スマホでも横2列 —— */
+    .campaign-materials {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 1rem;
+      row-gap: 0;
+      width: 100%;
+      max-width: none;
+      margin-inline: 0;
+      margin-bottom: 1rem;
+      padding-inline: 0;
+      border-top: none;
+      box-sizing: border-box;
+    }
+
+    .campaign-materials li {
+      padding: 0.85rem 0.25rem 0.85rem 1.1rem;
+      font-size: 0.9375rem;
+      border-top: 1px solid var(--color-border-light);
+      border-bottom: none;
+      letter-spacing: 0.01em;
+      word-break: normal;
+      text-align: left;
+    }
+
+    .campaign-materials li::before {
+      left: 0;
+    }
+
+    .campaign-caution {
+      padding: 1.1rem 1.15rem;
+      gap: 1rem;
+    }
+
+    .campaign-caution__title {
+      font-size: 0.875rem;
+      margin-bottom: 0.25rem;
+      letter-spacing: 0.02em;
+      word-break: normal;
+    }
+
+    .campaign-caution__text {
+      font-size: 0.875rem;
+      line-height: 1.7;
+      letter-spacing: 0.01em;
+      word-break: normal;
+      overflow-wrap: anywhere;
+    }
+
+    /* —— Payment：横2列・50％主役のカード —— */
+    .campaign-pay-steps {
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
+    }
+
+    .campaign-pay-steps__item {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      width: auto;
+      max-width: none;
+      margin-inline: 0;
+      padding: 1.2rem 1rem;
+      border: 1px solid var(--color-border-light);
+      border-top: 2px solid var(--color-gold-line);
+      background: linear-gradient(180deg, var(--color-bg-accent) 0%, var(--color-bg-white) 55%);
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    .campaign-pay-steps__item + .campaign-pay-steps__item {
+      margin-left: 0;
+    }
+
+    .campaign-pay-steps__value {
+      order: -1;
+      font-size: 1.875rem;
+      line-height: 1;
+      letter-spacing: 0.04em;
+      color: var(--color-accent-dark);
+    }
+
+    .campaign-pay-steps__label {
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      word-break: normal;
+      line-height: 1.5;
+      color: var(--color-text-muted);
+      text-align: center;
+    }
+
+    /* —— Maintenance：横2列・料金主役のカード —— */
+    .campaign-maint {
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
+    }
+
+    .campaign-maint__card {
+      width: auto;
+      max-width: none;
+      margin-inline: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      padding: 1.2rem 1rem;
+      border: 1px solid var(--color-border-light);
+      border-top: 2px solid var(--color-gold-line);
+      background: linear-gradient(180deg, var(--color-bg-accent) 0%, var(--color-bg-white) 55%);
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    .campaign-maint__card:first-child,
+    .campaign-maint__card:last-child {
+      border-color: var(--color-border-light);
+      border-top-color: var(--color-gold-line);
+      background: linear-gradient(180deg, var(--color-bg-accent) 0%, var(--color-bg-white) 55%);
+    }
+
+    .campaign-maint__price {
+      margin: 0;
+      font-size: clamp(1.0625rem, 4.5vw, 1.25rem);
+      line-height: 1.25;
+      letter-spacing: 0.01em;
+      color: var(--color-accent-dark);
+      text-align: center;
+    }
+
+    .campaign-maint__label {
+      margin: 0;
+      font-size: 0.75rem;
+      line-height: 1.5;
+      letter-spacing: 0.04em;
+      word-break: normal;
+      overflow-wrap: break-word;
+      color: var(--color-text-muted);
+      text-align: center;
+    }
+
+    .campaign-maint-lists {
+      grid-template-columns: 1fr;
+      gap: 1.35rem;
+      margin-top: 0.35rem;
+      padding-left: 0;
+      box-sizing: border-box;
+    }
+
+    .campaign-maint-lists + .campaign-compact-note {
+      padding-left: 0;
+      box-sizing: border-box;
+    }
+
+    .campaign-lead {
+      font-size: 0.8125rem;
+      margin-bottom: 0.55rem;
+    }
+
+    /* —— FAQ —— */
+    .campaign-faq :global(.faq-accordion__question) {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 1rem;
+      min-height: 3.25rem;
+      padding: 1.05rem 0;
+      font-size: 1rem;
+      line-height: 1.55;
+      letter-spacing: 0.01em;
+    }
+
+    .campaign-faq :global(.faq-accordion__question-text) {
+      min-width: 0;
+      font-size: 1rem;
+      letter-spacing: 0.01em;
+      word-break: normal;
+      overflow-wrap: anywhere;
+      line-break: strict;
+      text-wrap: pretty;
+    }
+
+    .campaign-faq :global(.faq-accordion__icon) {
+      width: 0.75rem;
+      height: 0.75rem;
+      margin-top: 0;
+      flex-shrink: 0;
+    }
+
+    .campaign-faq :global(.faq-accordion__answer-inner) {
+      padding: 0.15rem 1.75rem 1.15rem 0;
+      font-size: 0.9375rem;
+      line-height: 1.8;
+      letter-spacing: 0.01em;
+      word-break: normal;
+      overflow-wrap: anywhere;
+      text-wrap: pretty;
+    }
+
+    /* —— Final CTA + form —— */
+    .campaign-final-section {
+      padding-block: 3rem;
+    }
+
+    .campaign-final {
+      max-width: none;
+      width: 100%;
+      margin-inline: 0;
+      padding: 1.6rem 1.25rem 1.75rem;
+      box-sizing: border-box;
+    }
+
+    .campaign-final__title {
+      font-size: clamp(1.375rem, 6.2vw, 1.625rem);
+      margin-bottom: 0.95rem;
+      letter-spacing: 0.01em;
+      word-break: normal;
+      line-break: strict;
+      text-wrap: balance;
+    }
+
+    .campaign-final__title-line {
+      display: inline;
+    }
+
+    .campaign-final__limit {
+      display: inline-flex;
+      margin-bottom: 0.95rem;
+      padding: 0.45rem 1rem;
+      font-size: 1.0625rem;
+      letter-spacing: 0.04em;
+    }
+
+    .campaign-final__limit .nowrap {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0.35rem;
+    }
+
+    .campaign-final__limit-num {
+      font-size: 1.5rem;
+    }
+
+    .campaign-final__price {
+      font-size: clamp(1.625rem, 7.5vw, 1.875rem);
+      letter-spacing: 0.01em;
+      word-break: normal;
+      margin-bottom: 0.45rem;
+    }
+
+    .campaign-final__end {
+      font-size: 0.9375rem;
+      margin-bottom: 1.1rem;
+      letter-spacing: 0.01em;
+      word-break: normal;
+    }
+
+    .campaign-final__note,
+    .campaign-final__note--before-form {
+      max-width: none;
+      font-size: 0.8125rem;
+      line-height: 1.75;
+      letter-spacing: 0.01em;
+      word-break: normal;
+      overflow-wrap: anywhere;
+      text-wrap: pretty;
+      margin-bottom: 1.35rem;
+    }
+
+    .campaign-final__form {
+      max-width: none;
+      padding-top: 0.35rem;
+    }
+
+    .campaign-final__form :global(.campaign-apply__input),
+    .campaign-final__form :global(.campaign-apply__select),
+    .campaign-final__form :global(.campaign-apply__textarea) {
+      min-height: 3.125rem;
+      font-size: 1rem;
+    }
+
+    .campaign-final__form :global(.campaign-apply__label),
+    .campaign-final__form :global(.campaign-apply__consent-text) {
+      font-size: 0.875rem;
+      line-height: 1.65;
+    }
+
+    .campaign-consult :global(.cta-section) {
+      padding-block: 3rem;
+    }
+
+    .campaign-consult :global(.cta-section__title) {
+      max-width: none !important;
+      width: 100%;
+      margin-inline: 0;
+      letter-spacing: 0.01em;
+      word-break: normal;
+      overflow-wrap: anywhere;
+      line-break: strict;
+      text-wrap: balance;
+      text-align: left;
+    }
+
+    .campaign-consult :global(.cta-section__desc) {
+      max-width: none !important;
+      width: 100%;
+      margin-inline: 0;
+      letter-spacing: 0.01em;
+      word-break: normal;
+      overflow-wrap: anywhere;
+      text-wrap: pretty;
+      text-align: left;
+    }
+
+    .campaign-consult :global(.cta-section__main) {
+      width: 100%;
+      max-width: none;
+      margin-inline: 0;
+    }
+
+    .campaign-inline-cta {
+      margin-top: 1.4rem;
+      width: 100%;
+      max-width: none;
+      margin-inline: 0;
+      justify-content: stretch;
+    }
+
+    .campaign-inline-cta :global(.btn) {
+      width: 100%;
+      max-width: none;
+      white-space: nowrap;
+    }
+
+    .campaign-plan__link a {
+      white-space: nowrap;
+    }
+
+    /* フッターブランドの狭い max-width をキャンペーンページ閲覧時のみ解除 */
+    :global(body:has(.campaign-page) .footer__brand) {
+      max-width: none;
+      width: 100%;
+    }
+  }
+</style>

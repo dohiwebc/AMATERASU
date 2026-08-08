@@ -12,9 +12,17 @@ interface Props {
   description?: string;
   ogImage?: string;
   settings: SiteSettings;
+  /** false のときページ末尾の受付状況セクションを出さない（キャンペーン等） */
+  showAcceptanceStatus?: boolean;
 }
 
-const { title, description, ogImage, settings } = Astro.props;
+const {
+  title,
+  description,
+  ogImage,
+  settings,
+  showAcceptanceStatus = true,
+} = Astro.props;
 const pageTitle = title ? `${title} | ${settings.brandDisplay}` : settings.seoTitle;
 const pageDescription = description ?? settings.seoDescription;
 const ogImageUrl = ogImage ?? settings.ogImage;
@@ -62,7 +70,7 @@ const iconApple = withBase('/icons/amaterasu-apple-touch.png');
     <main>
       <slot />
     </main>
-    <AcceptanceStatusSection settings={settings} />
+    {showAcceptanceStatus && <AcceptanceStatusSection settings={settings} />}
     <Footer settings={settings} />
     <PageReveal />
   </body>
@@ -71,5 +79,10 @@ const iconApple = withBase('/icons/amaterasu-apple-touch.png');
 <style is:global>
   main {
     min-height: calc(100vh - var(--header-height) - 240px);
+  }
+
+  /* 長いキャンペーンページでは min-height による余白を出さない */
+  body:has(.campaign-page) main {
+    min-height: 0;
   }
 </style>

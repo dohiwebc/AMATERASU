@@ -1,0 +1,182 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Button from '@/components/Button.astro';
+import { getSiteSettings } from '@/lib/microcms';
+import {
+  opening2026Campaign,
+  getCampaignApplyLabel,
+} from '@/data/campaigns/opening-2026';
+import { withBase } from '@/lib/paths';
+
+const settings = await getSiteSettings();
+const campaign = opening2026Campaign;
+const applyLabel = getCampaignApplyLabel(campaign);
+const applyHref = withBase(campaign.path) + '#apply';
+---
+
+<Layout
+  title="開業記念モニター 利用条件・特約"
+  description="AMATERASU Web Studio開業記念 Webサイト制作モニターの利用条件・特約です。"
+  settings={settings}
+  showAcceptanceStatus={false}
+>
+  <div class="page-header">
+    <div class="container">
+      <div class="page-header__inner">
+        <p class="page-header__label label-en">Terms</p>
+        <h1 class="page-header__title">利用条件・特約</h1>
+        <p class="page-header__desc">
+          開業記念 Webサイト制作モニターにご参加いただく際の条件です。お申し込み前にご確認ください。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <section class="section section--after-header">
+    <div class="container container--narrow">
+      <div class="terms-content">
+        <p class="terms-content__updated">対象キャンペーン：2026年開業記念 Webサイト制作モニター</p>
+
+        <section>
+          <h2>1. モニター特別価格について</h2>
+          <p>
+            本キャンペーンの料金は、制作実績への協力を条件としたモニター特別価格です。通常のライトプラン・スタンダードプラン相当の制作内容を対象とし、ミニ制作プラン、プレミアムプラン、各種オプションは通常料金とします。
+          </p>
+        </section>
+
+        <section>
+          <h2>2. 必須の協力事項</h2>
+          <ol>
+            <li>完成サイトをAMATERASU Web Studioの制作実績として掲載できること</li>
+            <li>
+              完成サイトのスクリーンショットやデザイン画像を、Webサイト、SNS、ポートフォリオ、営業資料等で使用できること
+            </li>
+            <li>制作目的・課題・制作内容・工夫点・改善内容等を制作事例として紹介できること</li>
+            <li>制作完了後、お客様の声アンケートに回答すること</li>
+            <li>お客様の声について、氏名、屋号、店舗名、活動名、法人名等を掲載できること</li>
+          </ol>
+          <p>依頼者自身のSNSでの紹介は任意です。実績ページの掲載内容は公開前に依頼者へ確認します。</p>
+        </section>
+
+        <section>
+          <h2>3. 実績掲載を拒否した場合</h2>
+          <p>
+            モニター価格で契約した後に実績掲載自体を拒否される場合、キャンペーン対象外となり、通常料金との差額をお支払いいただきます。
+          </p>
+        </section>
+
+        <section>
+          <h2>4. 受付・枠確定</h2>
+          <p>
+            お申し込みは先着順での枠確定ではありません。依頼内容を確認し、対応可能と判断した場合に仮受付をご案内します。仮受付後、7日以内に契約および着手金（50％）の支払いを完了してください。完了しない場合、仮受付を解除する場合があります。
+          </p>
+        </section>
+
+        <section>
+          <h2>5. 支払い</h2>
+          <p>契約・制作枠確定時に50％、公開・納品前に残り50％をお支払いいただきます。</p>
+        </section>
+
+        <section>
+          <h2>6. 素材提出</h2>
+          <p>
+            制作に必要な素材は、原則として制作開始日までにご提出ください。提出が遅れた場合、納品時期が遅れる可能性があります。制作開始予定日から7日以上経過しても必要な素材が揃わない場合、制作を中止・契約終了とする場合があります。
+          </p>
+        </section>
+
+        <section>
+          <h2>7. アカウント・費用負担</h2>
+          <p>
+            ドメイン、Cloudflareその他の外部サービスは、原則として依頼者本人名義で契約・管理します。ドメイン代、有料サービス利用料、サーバー料金等の実費は依頼者負担です。ログインパスワード自体の共有は原則行いません。
+          </p>
+        </section>
+
+        <section>
+          <h2>8. 修正・公開後保守</h2>
+          <p>
+            修正回数は通常のライトプラン（3回まで）・スタンダードプラン（5回まで）と同じ条件です。継続的な保守はキャンペーンに含まれません。公開後の保守・更新は通常のオプション料金によります。
+          </p>
+        </section>
+
+        <section>
+          <h2>9. 併用不可</h2>
+          <p>他のキャンペーン、割引、特典との併用はできません。</p>
+        </section>
+
+        <section>
+          <h2>10. その他</h2>
+          <p>
+            本特約に定めのない事項は、通常の制作契約およびサイト上の案内に従います。内容は必要に応じて改定する場合があります。
+          </p>
+        </section>
+
+        <div class="terms-content__actions">
+          <Button href={campaign.path} variant="outline" size="md">キャンペーンページへ戻る</Button>
+          <Button href={applyHref} variant="primary" size="md">{applyLabel}</Button>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .terms-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .terms-content__updated {
+    margin: 0;
+    font-size: var(--text-small);
+    color: var(--color-text-light);
+    letter-spacing: 0.04em;
+  }
+
+  .terms-content section h2 {
+    margin: 0 0 0.75rem;
+    font-family: var(--font-serif);
+    font-size: var(--text-body-lg);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+  }
+
+  .terms-content p,
+  .terms-content li {
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+    overflow-wrap: break-word;
+  }
+
+  .terms-content p {
+    margin: 0 0 0.75rem;
+  }
+
+  .terms-content p:last-child {
+    margin-bottom: 0;
+  }
+
+  .terms-content ol {
+    margin: 0 0 0.75rem;
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .terms-content__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  @media (max-width: 767px) {
+    .terms-content__actions :global(.btn) {
+      width: 100%;
+      max-width: 22rem;
+    }
+  }
+</style>

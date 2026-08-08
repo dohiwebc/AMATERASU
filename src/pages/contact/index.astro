@@ -45,7 +45,7 @@ const consultationTips = [
       <div class="page-header__inner">
         <p class="page-header__label label-en">Contact</p>
         <h1 class="page-header__title">{contact.title}</h1>
-        <p class="page-header__desc cms-text">{contact.description}</p>
+        <p class="page-header__desc cms-text cms-text--break">{contact.description}</p>
       </div>
     </div>
   </div>
@@ -58,14 +58,14 @@ const consultationTips = [
             <span>ご相談は無料です。</span>
             <span>しつこい営業は一切ありません。</span>
           </p>
-          <p class="contact-reassure__reply cms-text">{contact.replyTime}</p>
+          <p class="contact-reassure__reply cms-text cms-text--break">{contact.replyTime}</p>
         </div>
       ) : (
         <div class="contact-closed" role="status">
           <p class="contact-closed__label label-en">Status</p>
           <h2 class="contact-closed__title">{acceptance.pageTitle}</h2>
-          <p class="contact-closed__lead cms-text">{acceptance.leadText}</p>
-          <p class="contact-closed__reply cms-text">{acceptance.replyText}</p>
+          <p class="contact-closed__lead cms-text cms-text--break">{acceptance.leadText}</p>
+          <p class="contact-closed__reply cms-text cms-text--break">{acceptance.replyText}</p>
         </div>
       )}
 
@@ -73,18 +73,18 @@ const consultationTips = [
         <div class="contact-layout__form">
           {acceptance.formMode === 'full' && (
             <>
-              <p class="contact-form-section__desc cms-text">{acceptance.formDescription}</p>
+              <p class="contact-form-section__desc cms-text cms-text--break">{acceptance.formDescription}</p>
               <ContactForm contact={contact} />
             </>
           )}
           {acceptance.formMode === 'notify' && (
             <>
-              <p class="contact-form-section__desc cms-text">{acceptance.formDescription}</p>
+              <p class="contact-form-section__desc cms-text cms-text--break">{acceptance.formDescription}</p>
               <NotifyOnlyForm contact={contact} replyText={acceptance.replyText} />
             </>
           )}
           {acceptance.formMode === 'none' && (
-            <p class="contact-form-section__desc contact-form-section__desc--closed cms-text">
+            <p class="contact-form-section__desc contact-form-section__desc--closed cms-text cms-text--break">
               {'現在はフォームからのお問い合わせをお受けしておりません。\n再開の際はお知らせにてご案内いたします。'}
             </p>
           )}
@@ -111,7 +111,7 @@ const consultationTips = [
                 <h3 class="contact-alt__title">メール</h3>
                 <a href={`mailto:${settings.email}`} class="contact-alt__link">{settings.email}</a>
                 {contact.emailDescription && (
-                  <p class="contact-alt__desc cms-text">{contact.emailDescription}</p>
+                  <p class="contact-alt__desc cms-text cms-text--break">{contact.emailDescription}</p>
                 )}
               </div>
               {hasSocialUrl(settings.instagramUrl) && instagramHandle && (
@@ -139,7 +139,7 @@ const consultationTips = [
                     {xHandle}
                   </a>
                   {xNote && (
-                    <p class="contact-alt__desc contact-alt__desc--note cms-text">{xNote}</p>
+                    <p class="contact-alt__desc contact-alt__desc--note cms-text cms-text--break">{xNote}</p>
                   )}
                 </div>
               )}
@@ -224,7 +224,6 @@ const consultationTips = [
     font-weight: 500;
     color: var(--color-text);
     line-height: var(--leading-snug);
-    text-wrap: pretty;
   }
 
   .contact-closed__reply {
@@ -233,7 +232,6 @@ const consultationTips = [
     font-size: var(--text-body);
     color: var(--color-text-muted);
     line-height: var(--leading-body);
-    text-wrap: pretty;
   }
 
   .contact-form-section__desc--closed {
@@ -273,11 +271,10 @@ const consultationTips = [
 
     .contact-closed__lead,
     .contact-closed__reply {
-      max-width: 44rem;
+      max-width: var(--measure-prose);
     }
 
     .contact-reassure__lead {
-      text-wrap: pretty;
     }
   }
 
@@ -315,7 +312,6 @@ const consultationTips = [
     font-size: var(--text-small);
     color: var(--color-text-muted);
     line-height: var(--leading-body);
-    text-wrap: pretty;
   }
 
   .contact-studio__body p {
@@ -402,7 +398,6 @@ const consultationTips = [
     :global(.page-header__desc) {
       font-size: var(--text-small);
       line-height: 1.55;
-      text-wrap: pretty;
     }
 
     :global(.section.section--after-header) {
@@ -457,7 +452,6 @@ const consultationTips = [
       line-height: 1.55;
       margin-bottom: 0.5rem;
       white-space: normal;
-      text-wrap: pretty;
     }
 
     .contact-closed__reply {
@@ -466,7 +460,6 @@ const consultationTips = [
       font-size: var(--text-caption);
       line-height: 1.55;
       white-space: normal;
-      text-wrap: pretty;
     }
 
     .contact-form-section__desc--closed {
@@ -548,7 +541,6 @@ const consultationTips = [
     .contact-note :global(.list-check li) {
       font-size: var(--text-small);
       line-height: 1.65;
-      text-wrap: pretty;
     }
   }
 </style>

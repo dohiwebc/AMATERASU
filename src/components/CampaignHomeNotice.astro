@@ -1,0 +1,119 @@
+---
+import Button from '@/components/Button.astro';
+import { opening2026Campaign } from '@/data/campaigns/opening-2026';
+
+const campaign = opening2026Campaign;
+---
+
+{
+  campaign.isActive && (
+    <section class="section campaign-home-notice" aria-labelledby="campaign-home-notice-title">
+      <div class="container">
+        <div class="campaign-home-notice__inner">
+          <div class="campaign-home-notice__text">
+            <p class="campaign-home-notice__label label-en">Opening 2026</p>
+            <p class="campaign-home-notice__eyebrow">{campaign.hero.label}</p>
+            <h2 id="campaign-home-notice-title" class="campaign-home-notice__title">
+              Webサイト制作モニター
+              <span class="campaign-home-notice__limit">9組限定</span>
+            </h2>
+            <p class="campaign-home-notice__meta">
+              <span>{campaign.hero.price}</span>
+              <span class="campaign-home-notice__sep" aria-hidden="true">/</span>
+              <span>{campaign.hero.subtitle}</span>
+              <span class="campaign-home-notice__sep" aria-hidden="true">/</span>
+              <span>{campaign.hero.opensLabel}</span>
+            </p>
+          </div>
+          <div class="campaign-home-notice__action">
+            <Button href={campaign.path} variant="outline" size="md">
+              詳しく見る
+            </Button>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .campaign-home-notice {
+    padding-block: clamp(1.75rem, 4vw, 2.5rem);
+    background-color: var(--color-bg-white);
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .campaign-home-notice__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding-left: 1rem;
+    box-shadow: inset 3px 0 0 var(--color-gold-line-soft);
+  }
+
+  .campaign-home-notice__label {
+    margin-bottom: 0.35rem;
+  }
+
+  .campaign-home-notice__eyebrow {
+    margin: 0 0 0.35rem;
+    font-size: var(--text-small);
+    letter-spacing: 0.08em;
+    color: var(--color-gold);
+  }
+
+  .campaign-home-notice__title {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 2.5vw, 1.375rem);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    line-height: var(--leading-tight);
+    color: var(--color-text);
+    word-break: keep-all;
+    line-break: strict;
+    overflow-wrap: anywhere;
+  }
+
+  .campaign-home-notice__limit {
+    display: inline-block;
+    margin-left: 0.5rem;
+    font-size: 0.875em;
+    font-weight: 500;
+    color: var(--color-accent-dark);
+  }
+
+  .campaign-home-notice__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.5rem;
+    margin: 0.625rem 0 0;
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  .campaign-home-notice__sep {
+    color: var(--color-border);
+  }
+
+  .campaign-home-notice__action {
+    align-self: flex-start;
+  }
+
+  @media (min-width: 768px) {
+    .campaign-home-notice__inner {
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: var(--space-lg);
+      padding-left: 1.25rem;
+    }
+
+    .campaign-home-notice__action {
+      flex-shrink: 0;
+      padding-bottom: 0.125rem;
+    }
+  }
+</style>

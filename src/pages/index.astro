@@ -10,6 +10,7 @@ import FlowSection from '@/components/FlowSection.astro';
 import NewsSection from '@/components/NewsSection.astro';
 import FaqSection from '@/components/FaqSection.astro';
 import CTASection from '@/components/CTASection.astro';
+import CampaignHomeNotice from '@/components/CampaignHomeNotice.astro';
 import Button from '@/components/Button.astro';
 import { SITE_TYPE } from '@/types/cms';
 import { getSiteSettings, getPlans, getWorks, getNews } from '@/lib/microcms';
@@ -29,6 +30,8 @@ const workPlansMap = buildWorkPlansMap(allPlans);
 
 <Layout settings={settings}>
   <Hero settings={settings} />
+
+  <CampaignHomeNotice />
 
   <WorriesSection />
 
@@ -148,9 +151,8 @@ const workPlansMap = buildWorkPlansMap(allPlans);
     }
 
     #works :global(.section-title__desc) {
-      font-size: var(--text-caption);
-      line-height: 1.55;
-      text-wrap: pretty;
+      font-size: var(--text-body);
+      line-height: var(--leading-body);
     }
 
     .works-gallery {

@@ -36,8 +36,7 @@ const { en, ja, description, variant = 'editorial', align = 'left' } = Astro.pro
     font-weight: 400;
     line-height: var(--leading-tight);
     letter-spacing: 0.02em;
-    max-width: 18em;
-    text-wrap: pretty;
+    max-width: var(--measure-title);
   }
 
   .section-title--editorial .section-title__desc {
@@ -45,8 +44,9 @@ const { en, ja, description, variant = 'editorial', align = 'left' } = Astro.pro
     font-size: var(--text-body);
     color: var(--color-text-muted);
     line-height: var(--leading-body);
-    max-width: 40em;
-    text-wrap: pretty;
+    max-width: var(--measure-prose);
+    overflow-wrap: break-word;
+    letter-spacing: 0.02em;
   }
 
   .section-title--display .section-title__ja {
@@ -55,6 +55,7 @@ const { en, ja, description, variant = 'editorial', align = 'left' } = Astro.pro
     font-weight: 400;
     line-height: var(--leading-tight);
     letter-spacing: 0.01em;
+    max-width: var(--measure-title);
   }
 
   .section-title--display .section-title__desc {
@@ -62,7 +63,8 @@ const { en, ja, description, variant = 'editorial', align = 'left' } = Astro.pro
     font-size: var(--text-body-lg);
     color: var(--color-text-muted);
     line-height: var(--leading-body);
-    max-width: 28em;
+    max-width: var(--measure-prose);
+    overflow-wrap: break-word;
   }
 
   .section-title--split .section-title__split-head {
@@ -83,10 +85,18 @@ const { en, ja, description, variant = 'editorial', align = 'left' } = Astro.pro
     font-size: var(--text-body);
     color: var(--color-text-muted);
     line-height: var(--leading-body);
-    max-width: 32em;
+    max-width: var(--measure-prose);
+    overflow-wrap: break-word;
   }
 
   @media (min-width: 768px) {
+    .section-title--editorial .section-title__ja,
+    .section-title--display .section-title__ja,
+    .section-title--centered .section-title__ja,
+    .section-title--minimal .section-title__ja {
+      max-width: none;
+    }
+
     .section-title--split .section-title__split-head {
       flex-direction: row;
       align-items: baseline;
@@ -99,6 +109,7 @@ const { en, ja, description, variant = 'editorial', align = 'left' } = Astro.pro
     .section-title--split .section-title__ja {
       text-align: right;
       flex-shrink: 0;
+      white-space: nowrap;
     }
   }
 
@@ -112,8 +123,7 @@ const { en, ja, description, variant = 'editorial', align = 'left' } = Astro.pro
     font-weight: 400;
     line-height: var(--leading-tight);
     margin-inline: auto;
-    max-width: 18em;
-    text-wrap: pretty;
+    max-width: var(--measure-title);
   }
 
   .section-title--centered .section-title__desc {
@@ -121,9 +131,9 @@ const { en, ja, description, variant = 'editorial', align = 'left' } = Astro.pro
     font-size: var(--text-body);
     color: var(--color-text-muted);
     line-height: var(--leading-body);
-    max-width: 36em;
+    max-width: var(--measure-prose);
     margin-inline: auto;
-    text-wrap: pretty;
+    overflow-wrap: break-word;
   }
 
   .section-title--minimal .section-title__ja {
@@ -132,7 +142,7 @@ const { en, ja, description, variant = 'editorial', align = 'left' } = Astro.pro
     font-weight: 500;
     letter-spacing: 0.05em;
     line-height: 1.5;
-    text-wrap: pretty;
+    max-width: var(--measure-title);
   }
 
   .section-title--minimal .section-title__desc {
@@ -140,7 +150,8 @@ const { en, ja, description, variant = 'editorial', align = 'left' } = Astro.pro
     font-size: var(--text-small);
     color: var(--color-text-muted);
     line-height: var(--leading-body);
-    text-wrap: pretty;
+    max-width: var(--measure-prose);
+    overflow-wrap: break-word;
   }
 
   .section-title__en {
@@ -155,17 +166,11 @@ const { en, ja, description, variant = 'editorial', align = 'left' } = Astro.pro
   }
 
   @media (max-width: 767px) {
-    .section-title--editorial .section-title__ja,
-    .section-title--centered .section-title__ja {
-      max-width: none;
-      text-wrap: pretty;
-    }
-
     .section-title--editorial .section-title__desc,
-    .section-title--centered .section-title__desc {
-      max-width: none;
-      font-size: var(--text-small);
-      line-height: 1.65;
+    .section-title--centered .section-title__desc,
+    .section-title--display .section-title__desc {
+      font-size: var(--text-body);
+      line-height: var(--leading-body);
     }
 
     .section-title--minimal .section-title__ja {

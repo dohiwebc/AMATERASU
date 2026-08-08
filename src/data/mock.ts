@@ -41,7 +41,7 @@ export const mockContactSettings: ContactSettings = {
   formDescription: "下記フォームよりお送りください。事業内容やご希望が分かると、より具体的なご提案ができます。",
   formspreeEndpoint: "https://formspree.io/f/maqgrrbe",
   categoryOptions:
-    "本格制作プラン\nミニ制作プラン\nリニューアル\n制作実績について\n料金・見積もり相談\nその他",
+    "本格制作プラン\nミニ制作プラン\n開業記念モニター\nリニューアル\n制作実績について\n料金・見積もり相談\nその他",
   planOptions:
     "未定・相談したい\nライトプラン\nスタンダードプラン\nプレミアムプラン\nプロフィールリンクページ\nWeb名刺プラン\nメニューWeb化プラン\nチーム・団体ページ\n期間限定キャンペーンページ\n",
   budgetOptions:

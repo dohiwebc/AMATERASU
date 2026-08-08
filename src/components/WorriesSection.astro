@@ -88,15 +88,12 @@ const worries = [
     font-size: var(--text-body);
     color: var(--color-text-muted);
     line-height: 1.85;
-    max-width: 36em;
+    max-width: var(--measure-prose);
+    overflow-wrap: break-word;
     white-space: pre-line;
   }
 
   @media (min-width: 768px) {
-    .worries :global(.section-title__desc) {
-      white-space: pre-line;
-    }
-
     .worries__list {
       grid-template-columns: repeat(2, 1fr);
       column-gap: var(--space-xl);
@@ -126,10 +123,8 @@ const worries = [
     }
 
     .worries :global(.section-title__desc) {
-      font-size: var(--text-caption);
-      line-height: 1.55;
-      text-wrap: pretty;
-      white-space: normal;
+      font-size: var(--text-body);
+      line-height: var(--leading-body);
     }
 
     .worries__item {
@@ -152,7 +147,6 @@ const worries = [
     .worries__desc {
       font-size: var(--text-caption);
       line-height: 1.55;
-      text-wrap: pretty;
     }
   }
 </style>

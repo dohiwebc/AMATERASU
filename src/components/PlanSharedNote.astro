@@ -28,12 +28,12 @@ const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
     <div class="plan-shared-notes__content plan-shared-notes__content--desktop">
       <div class="plan-shared-notes__scope">
         <h3 class="plan-shared-notes__scope-title">{scopeTitle}</h3>
-        <p class="plan-shared-notes__scope-text cms-text">{systemScopeNote}</p>
+        <p class="plan-shared-notes__scope-text cms-text cms-text--break">{systemScopeNote}</p>
       </div>
 
       <ul class="plan-shared-notes__list">
         {generalNotes.map((note) => (
-          <li class="cms-text">{note}</li>
+          <li class="cms-text cms-text--break">{note}</li>
         ))}
       </ul>
     </div>
@@ -46,7 +46,7 @@ const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
         </summary>
         <div class="plan-notes-accordion__panel">
           <div class="plan-notes-accordion__panel-inner">
-            <p class="plan-notes-accordion__text cms-text">{systemScopeNote}</p>
+            <p class="plan-notes-accordion__text cms-text cms-text--break">{systemScopeNote}</p>
           </div>
         </div>
       </details>
@@ -61,7 +61,7 @@ const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
             <div class="plan-notes-accordion__panel-inner">
               <ul class="plan-notes-accordion__list">
                 {confirmNotes.map((note) => (
-                  <li class="cms-text">{note}</li>
+                  <li class="cms-text cms-text--break">{note}</li>
                 ))}
               </ul>
             </div>
@@ -79,7 +79,7 @@ const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
             <div class="plan-notes-accordion__panel-inner">
               <ul class="plan-notes-accordion__list">
                 {priceNotes.map((note) => (
-                  <li class="cms-text">{note}</li>
+                  <li class="cms-text cms-text--break">{note}</li>
                 ))}
               </ul>
             </div>
@@ -263,7 +263,7 @@ const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
     font-size: var(--text-caption);
     color: var(--color-text-muted);
     line-height: 1.55;
-    text-wrap: pretty;
+    overflow-wrap: break-word;
   }
 
   .plan-notes-accordion__list {
@@ -278,7 +278,7 @@ const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
     font-size: var(--text-caption);
     color: var(--color-text-muted);
     line-height: 1.55;
-    text-wrap: pretty;
+    overflow-wrap: break-word;
   }
 
   .plan-notes-accordion__list li::before {
@@ -299,9 +299,8 @@ const noteDescription = description ?? NOTE_DESCRIPTIONS[variant];
     }
 
     .plan-shared-notes :global(.section-title__desc) {
-      font-size: var(--text-caption);
-      line-height: 1.55;
-      text-wrap: pretty;
+      font-size: var(--text-body);
+      line-height: var(--leading-body);
     }
 
     .plan-shared-notes__content--desktop {

@@ -3,6 +3,7 @@ import SiteLogo from '@/components/SiteLogo.astro';
 import type { SiteSettings } from '@/types/cms';
 import { withBase } from '@/lib/paths';
 import { getAcceptanceBadge } from '@/lib/acceptance-status';
+import { opening2026Campaign } from '@/data/campaigns/opening-2026';
 
 interface Props {
   settings: SiteSettings;
@@ -25,6 +26,8 @@ const navItems = [
 ];
 
 const contactHref = withBase('/contact/');
+const campaignHref = withBase(opening2026Campaign.path);
+const showCampaignLink = opening2026Campaign.isActive;
 
 function isNavActive(pathname: string, href: string): boolean {
   const normalized = pathname.endsWith('/') ? pathname : `${pathname}/`;
@@ -70,6 +73,19 @@ function isNavActive(pathname: string, href: string): boolean {
         })}
       </ul>
       <div class="header__actions">
+        {
+          showCampaignLink && (
+            <a
+              href={campaignHref}
+              class:list={[
+                'header__campaign',
+                isNavActive(currentPath, campaignHref) && 'header__campaign--active',
+              ]}
+            >
+              開業記念モニター
+            </a>
+          )
+        }
         <a href={withBase('/contact/')} class="header__cta btn btn--primary btn--sm">相談する</a>
         <span
           class:list={[
@@ -133,9 +149,24 @@ function isNavActive(pathname: string, href: string): boolean {
               </a>
             </li>
             {item.href === contactHref && (
-              <li class="header__nav-mobile-cta" style={`--nav-i: ${index + 1}`}>
-                <a href={contactHref} class="header__cta btn btn--primary btn--sm">相談する</a>
-              </li>
+              <>
+                {showCampaignLink && (
+                  <li class="header__nav-mobile-campaign" style={`--nav-i: ${index + 1}`}>
+                    <a
+                      href={campaignHref}
+                      class:list={[
+                        'header__campaign header__campaign--mobile',
+                        isNavActive(currentPath, campaignHref) && 'header__campaign--active',
+                      ]}
+                    >
+                      開業記念モニター
+                    </a>
+                  </li>
+                )}
+                <li class="header__nav-mobile-cta" style={`--nav-i: ${index + (showCampaignLink ? 2 : 1)}`}>
+                  <a href={contactHref} class="header__cta btn btn--primary btn--sm">相談する</a>
+                </li>
+              </>
             )}
           </>
         );
@@ -331,6 +362,32 @@ function isNavActive(pathname: string, href: string): boolean {
 
   .header__cta {
     align-self: flex-start;
+  }
+
+  .header__campaign {
+    font-family: var(--font-serif);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--color-gold);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color var(--transition);
+  }
+
+  .header__campaign:hover,
+  .header__campaign--active {
+    color: var(--color-accent-dark);
+  }
+
+  .header__campaign--mobile {
+    display: inline-block;
+    font-size: 0.875rem;
+    letter-spacing: 0.08em;
+  }
+
+  .header__nav-mobile-campaign {
+    padding-block: 0.25rem 0.5rem;
   }
 
   .header__actions {

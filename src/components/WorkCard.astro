@@ -190,6 +190,8 @@ const planSlugs = relatedPlans.map((plan) => plan.slug);
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
     overflow: hidden;
+    white-space: normal;
+    overflow-wrap: break-word;
   }
 
   .work-card--featured .work-card__desc {
@@ -291,7 +293,7 @@ const planSlugs = relatedPlans.map((plan) => plan.slug);
       font-size: var(--text-caption);
       line-height: 1.55;
       -webkit-line-clamp: 2;
-      text-wrap: pretty;
+      white-space: normal;
     }
 
     .work-card--featured .work-card__desc {

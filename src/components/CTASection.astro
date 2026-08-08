@@ -41,8 +41,10 @@ const hasChannels = Boolean(settings.email) || hasSocialChannels;
   <div class:list={['cta-section__inner', 'container', !hasSocialChannels && 'cta-section__inner--mail-only']}>
     <div class="cta-section__main">
       <p class="cta-section__label label-en">Contact</p>
-      <h2 class="cta-section__title cms-text">{title}</h2>
-      <p class="cta-section__desc cms-text">{description}</p>
+      <h2 class="cta-section__title cms-text cms-text--break">
+        <slot name="title">{title}</slot>
+      </h2>
+      <p class="cta-section__desc cms-text cms-text--break">{description}</p>
 
       <div class="cta-section__contact">
         <Button href="/contact/" variant="primary" size="lg" class="cta-section__cta">
@@ -84,7 +86,7 @@ const hasChannels = Boolean(settings.email) || hasSocialChannels;
                   >
                     {xHandle}
                   </a>
-                  {xNote && <p class="cta-section__channel-note cms-text">{xNote}</p>}
+                  {xNote && <p class="cta-section__channel-note cms-text cms-text--break">{xNote}</p>}
                 </div>
               </li>
             )}
@@ -115,7 +117,7 @@ const hasChannels = Boolean(settings.email) || hasSocialChannels;
 
   .cta-section__main {
     width: 100%;
-    max-width: 44rem;
+    max-width: min(100%, 40rem);
   }
 
   .cta-section__label {
@@ -128,9 +130,8 @@ const hasChannels = Boolean(settings.email) || hasSocialChannels;
     font-weight: 500;
     line-height: var(--leading-tight);
     margin-bottom: var(--space-md);
-    max-width: none;
+    max-width: min(100%, 36rem);
     color: var(--color-on-dark);
-    text-wrap: pretty;
   }
 
   .cta-section__desc {
@@ -138,8 +139,8 @@ const hasChannels = Boolean(settings.email) || hasSocialChannels;
     color: var(--color-on-dark-muted);
     line-height: var(--leading-body);
     margin-bottom: var(--space-lg);
-    max-width: none;
-    text-wrap: pretty;
+    max-width: min(100%, var(--measure-prose));
+    overflow-wrap: break-word;
   }
 
   .cta-section__contact {
@@ -218,13 +219,11 @@ const hasChannels = Boolean(settings.email) || hasSocialChannels;
     .cta-section__title {
       font-size: clamp(1.5rem, 5vw, 1.75rem);
       margin-bottom: var(--space-sm);
-      text-wrap: pretty;
     }
 
     .cta-section__desc {
       font-size: var(--text-small);
       line-height: 1.6;
-      text-wrap: pretty;
       margin-bottom: var(--space-md);
     }
 
@@ -257,6 +256,10 @@ const hasChannels = Boolean(settings.email) || hasSocialChannels;
       grid-template-columns: minmax(0, 1fr) auto;
       gap: var(--space-2xl);
       align-items: end;
+    }
+
+    .cta-section__title {
+      max-width: none;
     }
 
     .cta-section__main {

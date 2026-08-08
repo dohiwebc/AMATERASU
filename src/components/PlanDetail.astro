@@ -186,7 +186,7 @@ const deliveryFact = splitFactValue(plan.deliveryFormat);
   {planNotes.length > 0 && (
     <div class="plan-detail__notes">
       {planNotes.map((note) => (
-        <p class="plan-detail__note cms-text">{note}</p>
+        <p class="plan-detail__note cms-text cms-text--break">{note}</p>
       ))}
     </div>
   )}
@@ -236,6 +236,8 @@ const deliveryFact = splitFactValue(plan.deliveryFormat);
     font-size: var(--text-body-lg);
     line-height: var(--leading-snug);
     color: var(--color-text-muted);
+    max-width: var(--measure-prose);
+    overflow-wrap: break-word;
   }
 
   .plan-detail__summary {
@@ -388,6 +390,8 @@ const deliveryFact = splitFactValue(plan.deliveryFormat);
     display: flex;
     flex-direction: column;
     gap: 0.875rem;
+    max-width: var(--measure-prose);
+    overflow-wrap: break-word;
   }
 
   .plan-detail__prose p {
@@ -395,6 +399,11 @@ const deliveryFact = splitFactValue(plan.deliveryFormat);
     font-size: var(--text-body);
     color: var(--color-text-muted);
     line-height: var(--leading-body);
+  }
+
+  /* 文末の CMS 改行は pre-line で保持 */
+  .plan-detail__prose .cms-text {
+    white-space: pre-line;
   }
 
   .plan-detail__specs {
@@ -569,7 +578,7 @@ const deliveryFact = splitFactValue(plan.deliveryFormat);
     .plan-detail__prose {
       font-size: var(--text-small);
       line-height: 1.65;
-      overflow-wrap: anywhere;
+      overflow-wrap: break-word;
       padding: 1rem 1.125rem;
       background-color: var(--color-bg-accent);
       border: 1px solid var(--color-border-light);
@@ -578,11 +587,6 @@ const deliveryFact = splitFactValue(plan.deliveryFormat);
     .plan-detail__prose p {
       font-size: inherit;
       line-height: inherit;
-    }
-
-    /* 文末の CMS 改行は pre-line で保持し、幅いっぱいに自動折り返し */
-    .plan-detail__prose .cms-text {
-      white-space: pre-line;
     }
 
     .plan-detail__list--cols {
@@ -595,7 +599,7 @@ const deliveryFact = splitFactValue(plan.deliveryFormat);
       position: relative;
       font-size: var(--text-small);
       line-height: 1.6;
-      text-wrap: pretty;
+      overflow-wrap: break-word;
       padding-left: 0.75rem;
     }
 
@@ -634,7 +638,7 @@ const deliveryFact = splitFactValue(plan.deliveryFormat);
     .plan-detail__note {
       font-size: var(--text-caption);
       line-height: 1.55;
-      text-wrap: pretty;
+      overflow-wrap: break-word;
       padding-left: 0.625rem;
       border-left-width: 1px;
     }
@@ -663,7 +667,7 @@ const deliveryFact = splitFactValue(plan.deliveryFormat);
     .plan-detail__lead {
       font-size: var(--text-small);
       line-height: 1.55;
-      text-wrap: pretty;
+      overflow-wrap: break-word;
     }
 
     .plan-detail__summary {
@@ -704,7 +708,7 @@ const deliveryFact = splitFactValue(plan.deliveryFormat);
     .plan-detail__fact-value {
       font-size: var(--text-small);
       line-height: 1.5;
-      text-wrap: pretty;
+      overflow-wrap: break-word;
     }
 
     .plan-detail__fact-note {

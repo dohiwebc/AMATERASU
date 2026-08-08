@@ -1,0 +1,711 @@
+---
+import { withBase } from '@/lib/paths';
+import '@/styles/contact-send-animation.css';
+
+interface Props {
+  formspreeEndpoint: string;
+  replyTime?: string;
+  /** false のとき入力はできるが送信不可（受付開始前） */
+  applicationOpen?: boolean;
+  opensLabel?: string;
+}
+
+const {
+  formspreeEndpoint,
+  replyTime = '2営業日以内にご連絡します。',
+  applicationOpen = true,
+  opensLabel = '9月1日受付開始',
+} = Astro.props;
+
+const planOptions = [
+  'ライト 39,800円',
+  'スタンダード 79,800円',
+  '相談して決めたい',
+] as const;
+
+const slotOptions = ['10月', '11月', '12月', 'どこでも可'] as const;
+
+const hasEndpoint = Boolean(formspreeEndpoint);
+const canSubmit = hasEndpoint && applicationOpen;
+const confirmButtonLabel = !hasEndpoint
+  ? 'フォーム準備中'
+  : !applicationOpen
+    ? opensLabel
+    : '内容を確認する';
+
+const confirmFields = [
+  { name: 'name', label: 'お名前' },
+  { name: 'company', label: '屋号・店舗名・活動名など', optional: true },
+  { name: 'email', label: 'メールアドレス' },
+  { name: 'plan', label: '希望プラン' },
+  { name: 'slot', label: '希望制作枠' },
+  { name: 'website', label: '現在のWebサイト', optional: true },
+  { name: 'purpose', label: '制作したいサイト・目的' },
+  { name: 'message', label: '補足・ご相談内容', optional: true },
+] as const;
+---
+
+<form
+  class="campaign-apply"
+  id="campaign-apply-form"
+  action={formspreeEndpoint}
+  method="post"
+  data-has-endpoint={hasEndpoint ? 'true' : 'false'}
+  data-application-open={applicationOpen ? 'true' : 'false'}
+  novalidate
+>
+  {
+    !applicationOpen && (
+      <p class="campaign-apply__banner" role="status">
+        現在は受付開始前です（{opensLabel}）。内容のご確認は可能で、受付開始後に送信できます。
+      </p>
+    )
+  }
+
+  <div class="campaign-apply__status campaign-apply__status--success" role="status" hidden>
+    <p class="campaign-apply__status-title">お申し込みを受け付けました</p>
+    <p class="campaign-apply__status-desc">
+      ありがとうございます。内容を確認のうえ、対応可能な場合に仮受付をご案内します。{replyTime}
+    </p>
+    <div class="campaign-apply__success-summary">
+      <p class="campaign-apply__success-label">お送りいただいた内容</p>
+      <dl class="campaign-apply__confirm-list">
+        {
+          confirmFields.map((field) => (
+            <div class="campaign-apply__confirm-item" data-success-field={field.name}>
+              <dt>{field.label}</dt>
+              <dd data-success-value={field.name}>—</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+
+  <div class="campaign-apply__status campaign-apply__status--error" role="alert" hidden>
+    <p class="campaign-apply__status-title">送信に失敗しました</p>
+    <p class="campaign-apply__status-desc" data-error-message>
+      時間をおいて再度お試しください。解決しない場合はメールでご連絡ください。
+    </p>
+  </div>
+
+  <div class="campaign-apply__fields" data-form-fields>
+    <input type="hidden" name="category" value="開業記念モニター" />
+    <input type="hidden" name="campaign" value="opening-2026" />
+    <input type="hidden" name="_subject" value="【開業記念モニター申込】AMATERASU" />
+
+    <div class="campaign-apply__field">
+      <label class="campaign-apply__label" for="campaign-apply-name">
+        お名前 <span class="campaign-apply__required">必須</span>
+      </label>
+      <input
+        class="campaign-apply__input"
+        type="text"
+        id="campaign-apply-name"
+        name="name"
+        autocomplete="name"
+        required
+        placeholder="山田 太郎"
+      />
+    </div>
+
+    <div class="campaign-apply__field">
+      <label class="campaign-apply__label" for="campaign-apply-company">
+        屋号・店舗名・活動名など <span class="campaign-apply__optional">任意</span>
+      </label>
+      <input
+        class="campaign-apply__input"
+        type="text"
+        id="campaign-apply-company"
+        name="company"
+        autocomplete="organization"
+        placeholder="〇〇カフェ / 活動名 など"
+      />
+    </div>
+
+    <div class="campaign-apply__field">
+      <label class="campaign-apply__label" for="campaign-apply-email">
+        メールアドレス <span class="campaign-apply__required">必須</span>
+      </label>
+      <input
+        class="campaign-apply__input"
+        type="email"
+        id="campaign-apply-email"
+        name="email"
+        autocomplete="email"
+        inputmode="email"
+        required
+        placeholder="example@email.com"
+      />
+    </div>
+
+    <div class="campaign-apply__field">
+      <label class="campaign-apply__label" for="campaign-apply-plan">
+        希望プラン <span class="campaign-apply__required">必須</span>
+      </label>
+      <select class="campaign-apply__select" id="campaign-apply-plan" name="plan" required>
+        <option value="" selected disabled>選択してください</option>
+        {planOptions.map((option) => <option value={option}>{option}</option>)}
+      </select>
+    </div>
+
+    <div class="campaign-apply__field">
+      <label class="campaign-apply__label" for="campaign-apply-slot">
+        希望制作枠 <span class="campaign-apply__required">必須</span>
+      </label>
+      <select class="campaign-apply__select" id="campaign-apply-slot" name="slot" required>
+        <option value="" selected disabled>選択してください</option>
+        {slotOptions.map((option) => <option value={option}>{option}</option>)}
+      </select>
+      <p class="campaign-apply__hint">
+        ご希望の制作開始月です。空き状況や内容により、希望通りにならない場合があります。
+      </p>
+    </div>
+
+    <div class="campaign-apply__field">
+      <label class="campaign-apply__label" for="campaign-apply-website">
+        現在のWebサイト <span class="campaign-apply__optional">任意</span>
+      </label>
+      <input
+        class="campaign-apply__input"
+        type="text"
+        id="campaign-apply-website"
+        name="website"
+        inputmode="url"
+        autocomplete="url"
+        placeholder="https://example.com または なし"
+      />
+    </div>
+
+    <div class="campaign-apply__field">
+      <label class="campaign-apply__label" for="campaign-apply-purpose">
+        制作したいサイト・目的 <span class="campaign-apply__required">必須</span>
+      </label>
+      <textarea
+        class="campaign-apply__textarea"
+        id="campaign-apply-purpose"
+        name="purpose"
+        rows="4"
+        required
+        placeholder="例：店舗サイトを新しく作りたい / YouTube活動をまとめたい"
+      ></textarea>
+    </div>
+
+    <div class="campaign-apply__field">
+      <label class="campaign-apply__label" for="campaign-apply-message">
+        補足・ご相談内容 <span class="campaign-apply__optional">任意</span>
+      </label>
+      <textarea
+        class="campaign-apply__textarea campaign-apply__textarea--short"
+        id="campaign-apply-message"
+        name="message"
+        rows="4"
+        placeholder="参考サイト、気になる点などがあればご記入ください"
+      ></textarea>
+    </div>
+
+    <input
+      type="text"
+      name="_gotcha"
+      class="campaign-apply__honeypot"
+      tabindex="-1"
+      autocomplete="off"
+    />
+
+    <div class="campaign-apply__field campaign-apply__field--consent">
+      <p class="campaign-apply__label">
+        モニター条件への同意 <span class="campaign-apply__required">必須</span>
+      </p>
+      <label class="campaign-apply__consent">
+        <input
+          class="campaign-apply__checkbox"
+          type="checkbox"
+          id="campaign-apply-consent-conditions"
+          name="consent_conditions"
+          value="yes"
+          required
+        />
+        <span class="campaign-apply__consent-text">
+          制作実績への掲載、お客様の声への回答など、モニター条件に同意します。
+        </span>
+      </label>
+      <label class="campaign-apply__consent">
+        <input
+          class="campaign-apply__checkbox"
+          type="checkbox"
+          id="campaign-apply-consent-terms"
+          name="consent_terms"
+          value="yes"
+          required
+        />
+        <span class="campaign-apply__consent-text">
+          キャンペーンの注意事項・
+          <a href={withBase('/campaign/opening-2026/terms/')} target="_blank" rel="noopener noreferrer">
+            利用条件
+          </a>
+          を確認しました。
+        </span>
+      </label>
+    </div>
+
+    <button
+      class="btn btn--primary btn--lg btn--block campaign-apply__confirm-btn"
+      type="button"
+      data-show-confirm
+      disabled={!canSubmit}
+    >
+      {confirmButtonLabel}
+    </button>
+
+    {
+      applicationOpen && (
+        <p class="campaign-apply__foot">
+          お申し込み内容を確認後、対応可能な場合に仮受付をご案内します。お申し込み時点では制作枠は確定しません。
+        </p>
+      )
+    }
+  </div>
+
+  <div class="campaign-apply__confirm" data-form-confirm hidden>
+    <div class="campaign-apply__confirm-head">
+      <p class="campaign-apply__confirm-kicker label-en">Confirm</p>
+      <h3 class="campaign-apply__confirm-title">入力内容の確認</h3>
+      <p class="campaign-apply__confirm-desc">内容をご確認のうえ、送信してください。</p>
+    </div>
+
+    <dl class="campaign-apply__confirm-list" data-confirm-list>
+      {
+        confirmFields.map((field) => (
+          <div class="campaign-apply__confirm-item" data-confirm-field={field.name}>
+            <dt>{field.label}</dt>
+            <dd data-confirm-value={field.name}>—</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <div class="campaign-apply__confirm-actions">
+      <button class="btn btn--outline btn--lg" type="button" data-confirm-back>
+        戻る
+      </button>
+      <button class="btn btn--primary btn--lg" type="button" data-confirm-send>
+        モニターに申し込む
+      </button>
+    </div>
+  </div>
+</form>
+
+<script>
+  import { playContactSendAnimation } from '@/lib/contact-send-animation';
+
+  function initCampaignApplyForm() {
+    const form = document.getElementById('campaign-apply-form') as HTMLFormElement | null;
+    if (!form || form.dataset.init === 'true') return;
+    form.dataset.init = 'true';
+
+    const fields = form.querySelector<HTMLElement>('[data-form-fields]');
+    const confirm = form.querySelector<HTMLElement>('[data-form-confirm]');
+    const success = form.querySelector<HTMLElement>('.campaign-apply__status--success');
+    const error = form.querySelector<HTMLElement>('.campaign-apply__status--error');
+    const errorMessage = form.querySelector<HTMLElement>('[data-error-message]');
+    const showConfirmBtn = form.querySelector<HTMLButtonElement>('[data-show-confirm]');
+    const confirmBackBtn = form.querySelector<HTMLButtonElement>('[data-confirm-back]');
+    const confirmSendBtn = form.querySelector<HTMLButtonElement>('[data-confirm-send]');
+    const hasEndpoint = form.dataset.hasEndpoint === 'true';
+    const applicationOpen = form.dataset.applicationOpen === 'true';
+    const canSubmit = hasEndpoint && applicationOpen;
+    const optionalFields = new Set(['company', 'website', 'message']);
+
+    const getFieldValue = (name: string): string => {
+      const element = form.elements.namedItem(name);
+      if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
+        return element.value.trim();
+      }
+      if (element instanceof HTMLSelectElement) {
+        return element.value.trim();
+      }
+      return '';
+    };
+
+    const formatConfirmValue = (name: string, value: string): string => {
+      if (!value) return optionalFields.has(name) ? '未入力' : '—';
+      return value;
+    };
+
+    const populateConfirm = () => {
+      confirm?.querySelectorAll('[data-confirm-value]').forEach((node) => {
+        const name = (node as HTMLElement).dataset.confirmValue;
+        if (!name) return;
+        const item = node.closest('[data-confirm-field]') as HTMLElement | null;
+        const value = getFieldValue(name);
+        node.textContent = formatConfirmValue(name, value);
+        if (item && optionalFields.has(name) && !value) {
+          item.classList.add('campaign-apply__confirm-item--muted');
+        } else {
+          item?.classList.remove('campaign-apply__confirm-item--muted');
+        }
+      });
+    };
+
+    const populateSuccess = () => {
+      success?.querySelectorAll('[data-success-value]').forEach((node) => {
+        const name = (node as HTMLElement).dataset.successValue;
+        if (!name) return;
+        const value = getFieldValue(name);
+        const item = node.closest('[data-success-field]') as HTMLElement | null;
+        if (optionalFields.has(name) && !value) {
+          item?.setAttribute('hidden', '');
+          return;
+        }
+        item?.removeAttribute('hidden');
+        node.textContent = value;
+      });
+    };
+
+    const setView = (view: 'input' | 'confirm' | 'success' | 'error') => {
+      fields?.toggleAttribute('hidden', view !== 'input');
+      confirm?.toggleAttribute('hidden', view !== 'confirm');
+      success?.toggleAttribute('hidden', view !== 'success');
+      error?.toggleAttribute('hidden', view !== 'error');
+    };
+
+    const validateForm = (): boolean => {
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return false;
+      }
+      const honeypot = form.querySelector<HTMLInputElement>('input[name="_gotcha"]');
+      if (honeypot?.value) return false;
+      return true;
+    };
+
+    setView('input');
+
+    showConfirmBtn?.addEventListener('click', () => {
+      if (!canSubmit || !validateForm()) return;
+      populateConfirm();
+      error?.setAttribute('hidden', '');
+      setView('confirm');
+      confirm?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+
+    confirmBackBtn?.addEventListener('click', () => {
+      setView('input');
+      error?.setAttribute('hidden', '');
+    });
+
+    confirmSendBtn?.addEventListener('click', async () => {
+      if (!canSubmit || !validateForm()) return;
+
+      confirmSendBtn.disabled = true;
+      confirmBackBtn?.setAttribute('disabled', 'true');
+      error?.setAttribute('hidden', '');
+
+      const animation = playContactSendAnimation('送信中...');
+      const request = fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' },
+      });
+
+      try {
+        const [response] = await Promise.all([request, animation]);
+        if (!response.ok) {
+          const data = (await response.json().catch(() => null)) as { error?: string } | null;
+          throw new Error(data?.error ?? '送信に失敗しました');
+        }
+
+        populateSuccess();
+        form.reset();
+        setView('success');
+        success?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : '送信に失敗しました。時間をおいて再度お試しください。';
+        if (errorMessage) errorMessage.textContent = message;
+        setView('error');
+        fields?.setAttribute('hidden', '');
+        confirm?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } finally {
+        confirmSendBtn.disabled = false;
+        confirmBackBtn?.removeAttribute('disabled');
+      }
+    });
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+    });
+  }
+
+  initCampaignApplyForm();
+  document.addEventListener('astro:page-load', initCampaignApplyForm);
+</script>
+
+<style>
+  .campaign-apply {
+    width: 100%;
+    text-align: left;
+  }
+
+  .campaign-apply__banner {
+    margin: 0 0 1.25rem;
+    padding: 0.75rem 0.9rem;
+    border-left: 2px solid var(--color-gold-line-soft);
+    background: var(--color-bg);
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    line-height: 1.65;
+    word-break: keep-all;
+  }
+
+  .campaign-apply__fields,
+  .campaign-apply__confirm {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .campaign-apply__fields[hidden],
+  .campaign-apply__confirm[hidden],
+  .campaign-apply__status[hidden] {
+    display: none !important;
+  }
+
+  .campaign-apply__status {
+    padding: 1.25rem 1.125rem;
+    border: 1px solid var(--color-border-light);
+    background: var(--color-bg);
+  }
+
+  .campaign-apply__status--success {
+    border-color: var(--color-gold-line-soft);
+  }
+
+  .campaign-apply__status--error {
+    background: #faf4f2;
+    border-color: rgba(180, 90, 70, 0.25);
+  }
+
+  .campaign-apply__status-title {
+    margin: 0 0 0.4rem;
+    font-family: var(--font-serif);
+    font-size: var(--text-body-lg);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  .campaign-apply__status-desc {
+    margin: 0;
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+
+  .campaign-apply__success-summary {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .campaign-apply__success-label {
+    margin: 0 0 0.65rem;
+    font-size: var(--text-caption);
+    letter-spacing: 0.08em;
+    color: var(--color-text-light);
+  }
+
+  .campaign-apply__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .campaign-apply__label {
+    font-size: var(--text-small);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--color-text);
+  }
+
+  .campaign-apply__required,
+  .campaign-apply__optional {
+    font-size: var(--text-caption);
+    letter-spacing: 0.08em;
+    margin-left: 0.25rem;
+  }
+
+  .campaign-apply__required {
+    color: var(--color-gold);
+  }
+
+  .campaign-apply__optional {
+    color: var(--color-text-light);
+  }
+
+  .campaign-apply__hint {
+    margin: 0;
+    font-size: var(--text-caption);
+    color: var(--color-text-light);
+    line-height: 1.5;
+    word-break: keep-all;
+  }
+
+  .campaign-apply__input,
+  .campaign-apply__select,
+  .campaign-apply__textarea {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.75rem 0.875rem;
+    font-family: var(--font-serif);
+    font-size: var(--text-body);
+    color: var(--color-text);
+    background: var(--color-bg-white);
+    border: 1px solid var(--color-border);
+    border-radius: 0;
+    line-height: 1.5;
+    transition: border-color var(--transition);
+  }
+
+  .campaign-apply__input::placeholder,
+  .campaign-apply__textarea::placeholder {
+    color: var(--color-text-light);
+  }
+
+  .campaign-apply__input:focus,
+  .campaign-apply__select:focus,
+  .campaign-apply__textarea:focus {
+    outline: none;
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 1px var(--color-gold-soft);
+  }
+
+  .campaign-apply__textarea {
+    resize: vertical;
+    min-height: 7.5rem;
+  }
+
+  .campaign-apply__textarea--short {
+    min-height: 6rem;
+  }
+
+  .campaign-apply__honeypot {
+    display: none;
+  }
+
+  .campaign-apply__field--consent {
+    margin-top: 0.25rem;
+    gap: 0.65rem;
+  }
+
+  .campaign-apply__consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    cursor: pointer;
+  }
+
+  .campaign-apply__checkbox {
+    flex-shrink: 0;
+    width: 1rem;
+    height: 1rem;
+    margin-top: 0.2rem;
+    accent-color: var(--color-accent-dark);
+  }
+
+  .campaign-apply__consent-text {
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    line-height: 1.65;
+    word-break: keep-all;
+  }
+
+  .campaign-apply__consent-text a {
+    color: var(--color-accent-dark);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .campaign-apply__confirm-btn {
+    margin-top: 0.35rem;
+  }
+
+  .campaign-apply__foot {
+    margin: 0;
+    font-size: var(--text-caption);
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+
+  .campaign-apply__confirm-head {
+    margin-bottom: 0.25rem;
+  }
+
+  .campaign-apply__confirm-kicker {
+    margin-bottom: 0.35rem;
+  }
+
+  .campaign-apply__confirm-title {
+    margin: 0 0 0.35rem;
+    font-family: var(--font-serif);
+    font-size: var(--text-body-lg);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  .campaign-apply__confirm-desc {
+    margin: 0;
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+  }
+
+  .campaign-apply__confirm-list {
+    margin: 0;
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .campaign-apply__confirm-item {
+    display: grid;
+    grid-template-columns: 9.5rem minmax(0, 1fr);
+    gap: 0.5rem 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .campaign-apply__confirm-item dt {
+    margin: 0;
+    font-size: var(--text-caption);
+    color: var(--color-text-light);
+    letter-spacing: 0.04em;
+  }
+
+  .campaign-apply__confirm-item dd {
+    margin: 0;
+    font-size: var(--text-body);
+    color: var(--color-text);
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+
+  .campaign-apply__confirm-item--muted dd {
+    color: var(--color-text-light);
+  }
+
+  .campaign-apply__confirm-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .campaign-apply__confirm-actions .btn {
+    flex: 1 1 10rem;
+  }
+
+  @media (max-width: 640px) {
+    .campaign-apply__confirm-item {
+      grid-template-columns: 1fr;
+      gap: 0.25rem;
+    }
+  }
+</style>

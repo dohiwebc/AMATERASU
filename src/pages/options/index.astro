@@ -85,8 +85,7 @@ const pageDescription =
 
 <style>
   .options-hero__desc {
-    max-width: 42rem;
-    text-wrap: pretty;
+    max-width: var(--measure-prose);
   }
 
   .options-hero__action {
@@ -132,7 +131,6 @@ const pageDescription =
     letter-spacing: 0.08em;
     color: var(--color-text);
     line-height: var(--leading-tight);
-    text-wrap: pretty;
   }
 
   .options-group__desc {
@@ -141,7 +139,6 @@ const pageDescription =
     font-size: var(--text-small);
     color: var(--color-text-muted);
     line-height: var(--leading-body);
-    text-wrap: pretty;
   }
 
   .options-rows {
@@ -171,7 +168,9 @@ const pageDescription =
     letter-spacing: 0.04em;
     color: var(--color-text);
     line-height: var(--leading-snug);
-    text-wrap: pretty;
+    overflow-wrap: anywhere;
+  }
+    line-height: var(--leading-snug);
     overflow-wrap: anywhere;
   }
 
@@ -201,7 +200,6 @@ const pageDescription =
     color: var(--color-accent-dark);
     line-height: var(--leading-snug);
     text-align: right;
-    text-wrap: pretty;
   }
 
   .options-note-section {
@@ -221,7 +219,6 @@ const pageDescription =
     font-size: var(--text-body);
     color: var(--color-text-muted);
     line-height: var(--leading-body);
-    text-wrap: pretty;
   }
 
   /* PC */
@@ -289,13 +286,11 @@ const pageDescription =
     :global(.page-header__title) {
       font-size: clamp(1.5rem, 6vw, 1.75rem);
       margin-bottom: 0.5rem;
-      text-wrap: pretty;
     }
 
     :global(.page-header__desc) {
       font-size: var(--text-small);
       line-height: 1.65;
-      text-wrap: pretty;
     }
 
     :global(.section.section--after-header) {
@@ -314,7 +309,6 @@ const pageDescription =
       width: 100%;
       max-width: 22rem;
       white-space: normal;
-      text-wrap: pretty;
       line-height: 1.45;
       padding-block: 0.875rem;
     }

@@ -101,12 +101,13 @@ const steps = [
     font-size: var(--text-body);
     color: var(--color-text-muted);
     line-height: 1.85;
-    max-width: 36em;
+    max-width: var(--measure-prose);
+    overflow-wrap: break-word;
   }
 
   @media (min-width: 768px) {
     .flow {
-      max-width: 52rem;
+      max-width: min(100%, 56rem);
       margin-inline: auto;
       border-top: none;
       padding-top: var(--space-xs);
@@ -159,7 +160,7 @@ const steps = [
 
     .flow__desc {
       line-height: 1.9;
-      max-width: none;
+      max-width: var(--measure-prose);
     }
   }
 
@@ -169,9 +170,8 @@ const steps = [
     }
 
     .flow-section :global(.section-title__desc) {
-      font-size: var(--text-caption);
-      line-height: 1.55;
-      text-wrap: pretty;
+      font-size: var(--text-body);
+      line-height: var(--leading-body);
     }
 
     .flow__item {
@@ -194,7 +194,6 @@ const steps = [
     .flow__desc {
       font-size: var(--text-caption);
       line-height: 1.55;
-      text-wrap: pretty;
     }
   }
 </style>

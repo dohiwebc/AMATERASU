@@ -77,7 +77,9 @@ export function initHeightAccordion(
       }
     });
 
-    if (!details.open) {
+    if (details.open) {
+      panel.style.height = 'auto';
+    } else {
       panel.style.height = '0px';
     }
   });

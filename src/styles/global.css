@@ -25,8 +25,37 @@ body {
   background-color: var(--color-bg);
   line-height: var(--leading-body);
   -webkit-font-smoothing: antialiased;
-  font-feature-settings: 'palt' 1;
   letter-spacing: 0.02em;
+}
+
+/* 見出し・英字ラベル・価格など表示用のみ詰め文字 */
+.font-display,
+.label-en,
+.page-header__title,
+.section-title__ja,
+.btn {
+  font-feature-settings: 'palt' 1;
+}
+
+/*
+ * 日本語見出し：助詞・意味の途中で不自然に折り返さない
+ * PCでは十分な幅があれば1行、狭い幅では keep-all のまま自然折り返し
+ */
+.page-header__title,
+.section-title__ja,
+.cta-section__title,
+.worries__title,
+.flow__title,
+.plan-detail__title,
+.plan-detail__section-title,
+.campaign-final__title,
+.faq-accordion__question-text,
+.options-group__title,
+.options-row__label {
+  word-break: keep-all;
+  line-break: strict;
+  overflow-wrap: anywhere;
+  text-wrap: unset;
 }
 
 img {
@@ -77,8 +106,17 @@ textarea:focus-visible {
   outline: none;
 }
 
-/* CMSテキストエリア：改行をそのまま表示 */
+/*
+ * CMSテキスト：
+ * - デフォルトは自然折り返し（途中改行で右余白が出ないようにする）
+ * - 文末・段落の意図した改行が必要な箇所は .cms-text--break
+ */
 .cms-text {
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.cms-text--break {
   white-space: pre-line;
 }
 
@@ -318,6 +356,8 @@ textarea:focus-visible {
   color: var(--color-text-muted);
   line-height: var(--leading-body);
   margin-bottom: var(--space-md);
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 .plan-card__includes {
@@ -358,6 +398,8 @@ textarea:focus-visible {
   font-size: var(--text-small);
   color: var(--color-text-muted);
   margin-bottom: var(--space-md);
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 .plan-card__period strong {
@@ -397,7 +439,7 @@ textarea:focus-visible {
     font-size: var(--text-small);
     line-height: 1.55;
     margin-bottom: 0.875rem;
-    text-wrap: pretty;
+    white-space: normal;
   }
 
   .plan-card__includes {
@@ -420,7 +462,7 @@ textarea:focus-visible {
     font-size: var(--text-caption);
     line-height: 1.5;
     margin-bottom: 0.875rem;
-    text-wrap: pretty;
+    white-space: normal;
   }
 
   .plan-card .btn {
@@ -495,11 +537,11 @@ textarea:focus-visible {
 }
 
 .page-header__inner {
-  max-width: 640px;
+  max-width: var(--measure-prose);
 }
 
 .page-header__inner--wide {
-  max-width: 56rem;
+  max-width: min(100%, 48rem);
 }
 
 .page-header__label {
@@ -513,13 +555,21 @@ textarea:focus-visible {
   line-height: var(--leading-tight);
   letter-spacing: 0.02em;
   margin-bottom: var(--space-sm);
+  max-width: var(--measure-title);
 }
 
 .page-header__desc {
   color: var(--color-text-muted);
   font-size: var(--text-body);
   line-height: var(--leading-body);
-  text-wrap: pretty;
+  max-width: var(--measure-prose);
+  overflow-wrap: break-word;
+}
+
+@media (min-width: 768px) {
+  .page-header__title {
+    max-width: none;
+  }
 }
 
 .page-header--compact {
@@ -540,6 +590,7 @@ textarea:focus-visible {
   display: flex;
   flex-direction: column;
   gap: 0.625rem;
+  max-width: var(--measure-prose);
 }
 
 .list-check li {
@@ -548,7 +599,7 @@ textarea:focus-visible {
   font-size: var(--text-body);
   color: var(--color-text-muted);
   line-height: var(--leading-body);
-  text-wrap: pretty;
+  overflow-wrap: break-word;
 }
 
 .list-check li::before {
