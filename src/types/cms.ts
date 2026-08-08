@@ -223,6 +223,10 @@ export interface NewsItem {
   isFeatured: boolean;
   isVisible: boolean;
   sortOrder: number;
+  /** お知らせ詳細（モーダル）本文下のCTA文言。未設定時は非表示 */
+  ctaText?: string;
+  /** お知らせ詳細（モーダル）本文下のCTAリンク。未設定時は非表示 */
+  ctaUrl?: string;
 }
 
 export const NEWS_CATEGORY_LABELS: Record<NewsCategory, string> = {

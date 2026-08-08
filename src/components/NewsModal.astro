@@ -1,5 +1,6 @@
 ---
 import { formatNewsDate } from '@/lib/news';
+import { resolveHref } from '@/lib/paths';
 import { NEWS_CATEGORY_LABELS } from '@/types/cms';
 import type { NewsItem } from '@/types/cms';
 
@@ -9,17 +10,34 @@ interface Props {
 
 const { items } = Astro.props;
 
+function isHttpUrl(url: string): boolean {
+  return /^https?:\/\//i.test(url);
+}
+
 const newsDataMap = Object.fromEntries(
-  items.map((item) => [
-    item.id,
-    {
-      title: item.title,
-      body: item.body,
-      date: formatNewsDate(item.date),
-      dateIso: item.date,
-      category: NEWS_CATEGORY_LABELS[item.category],
-    },
-  ]),
+  items.map((item) => {
+    const ctaText = item.ctaText?.trim() ?? '';
+    const ctaUrl = item.ctaUrl?.trim() ?? '';
+    const hasCta = Boolean(ctaText && ctaUrl);
+
+    return [
+      item.id,
+      {
+        title: item.title,
+        body: item.body,
+        date: formatNewsDate(item.date),
+        dateIso: item.date,
+        category: NEWS_CATEGORY_LABELS[item.category],
+        ...(hasCta
+          ? {
+              ctaText,
+              ctaHref: resolveHref(ctaUrl),
+              ctaExternal: isHttpUrl(ctaUrl),
+            }
+          : {}),
+      },
+    ];
+  }),
 );
 ---
 
@@ -82,6 +100,18 @@ const newsDataMap = Object.fromEntries(
     body.className = 'cms-text cms-text--break';
     body.textContent = news.body;
     modalBody.appendChild(body);
+
+    if (news.ctaText && news.ctaHref) {
+      const cta = document.createElement('a');
+      cta.className = 'btn btn--primary btn--md news-modal__cta';
+      cta.href = news.ctaHref;
+      cta.textContent = news.ctaText;
+      if (news.ctaExternal) {
+        cta.target = '_blank';
+        cta.rel = 'noopener noreferrer';
+      }
+      modalBody.appendChild(cta);
+    }
 
     modal.classList.add('is-open');
     modal.setAttribute('aria-hidden', 'false');
@@ -301,6 +331,18 @@ const newsDataMap = Object.fromEntries(
     margin-top: 1.125rem;
   }
 
+  .news-modal__cta {
+    margin-top: 2.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem;
+    padding: 0.875rem 1.375rem;
+    white-space: nowrap;
+    word-break: keep-all;
+    text-align: center;
+  }
+
   @media (max-width: 767px) {
     .modal-overlay.modal-overlay--news {
       padding: var(--space-md) var(--space-sm);
@@ -354,6 +396,16 @@ const newsDataMap = Object.fromEntries(
 
     .news-modal__body p + p {
       margin-top: 0.875rem;
+    }
+
+    .news-modal__cta {
+      width: 100%;
+      max-width: 100%;
+      min-height: 3rem;
+      margin-top: 2rem;
+      padding-inline: 1.125rem;
+      white-space: normal;
+      line-height: 1.45;
     }
   }
 

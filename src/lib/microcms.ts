@@ -381,6 +381,9 @@ export async function getNews(): Promise<NewsItem[]> {
 }
 
 function normalizeNewsItem(raw: NewsItem): NewsItem {
+  const ctaText = typeof raw.ctaText === 'string' ? raw.ctaText.trim() : '';
+  const ctaUrl = typeof raw.ctaUrl === 'string' ? raw.ctaUrl.trim() : '';
+
   return {
     ...raw,
     // API フィルタ後でも isVisible が欠けることがあるため明示的に正規化
@@ -388,6 +391,8 @@ function normalizeNewsItem(raw: NewsItem): NewsItem {
     isFeatured: Boolean(raw.isFeatured),
     sortOrder: typeof raw.sortOrder === 'number' ? raw.sortOrder : 0,
     category: raw.category ?? 'info',
+    ctaText: ctaText || undefined,
+    ctaUrl: ctaUrl || undefined,
   };
 }
 
